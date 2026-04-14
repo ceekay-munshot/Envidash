@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ForensIQ — Investor Research Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- TOP HEADER -->
+<header class="top-header">
+  <div class="header-left">
+    <div class="logo">
+      <span class="logo-icon"><i class="fas fa-chart-pie"></i></span>
+      <span class="logo-text">Forens<span class="logo-accent">IQ</span></span>
+    </div>
+    <div class="header-tagline">Forensic + Quality Investor Dashboard</div>
+  </div>
+
+  <div class="header-center">
+    <div class="company-search-wrap">
+      <div class="search-icon"><i class="fas fa-search"></i></div>
+      <input type="text" id="companySearchInput" class="company-search-input" placeholder="Search company… e.g. Infosys, TCS, HDFC Bank" autocomplete="off">
+      <div class="search-tag" id="activeCompanyTag">
+        <span class="tag-dot"></span>
+        <span id="activeCompanyName">Infosys Ltd.</span>
+        <span class="tag-exchange">NSE: INFY</span>
+      </div>
+      <div class="search-dropdown" id="searchDropdown">
+        <div class="search-dropdown-header">Popular Companies</div>
+        <div class="search-item" data-name="Infosys Ltd." data-ticker="NSE: INFY" data-sector="IT Services" data-cap="₹6.2T">
+          <div class="si-left"><span class="si-ticker">INFY</span></div>
+          <div class="si-info"><div class="si-name">Infosys Ltd.</div><div class="si-meta">IT Services · Large Cap</div></div>
+          <div class="si-cap">₹6.2T</div>
+        </div>
+        <div class="search-item" data-name="HDFC Bank Ltd." data-ticker="NSE: HDFCBANK" data-sector="Banking" data-cap="₹12.1T">
+          <div class="si-left"><span class="si-ticker">HDFCBANK</span></div>
+          <div class="si-info"><div class="si-name">HDFC Bank Ltd.</div><div class="si-meta">Banking · Large Cap</div></div>
+          <div class="si-cap">₹12.1T</div>
+        </div>
+        <div class="search-item" data-name="Tata Consultancy Services" data-ticker="NSE: TCS" data-sector="IT Services" data-cap="₹13.8T">
+          <div class="si-left"><span class="si-ticker">TCS</span></div>
+          <div class="si-info"><div class="si-name">Tata Consultancy Services</div><div class="si-meta">IT Services · Large Cap</div></div>
+          <div class="si-cap">₹13.8T</div>
+        </div>
+        <div class="search-item" data-name="Reliance Industries" data-ticker="NSE: RELIANCE" data-sector="Conglomerate" data-cap="₹19.4T">
+          <div class="si-left"><span class="si-ticker">RELIANCE</span></div>
+          <div class="si-info"><div class="si-name">Reliance Industries</div><div class="si-meta">Conglomerate · Large Cap</div></div>
+          <div class="si-cap">₹19.4T</div>
+        </div>
+        <div class="search-item" data-name="Asian Paints Ltd." data-ticker="NSE: ASIANPAINT" data-sector="Paints" data-cap="₹2.1T">
+          <div class="si-left"><span class="si-ticker">ASIANPAINT</span></div>
+          <div class="si-info"><div class="si-name">Asian Paints Ltd.</div><div class="si-meta">Paints · Large Cap</div></div>
+          <div class="si-cap">₹2.1T</div>
+        </div>
+        <div class="search-item" data-name="Bajaj Finance Ltd." data-ticker="NSE: BAJFINANCE" data-sector="NBFC" data-cap="₹4.7T">
+          <div class="si-left"><span class="si-ticker">BAJFINANCE</span></div>
+          <div class="si-info"><div class="si-name">Bajaj Finance Ltd.</div><div class="si-meta">NBFC · Large Cap</div></div>
+          <div class="si-cap">₹4.7T</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div class="score-badge">
+      <span class="score-label">Quality Score</span>
+      <span class="score-value" id="qualityScore">82</span>
+      <span class="score-max">/100</span>
+    </div>
+    <div class="header-actions">
+      <button class="hdr-btn" title="Export Report"><i class="fas fa-download"></i></button>
+      <button class="hdr-btn" title="Share"><i class="fas fa-share-nodes"></i></button>
+      <button class="hdr-btn" title="Watchlist"><i class="fas fa-star"></i></button>
+    </div>
+    <div class="user-avatar">IR</div>
+  </div>
+</header>
+
+<!-- COMPANY HERO BAR -->
+<div class="company-hero" id="companyHero">
+  <div class="hero-info">
+    <div class="hero-name" id="heroCompanyName">Infosys Ltd.</div>
+    <div class="hero-meta">
+      <span class="hero-tag green">IT Services</span>
+      <span class="hero-tag blue">Large Cap</span>
+      <span class="hero-tag gray">NSE · BSE Listed</span>
+      <span class="hero-separator">·</span>
+      <span class="hero-cmp">CMP <strong>₹1,847</strong></span>
+      <span class="hero-change up">▲ 2.4%</span>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hs-val">₹6.2T</div><div class="hs-label">Market Cap</div></div>
+    <div class="hero-stat"><div class="hs-val">23.4x</div><div class="hs-label">P/E (TTM)</div></div>
+    <div class="hero-stat"><div class="hs-val">₹153,670 Cr</div><div class="hs-label">Revenue TTM</div></div>
+    <div class="hero-stat"><div class="hs-val">₹26,248 Cr</div><div class="hs-label">PAT TTM</div></div>
+    <div class="hero-stat"><div class="hs-val">Debt-Free</div><div class="hs-label">Balance Sheet</div></div>
+    <div class="hero-stat"><div class="hs-val">A1+</div><div class="hs-label">Credit Rating</div></div>
+  </div>
+</div>
+
+<!-- SECTION NAVIGATION -->
+<nav class="section-nav" id="sectionNav">
+  <div class="section-nav-inner">
+    <button class="snav-btn active" data-section="s1">
+      <i class="fas fa-building"></i>
+      <span>Business & Market</span>
+      <span class="snav-num">1</span>
+    </button>
+    <button class="snav-btn" data-section="s2">
+      <i class="fas fa-user-tie"></i>
+      <span>Promoter & Mgmt</span>
+      <span class="snav-num">2</span>
+    </button>
+    <button class="snav-btn" data-section="s3">
+      <i class="fas fa-chart-line"></i>
+      <span>Financial Quality</span>
+      <span class="snav-num">3</span>
+    </button>
+    <button class="snav-btn" data-section="s4">
+      <i class="fas fa-shield-halved"></i>
+      <span>Governance & Flags</span>
+      <span class="snav-num">4</span>
+    </button>
+    <button class="snav-btn" data-section="s5">
+      <i class="fas fa-magnifying-glass-chart"></i>
+      <span>Ground Checks</span>
+      <span class="snav-num">5</span>
+    </button>
+    <button class="snav-btn" data-section="s6">
+      <i class="fas fa-sliders"></i>
+      <span>Ownership & Valuation</span>
+      <span class="snav-num">6</span>
+    </button>
+  </div>
+</nav>
+
+<!-- MAIN DASHBOARD CONTENT -->
+<main class="dashboard-main">
+
+  <!-- ========== SECTION 1: Business, Market & Competitive Position ========== -->
+  <section class="dash-section active" id="s1">
+    <div class="section-header">
+      <div class="sh-left">
+        <div class="sh-icon" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)"><i class="fas fa-building"></i></div>
+        <div>
+          <h2 class="sh-title">Business, Market &amp; Competitive Position</h2>
+          <p class="sh-sub">Industry landscape, TAM, market share, and competitive benchmarking</p>
+        </div>
+      </div>
+      <div class="sh-right">
+        <span class="last-refreshed"><i class="fas fa-clock"></i> Refreshed: Apr 10, 2025, 09:45 AM</span>
+        <button class="refresh-btn" onclick="refreshSection(this,'s1')"><i class="fas fa-rotate-right"></i> Refresh</button>
+      </div>
+    </div>
+
+    <!-- Row 1: KPI + Industry Overview -->
+    <div class="grid-row cols-4">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#ede9fe;color:#7c3aed"><i class="fas fa-globe"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">Industry</div>
+          <div class="kpi-val" style="font-size:1.1rem">IT Services &amp; Consulting</div>
+          <div class="kpi-sub">Global Technology Sector</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#dbeafe;color:#2563eb"><i class="fas fa-circle-dollar-to-slot"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">Global TAM</div>
+          <div class="kpi-val">$1.8T</div>
+          <div class="kpi-badge up">+12% CAGR Est.</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#dcfce7;color:#16a34a"><i class="fas fa-chart-pie"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">Global Market Share</div>
+          <div class="kpi-val">3.2%</div>
+          <div class="kpi-badge up">▲ 0.3pp YoY</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#fef3c7;color:#d97706"><i class="fas fa-trophy"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">India Rank</div>
+          <div class="kpi-val">#2</div>
+          <div class="kpi-sub">By Revenue (IT Services)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Revenue Mix + Geo Mix -->
+    <div class="grid-row cols-3">
+      <!-- Business Mix Donut -->
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-layer-group"></i> Business / Service Mix</div>
+          <div class="card-controls">
+            <div class="toggle-group">
+              <button class="tgl active" data-chart="bizMix" data-period="FY25">FY25</button>
+              <button class="tgl" data-chart="bizMix" data-period="FY23">FY23</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container" style="height:240px">
+          <canvas id="bizMixChart"></canvas>
+        </div>
+        <div class="chart-legend" id="bizMixLegend"></div>
+      </div>
+
+      <!-- Geography Mix -->
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-earth-americas"></i> Geography Mix</div>
+          <div class="card-controls">
+            <div class="toggle-group">
+              <button class="tgl active" data-chart="geoMix" data-period="FY25">FY25</button>
+              <button class="tgl" data-chart="geoMix" data-period="FY23">FY23</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container" style="height:240px">
+          <canvas id="geoMixChart"></canvas>
+        </div>
+        <div class="chart-legend" id="geoMixLegend"></div>
+      </div>
+
+      <!-- TAM & Market Share Trend -->
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-chart-area"></i> Market Share Trend</div>
+          <div class="card-controls">
+            <div class="toggle-group">
+              <button class="tgl" data-chart="mktShare" data-period="3Y">3Y</button>
+              <button class="tgl active" data-chart="mktShare" data-period="5Y">5Y</button>
+              <button class="tgl" data-chart="mktShare" data-period="10Y">10Y</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container" style="height:240px">
+          <canvas id="mktShareChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Peers Comparison Table -->
+    <div class="grid-row cols-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-flag"></i> Domestic Peers</div>
+          <span class="card-badge">India Listed</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Company</th><th>Revenue</th><th>PAT Margin</th><th>ROCE</th><th>P/E</th><th>Mkt Cap</th></tr>
+            </thead>
+            <tbody>
+              <tr class="highlight-row">
+                <td><span class="company-pill purple">INFY</span> Infosys</td>
+                <td>₹1,53,670 Cr</td><td><span class="badge-pill green">21.4%</span></td><td>34.2%</td><td>23.4x</td><td>₹6.2T</td>
+              </tr>
+              <tr>
+                <td><span class="company-pill blue">TCS</span> TCS</td>
+                <td>₹2,40,893 Cr</td><td><span class="badge-pill green">19.8%</span></td><td>51.8%</td><td>28.1x</td><td>₹13.8T</td>
+              </tr>
+              <tr>
+                <td><span class="company-pill teal">WPRO</span> Wipro</td>
+                <td>₹89,745 Cr</td><td><span class="badge-pill amber">15.3%</span></td><td>18.4%</td><td>18.9x</td><td>₹2.3T</td>
+              </tr>
+              <tr>
+                <td><span class="company-pill orange">HCLT</span> HCL Tech</td>
+                <td>₹1,09,913 Cr</td><td><span class="badge-pill green">17.6%</span></td><td>26.7%</td><td>20.2x</td><td>₹2.9T</td>
+              </tr>
+              <tr>
+                <td><span class="company-pill red">LTIM</span> LTIMindtree</td>
+                <td>₹37,529 Cr</td><td><span class="badge-pill amber">14.9%</span></td><td>24.1%</td><td>27.6x</td><td>₹1.1T</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-earth-europe"></i> Global Peers</div>
+          <span class="card-badge">Global Listed</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Company</th><th>Country</th><th>Revenue (USD)</th><th>PAT Margin</th><th>P/E</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="company-pill dark">ACN</span> Accenture</td><td><span class="flag">🇺🇸</span> USA</td>
+                <td>$64.1B</td><td><span class="badge-pill green">10.8%</span></td><td>27.4x</td>
+              </tr>
+              <tr>
+                <td><span class="company-pill gray">CAP</span> Capgemini</td><td><span class="flag">🇫🇷</span> France</td>
+                <td>$22.5B</td><td><span class="badge-pill amber">8.4%</span></td><td>16.8x</td>
+              </tr>
+              <tr>
+                <td><span class="company-pill blue">IBM</span> IBM GTS</td><td><span class="flag">🇺🇸</span> USA</td>
+                <td>$31.2B</td><td><span class="badge-pill amber">9.1%</span></td><td>22.3x</td>
+              </tr>
+              <tr>
+                <td><span class="company-pill green">CTSH</span> Cognizant</td><td><span class="flag">🇺🇸</span> USA</td>
+                <td>$19.4B</td><td><span class="badge-pill amber">11.2%</span></td><td>14.7x</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insight Callout -->
+    <div class="insight-callout purple">
+      <div class="ic-icon"><i class="fas fa-lightbulb"></i></div>
+      <div class="ic-content">
+        <div class="ic-title">Analyst Insight</div>
+        <div class="ic-text">Infosys commands a 3.2% global IT services market share with improving wallet-share in BFSI and manufacturing verticals. North America remains the primary revenue driver (~58%), while European revenue mix has grown 2pp over 5 years — reducing geographic concentration risk. Margins remain best-in-class among Indian peers at 21.4% PAT, though trailing TCS ROCE by 17pp due to higher cash reserves.</div>
+      </div>
+      <div class="ic-score"><div class="ic-score-val green">Strong</div><div class="ic-score-label">Position</div></div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 2: Promoter, Management & Capital Allocation ========== -->
+  <section class="dash-section" id="s2">
+    <div class="section-header">
+      <div class="sh-left">
+        <div class="sh-icon" style="background:linear-gradient(135deg,#0ea5e9,#06b6d4)"><i class="fas fa-user-tie"></i></div>
+        <div>
+          <h2 class="sh-title">Promoter, Management &amp; Capital Allocation</h2>
+          <p class="sh-sub">Ownership dynamics, remuneration, capital deployment, and governance actions</p>
+        </div>
+      </div>
+      <div class="sh-right">
+        <span class="last-refreshed"><i class="fas fa-clock"></i> Refreshed: Apr 10, 2025, 09:46 AM</span>
+        <button class="refresh-btn" onclick="refreshSection(this,'s2')"><i class="fas fa-rotate-right"></i> Refresh</button>
+      </div>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="grid-row cols-4">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#e0f2fe;color:#0284c7"><i class="fas fa-percent"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">Promoter Holding</div>
+          <div class="kpi-val">14.9%</div>
+          <div class="kpi-badge neutral">▼ 0.3pp in 12M</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#dcfce7;color:#16a34a"><i class="fas fa-lock-open"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">Pledge %</div>
+          <div class="kpi-val">0.0%</div>
+          <div class="kpi-badge up">No Pledge</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#fef3c7;color:#d97706"><i class="fas fa-user-gear"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">CEO Total Pay</div>
+          <div class="kpi-val">₹68.5 Cr</div>
+          <div class="kpi-sub">Salesh Parekh · FY25</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#ede9fe;color:#7c3aed"><i class="fas fa-coins"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">Capital Returned (5Y)</div>
+          <div class="kpi-val">₹72,400 Cr</div>
+          <div class="kpi-sub">Dividends + Buybacks</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Promoter Holding Trend + Capital Allocation Waterfall -->
+    <div class="grid-row cols-3">
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-arrow-trend-down"></i> Promoter Holding Trend</div>
+          <div class="card-controls">
+            <div class="toggle-group">
+              <button class="tgl" data-chart="promoterHolding" data-period="3Y">3Y</button>
+              <button class="tgl active" data-chart="promoterHolding" data-period="5Y">5Y</button>
+              <button class="tgl" data-chart="promoterHolding" data-period="10Y">10Y</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container" style="height:220px">
+          <canvas id="promoterHoldingChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-hand-holding-dollar"></i> Capital Allocation (5Y)</div>
+        </div>
+        <div class="chart-container" style="height:220px">
+          <canvas id="capAllocChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-building-columns"></i> Buyback History</div>
+        </div>
+        <div class="timeline-wrap">
+          <div class="timeline-item">
+            <div class="tl-dot green"></div>
+            <div class="tl-content">
+              <div class="tl-title">Buyback FY24 — ₹9,300 Cr</div>
+              <div class="tl-sub">Tender Offer · ₹1,750/share · Aug 2023</div>
+            </div>
+            <div class="tl-badge green">Completed</div>
+          </div>
+          <div class="timeline-item">
+            <div class="tl-dot green"></div>
+            <div class="tl-content">
+              <div class="tl-title">Buyback FY22 — ₹9,200 Cr</div>
+              <div class="tl-sub">Tender Offer · ₹1,750/share · Jun 2022</div>
+            </div>
+            <div class="tl-badge green">Completed</div>
+          </div>
+          <div class="timeline-item">
+            <div class="tl-dot green"></div>
+            <div class="tl-content">
+              <div class="tl-title">Buyback FY21 — ₹9,200 Cr</div>
+              <div class="tl-sub">Open Market · Mar 2021</div>
+            </div>
+            <div class="tl-badge green">Completed</div>
+          </div>
+          <div class="timeline-item">
+            <div class="tl-dot green"></div>
+            <div class="tl-content">
+              <div class="tl-title">Buyback FY19 — ₹8,260 Cr</div>
+              <div class="tl-sub">Tender Offer · Jun 2019</div>
+            </div>
+            <div class="tl-badge green">Completed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: KMP Remuneration + Guidance vs Delivery -->
+    <div class="grid-row cols-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-people-group"></i> KMP Remuneration</div>
+          <span class="card-badge">FY25 Disclosed</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Name</th><th>Role</th><th>Fixed Pay</th><th>Variable</th><th>ESOPs</th><th>Total</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Salesh Parekh</td><td>CEO &amp; MD</td><td>₹12.4 Cr</td><td>₹18.1 Cr</td><td>₹38.0 Cr</td><td><strong>₹68.5 Cr</strong></td></tr>
+              <tr><td>Jayesh Sanghrajka</td><td>CFO</td><td>₹8.2 Cr</td><td>₹10.4 Cr</td><td>₹21.0 Cr</td><td><strong>₹39.6 Cr</strong></td></tr>
+              <tr><td>A.G.S. Manikantha</td><td>Company Sec.</td><td>₹3.1 Cr</td><td>₹2.4 Cr</td><td>₹4.5 Cr</td><td><strong>₹10.0 Cr</strong></td></tr>
+              <tr><td>Mohit Joshi</td><td>President</td><td>₹9.0 Cr</td><td>₹11.2 Cr</td><td>₹19.0 Cr</td><td><strong>₹39.2 Cr</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-note"><i class="fas fa-info-circle"></i> CEO-to-median employee pay ratio: 287x (FY25)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-bullseye"></i> Guidance vs Delivery Tracker</div>
+          <div class="card-controls">
+            <div class="toggle-group">
+              <button class="tgl active" data-type="revenue-guidance">Revenue</button>
+              <button class="tgl" data-type="margin-guidance">Margin</button>
+            </div>
+          </div>
+        </div>
+        <div class="guidance-table-wrap" id="guidanceContent">
+          <table class="data-table">
+            <thead><tr><th>Quarter</th><th>Guidance (Rev Growth)</th><th>Actual</th><th>Outcome</th></tr></thead>
+            <tbody>
+              <tr><td>Q4 FY25</td><td>4.0–7.0%</td><td>5.4%</td><td><span class="outcome-badge hit">✓ Hit</span></td></tr>
+              <tr><td>Q3 FY25</td><td>3.5–6.5%</td><td>4.2%</td><td><span class="outcome-badge hit">✓ Hit</span></td></tr>
+              <tr><td>Q2 FY25</td><td>3.0–5.0%</td><td>2.9%</td><td><span class="outcome-badge miss">✗ Miss</span></td></tr>
+              <tr><td>Q1 FY25</td><td>1.0–3.0%</td><td>2.1%</td><td><span class="outcome-badge hit">✓ Hit</span></td></tr>
+              <tr><td>Q4 FY24</td><td>1.0–3.5%</td><td>1.4%</td><td><span class="outcome-badge hit">✓ Hit</span></td></tr>
+              <tr><td>Q3 FY24</td><td>1.0–3.5%</td><td>0.8%</td><td><span class="outcome-badge miss">✗ Miss</span></td></tr>
+            </tbody>
+          </table>
+          <div class="guidance-summary">
+            <span class="gs-pill green">4/6 Quarters: On Guidance</span>
+            <span class="gs-pill amber">2/6 Slight Miss</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 4: Acquisition Track + Corporate Actions -->
+    <div class="grid-row cols-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-handshake"></i> Acquisition Track Record</div>
+        </div>
+        <div class="timeline-wrap">
+          <div class="timeline-item">
+            <div class="tl-dot blue"></div>
+            <div class="tl-content">
+              <div class="tl-title">Base Life Sciences — $248M · Jul 2024</div>
+              <div class="tl-sub">Healthcare IT vertical expansion · Integration: On Track</div>
+            </div>
+            <div class="tl-badge blue">Recent</div>
+          </div>
+          <div class="timeline-item">
+            <div class="tl-dot green"></div>
+            <div class="tl-content">
+              <div class="tl-title">Oddity Tech — $100M · Mar 2023</div>
+              <div class="tl-sub">Digital engineering · Integrated successfully</div>
+            </div>
+            <div class="tl-badge green">Integrated</div>
+          </div>
+          <div class="timeline-item">
+            <div class="tl-dot green"></div>
+            <div class="tl-content">
+              <div class="tl-title">Infosys BPM (Subsidiary) — Organic</div>
+              <div class="tl-sub">BPO/BPM services unit · Revenue ₹19,400 Cr</div>
+            </div>
+            <div class="tl-badge green">Core Asset</div>
+          </div>
+          <div class="timeline-item">
+            <div class="tl-dot amber"></div>
+            <div class="tl-content">
+              <div class="tl-title">Panaya — Write-off ₹1,290 Cr · FY20</div>
+              <div class="tl-sub">SaaS acquisition that failed · Full impairment taken</div>
+            </div>
+            <div class="tl-badge amber">Written Off</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-calendar-check"></i> Corporate Actions History</div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Action</th><th>Date</th><th>Details</th><th>Impact</th></tr></thead>
+            <tbody>
+              <tr><td><span class="action-tag dividend">Dividend</span></td><td>Mar 2025</td><td>₹22/share Final</td><td class="up">Positive</td></tr>
+              <tr><td><span class="action-tag buyback">Buyback</span></td><td>Aug 2023</td><td>₹9,300 Cr</td><td class="up">Positive</td></tr>
+              <tr><td><span class="action-tag dividend">Dividend</span></td><td>Mar 2024</td><td>₹20/share Final + ₹8 Special</td><td class="up">Positive</td></tr>
+              <tr><td><span class="action-tag split">Stock Split</span></td><td>Jul 2018</td><td>1:2 Split</td><td class="neutral">Neutral</td></tr>
+              <tr><td><span class="action-tag buyback">Buyback</span></td><td>Jun 2022</td><td>₹9,200 Cr</td><td class="up">Positive</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-callout blue">
+      <div class="ic-icon"><i class="fas fa-lightbulb"></i></div>
+      <div class="ic-content">
+        <div class="ic-title">Capital Allocation Insight</div>
+        <div class="ic-text">Infosys has returned ~₹72,400 Cr over 5 years via dividends + buybacks — one of the highest capital return rates among Indian IT peers. Promoter holding (founders Murthy, Nilekani group) sits at 14.9%, down gradually from 17.2% 5 years ago due to estate planning and partial exits. Zero promoter pledge is a strong positive signal. CEO pay at ₹68.5 Cr is market-competitive with strong performance linkage (~55% variable + ESOP).</div>
+      </div>
+      <div class="ic-score"><div class="ic-score-val green">High</div><div class="ic-score-label">Quality</div></div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 3: Financial Quality & Balance Sheet ========== -->
+  <section class="dash-section" id="s3">
+    <div class="section-header">
+      <div class="sh-left">
+        <div class="sh-icon" style="background:linear-gradient(135deg,#10b981,#059669)"><i class="fas fa-chart-line"></i></div>
+        <div>
+          <h2 class="sh-title">Financial Quality &amp; Balance Sheet Strength</h2>
+          <p class="sh-sub">Revenue, margins, cash flows, working capital, and capital efficiency</p>
+        </div>
+      </div>
+      <div class="sh-right">
+        <span class="last-refreshed"><i class="fas fa-clock"></i> Refreshed: Apr 10, 2025, 09:47 AM</span>
+        <button class="refresh-btn" onclick="refreshSection(this,'s3')"><i class="fas fa-rotate-right"></i> Refresh</button>
+      </div>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="grid-row cols-5">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#dcfce7;color:#16a34a"><i class="fas fa-arrow-trend-up"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">Revenue CAGR (5Y)</div>
+          <div class="kpi-val">13.8%</div>
+          <div class="kpi-badge up">USD 8.2%</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#dbeafe;color:#2563eb"><i class="fas fa-chart-simple"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">EBITDA Margin</div>
+          <div class="kpi-val">26.7%</div>
+          <div class="kpi-badge up">▲ 1.1pp YoY</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#ede9fe;color:#7c3aed"><i class="fas fa-money-bill-wave"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">FCF (TTM)</div>
+          <div class="kpi-val">₹21,040 Cr</div>
+          <div class="kpi-badge up">80% FCF Yield</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#fef3c7;color:#d97706"><i class="fas fa-rotate"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">ROCE</div>
+          <div class="kpi-val">34.2%</div>
+          <div class="kpi-badge up">▲ 2.1pp YoY</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#fce7f3;color:#db2777"><i class="fas fa-shield-check"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">Net Debt</div>
+          <div class="kpi-val">Net Cash</div>
+          <div class="kpi-badge up">₹31,200 Cr Cash</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Revenue + Margin Trend -->
+    <div class="grid-row cols-2">
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-chart-bar"></i> Revenue &amp; PAT Trend</div>
+          <div class="card-controls">
+            <div class="toggle-group">
+              <button class="tgl" data-chart="revPat" data-period="3Y">3Y</button>
+              <button class="tgl active" data-chart="revPat" data-period="5Y">5Y</button>
+              <button class="tgl" data-chart="revPat" data-period="10Y">10Y</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container" style="height:260px">
+          <canvas id="revPatChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-percent"></i> Margin Trend (EBITDA / PAT)</div>
+          <div class="card-controls">
+            <div class="toggle-group">
+              <button class="tgl" data-chart="marginTrend" data-period="3Y">3Y</button>
+              <button class="tgl active" data-chart="marginTrend" data-period="5Y">5Y</button>
+              <button class="tgl" data-chart="marginTrend" data-period="10Y">10Y</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container" style="height:260px">
+          <canvas id="marginTrendChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: CFO vs PAT + FCF + Working Capital -->
+    <div class="grid-row cols-3">
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-money-bills"></i> CFO vs PAT (Cashflow Quality)</div>
+          <div class="card-controls">
+            <div class="toggle-group">
+              <button class="tgl" data-chart="cfoPat" data-period="3Y">3Y</button>
+              <button class="tgl active" data-chart="cfoPat" data-period="5Y">5Y</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container" style="height:200px">
+          <canvas id="cfoPatChart"></canvas>
+        </div>
+        <div class="metric-row">
+          <span class="metric-chip green">CFO/PAT: 1.12x</span>
+          <span class="metric-chip green">FCF Conv.: 80%</span>
+        </div>
+      </div>
+
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-rotate-right"></i> Working Capital Cycle (Days)</div>
+          <div class="card-controls">
+            <div class="toggle-group">
+              <button class="tgl active" data-chart="wc" data-period="5Y">5Y</button>
+              <button class="tgl" data-chart="wc" data-period="10Y">10Y</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container" style="height:200px">
+          <canvas id="wcChart"></canvas>
+        </div>
+        <div class="metric-row">
+          <span class="metric-chip">DSO: 67 days</span>
+          <span class="metric-chip">DPO: 31 days</span>
+          <span class="metric-chip green">NWC: 36 days</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-gauge-high"></i> Return Ratios Trend</div>
+          <div class="card-controls">
+            <div class="toggle-group">
+              <button class="tgl" data-chart="returns" data-period="3Y">3Y</button>
+              <button class="tgl active" data-chart="returns" data-period="5Y">5Y</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container" style="height:200px">
+          <canvas id="returnsChart"></canvas>
+        </div>
+        <div class="metric-row">
+          <span class="metric-chip green">ROCE: 34.2%</span>
+          <span class="metric-chip green">ROE: 31.8%</span>
+          <span class="metric-chip green">ROA: 22.1%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Balance Sheet Snapshot -->
+    <div class="grid-row cols-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-scale-balanced"></i> Balance Sheet Snapshot</div>
+          <span class="card-badge">FY25</span>
+        </div>
+        <div class="bs-grid">
+          <div class="bs-col">
+            <div class="bs-header">Assets</div>
+            <div class="bs-row"><span>Cash &amp; Equiv.</span><strong class="green">₹31,200 Cr</strong></div>
+            <div class="bs-row"><span>Trade Receivables</span><strong>₹28,140 Cr</strong></div>
+            <div class="bs-row"><span>Fixed Assets (Net)</span><strong>₹18,930 Cr</strong></div>
+            <div class="bs-row"><span>Goodwill</span><strong>₹11,420 Cr</strong></div>
+            <div class="bs-row"><span>Other Assets</span><strong>₹9,840 Cr</strong></div>
+            <div class="bs-row total"><span>Total Assets</span><strong>₹99,530 Cr</strong></div>
+          </div>
+          <div class="bs-col">
+            <div class="bs-header">Liabilities &amp; Equity</div>
+            <div class="bs-row"><span>Share Capital</span><strong>₹414 Cr</strong></div>
+            <div class="bs-row"><span>Reserves &amp; Surplus</span><strong class="green">₹72,840 Cr</strong></div>
+            <div class="bs-row"><span>Long Term Debt</span><strong class="green">₹0 Cr</strong></div>
+            <div class="bs-row"><span>Lease Liabilities</span><strong>₹9,320 Cr</strong></div>
+            <div class="bs-row"><span>Other Liabilities</span><strong>₹16,956 Cr</strong></div>
+            <div class="bs-row total"><span>Total Liabilities</span><strong>₹99,530 Cr</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-hammer"></i> Capex &amp; Debt Profile</div>
+        </div>
+        <div class="capex-grid">
+          <div class="capex-item">
+            <div class="capex-label">Capex Intensity</div>
+            <div class="capex-val">2.8% of Revenue</div>
+            <div class="progress-bar"><div class="pb-fill" style="width:28%;background:#6366f1"></div></div>
+          </div>
+          <div class="capex-item">
+            <div class="capex-label">Capex (FY25)</div>
+            <div class="capex-val">₹4,303 Cr</div>
+          </div>
+          <div class="capex-item">
+            <div class="capex-label">Interest Coverage</div>
+            <div class="capex-val green">42.8x</div>
+            <div class="progress-bar"><div class="pb-fill" style="width:85%;background:#10b981"></div></div>
+          </div>
+          <div class="capex-item">
+            <div class="capex-label">Debt/EBITDA</div>
+            <div class="capex-val green">0.0x</div>
+          </div>
+          <div class="capex-item">
+            <div class="capex-label">Contingent Liabilities</div>
+            <div class="capex-val amber">₹9,240 Cr</div>
+            <div class="capex-sub">Tax disputes, legal claims (not yet crystallized)</div>
+          </div>
+          <div class="capex-item">
+            <div class="capex-label">Capitalized Borrowing Cost</div>
+            <div class="capex-val green">₹0 (NIL)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-callout green">
+      <div class="ic-icon"><i class="fas fa-lightbulb"></i></div>
+      <div class="ic-content">
+        <div class="ic-title">Financial Quality Insight</div>
+        <div class="ic-text">Infosys demonstrates exceptional financial quality — zero long-term debt, ₹31,200 Cr net cash, CFO/PAT conversion of 1.12x (consistently above 1.0x for 8 consecutive years), and ROCE expansion to 34.2%. FCF yield at 80% of PAT is best-in-class. Working capital remains stable with 67-day DSO consistent with peer-level norms. Contingent liabilities of ₹9,240 Cr (tax disputes) deserve monitoring but are common in the sector and unlikely to crystallize fully.</div>
+      </div>
+      <div class="ic-score"><div class="ic-score-val green">Excellent</div><div class="ic-score-label">Quality</div></div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 4: Governance, Accounting & Legal Red Flags ========== -->
+  <section class="dash-section" id="s4">
+    <div class="section-header">
+      <div class="sh-left">
+        <div class="sh-icon" style="background:linear-gradient(135deg,#f59e0b,#ef4444)"><i class="fas fa-shield-halved"></i></div>
+        <div>
+          <h2 class="sh-title">Governance, Accounting &amp; Legal Red Flags</h2>
+          <p class="sh-sub">Related parties, auditor changes, accounting aggression, and legal proceedings</p>
+        </div>
+      </div>
+      <div class="sh-right">
+        <span class="last-refreshed"><i class="fas fa-clock"></i> Refreshed: Apr 10, 2025, 09:48 AM</span>
+        <button class="refresh-btn" onclick="refreshSection(this,'s4')"><i class="fas fa-rotate-right"></i> Refresh</button>
+      </div>
+    </div>
+
+    <!-- Flag Scorecard -->
+    <div class="flag-scorecard">
+      <div class="flag-item green">
+        <i class="fas fa-check-circle"></i>
+        <span>Auditor Independence</span>
+        <strong>Clean</strong>
+      </div>
+      <div class="flag-item green">
+        <i class="fas fa-check-circle"></i>
+        <span>RPT Quality</span>
+        <strong>Low Risk</strong>
+      </div>
+      <div class="flag-item amber">
+        <i class="fas fa-triangle-exclamation"></i>
+        <span>Legal Proceedings</span>
+        <strong>Monitor</strong>
+      </div>
+      <div class="flag-item green">
+        <i class="fas fa-check-circle"></i>
+        <span>Accounting Flags</span>
+        <strong>None</strong>
+      </div>
+      <div class="flag-item green">
+        <i class="fas fa-check-circle"></i>
+        <span>Criminal Proceedings</span>
+        <strong>None</strong>
+      </div>
+      <div class="flag-item amber">
+        <i class="fas fa-triangle-exclamation"></i>
+        <span>Tax Disputes</span>
+        <strong>₹9,240 Cr</strong>
+      </div>
+      <div class="flag-item green">
+        <i class="fas fa-check-circle"></i>
+        <span>Disclosure Quality</span>
+        <strong>High</strong>
+      </div>
+      <div class="flag-item green">
+        <i class="fas fa-check-circle"></i>
+        <span>Whistleblower Policy</span>
+        <strong>Active</strong>
+      </div>
+    </div>
+
+    <div class="grid-row cols-2">
+      <!-- Auditor History -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-user-shield"></i> Auditor History</div>
+        </div>
+        <div class="auditor-timeline">
+          <div class="at-item current">
+            <div class="at-badge green">Current</div>
+            <div class="at-info">
+              <div class="at-firm">Deloitte Haskins &amp; Sells LLP</div>
+              <div class="at-period">FY2015 – Present (10 Years)</div>
+              <div class="at-fee">Audit Fee: ₹18.4 Cr (FY25) · Non-audit: ₹2.1 Cr</div>
+            </div>
+          </div>
+          <div class="at-item">
+            <div class="at-badge gray">Previous</div>
+            <div class="at-info">
+              <div class="at-firm">B.S.R &amp; Co. LLP (KPMG Affiliate)</div>
+              <div class="at-period">FY2010 – FY2014</div>
+              <div class="at-fee">Rotated as per Companies Act mandate</div>
+            </div>
+          </div>
+        </div>
+        <div class="audit-note green-bg"><i class="fas fa-check-circle"></i> No Qualified Opinion in last 10 years. Emphasis of Matter: Tax disputes only.</div>
+      </div>
+
+      <!-- Related Party Transactions -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-arrows-left-right-to-line"></i> Related Party Transactions</div>
+          <span class="card-badge">FY25</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Party</th><th>Nature</th><th>Amount</th><th>Arm's Length</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Infosys BPM Ltd.</td><td>IT Services (Subsidiary)</td>
+                <td>₹4,218 Cr</td><td><span class="badge-pill green">Yes</span></td>
+              </tr>
+              <tr>
+                <td>EdgeVerve Systems</td><td>Software licensing</td>
+                <td>₹1,840 Cr</td><td><span class="badge-pill green">Yes</span></td>
+              </tr>
+              <tr>
+                <td>Infosys Foundation</td><td>CSR Donation</td>
+                <td>₹402 Cr</td><td><span class="badge-pill green">Yes</span></td>
+              </tr>
+              <tr>
+                <td>Infosys Science Foundation</td><td>Grant / Endowment</td>
+                <td>₹28 Cr</td><td><span class="badge-pill green">Yes</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-note"><i class="fas fa-info-circle"></i> All RPTs approved by Audit Committee. No RPTs with promoter personal entities.</div>
+      </div>
+    </div>
+
+    <div class="grid-row cols-2">
+      <!-- Legal Proceedings -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-gavel"></i> Legal &amp; Regulatory Proceedings</div>
+        </div>
+        <div class="legal-list">
+          <div class="legal-item amber">
+            <div class="legal-icon"><i class="fas fa-triangle-exclamation"></i></div>
+            <div class="legal-content">
+              <div class="legal-title">Income Tax Disputes — ₹7,120 Cr</div>
+              <div class="legal-desc">Transfer pricing adjustments for FY13–FY21. Under appellate review at ITAT / High Court. Contingency provisioned partially.</div>
+            </div>
+            <span class="legal-status amber">Ongoing</span>
+          </div>
+          <div class="legal-item amber">
+            <div class="legal-icon"><i class="fas fa-triangle-exclamation"></i></div>
+            <div class="legal-content">
+              <div class="legal-title">GST / Service Tax Dispute — ₹2,120 Cr</div>
+              <div class="legal-desc">Input credit and classification disputes. Company contesting; likely to be resolved in 2–3 years.</div>
+            </div>
+            <span class="legal-status amber">Ongoing</span>
+          </div>
+          <div class="legal-item green">
+            <div class="legal-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="legal-content">
+              <div class="legal-title">Whistleblower Allegation 2019 — Resolved</div>
+              <div class="legal-desc">Anonymous whistleblower alleged revenue recognition irregularities. Independent investigation found no material misstatement. Board strengthened audit processes.</div>
+            </div>
+            <span class="legal-status green">Closed</span>
+          </div>
+          <div class="legal-item green">
+            <div class="legal-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="legal-content">
+              <div class="legal-title">No criminal proceedings against promoters or KMP</div>
+              <div class="legal-desc">Verified from MCA filings and Annual Report disclosures FY25.</div>
+            </div>
+            <span class="legal-status green">Clean</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accounting Quality -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-magnifying-glass-dollar"></i> Accounting Quality Checklist</div>
+        </div>
+        <div class="aq-checklist">
+          <div class="aq-item green"><i class="fas fa-check"></i><span>Revenue recognition policy: Conservative (% completion)</span></div>
+          <div class="aq-item green"><i class="fas fa-check"></i><span>No aggressive capitalisation of routine expenses</span></div>
+          <div class="aq-item green"><i class="fas fa-check"></i><span>Goodwill impairment: Tested annually, no impairment since FY20</span></div>
+          <div class="aq-item green"><i class="fas fa-check"></i><span>ESOP expenses: Fully charged to P&amp;L (not capitalised)</span></div>
+          <div class="aq-item amber"><i class="fas fa-minus"></i><span>Deferred revenue: Increased by 18% YoY — monitor for timing shifts</span></div>
+          <div class="aq-item green"><i class="fas fa-check"></i><span>Forex hedges: Fully disclosed, marked to market</span></div>
+          <div class="aq-item green"><i class="fas fa-check"></i><span>Lease accounting: Ind AS 116 compliant, ROUA disclosed</span></div>
+          <div class="aq-item green"><i class="fas fa-check"></i><span>No off-balance-sheet SPVs or structured entities</span></div>
+          <div class="aq-item amber"><i class="fas fa-minus"></i><span>Tax rate: Lower effective rate (21.4%) vs statutory 25.17% — DTAs elevated</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-callout amber">
+      <div class="ic-icon"><i class="fas fa-lightbulb"></i></div>
+      <div class="ic-content">
+        <div class="ic-title">Governance Assessment</div>
+        <div class="ic-text">Governance quality at Infosys is high by Indian listed-company standards. Key positives: Big4 auditor (10-year tenure), zero promoter pledge, no RPTs with promoter-related personal entities, and strong independent board representation. Watchpoints: Tax disputes aggregating ₹9,240 Cr (though common in IT sector, merits tracking), deferred revenue increase, and elevated DTAs. The 2019 whistleblower episode, though fully resolved, serves as a reminder that governance processes need continuous strengthening.</div>
+      </div>
+      <div class="ic-score"><div class="ic-score-val green">Good</div><div class="ic-score-label">Governance</div></div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 5: Ground Checks / Operating Verification ========== -->
+  <section class="dash-section" id="s5">
+    <div class="section-header">
+      <div class="sh-left">
+        <div class="sh-icon" style="background:linear-gradient(135deg,#f97316,#ef4444)"><i class="fas fa-magnifying-glass-chart"></i></div>
+        <div>
+          <h2 class="sh-title">Ground Checks / Operating Verification</h2>
+          <p class="sh-sub">Physical and operational signals to cross-validate reported financials</p>
+        </div>
+      </div>
+      <div class="sh-right">
+        <span class="last-refreshed"><i class="fas fa-clock"></i> Refreshed: Apr 10, 2025, 09:49 AM</span>
+        <button class="refresh-btn" onclick="refreshSection(this,'s5')"><i class="fas fa-rotate-right"></i> Refresh</button>
+      </div>
+    </div>
+
+    <!-- Employee KPIs -->
+    <div class="grid-row cols-4">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#fef3c7;color:#d97706"><i class="fas fa-users"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">Total Headcount</div>
+          <div class="kpi-val">3,17,240</div>
+          <div class="kpi-badge down">▼ 8,200 YoY</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#dcfce7;color:#16a34a"><i class="fas fa-person-running"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">Attrition (LTM)</div>
+          <div class="kpi-val">12.7%</div>
+          <div class="kpi-badge up">▼ from 20.9%</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#dbeafe;color:#2563eb"><i class="fas fa-building-user"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">Development Centers</div>
+          <div class="kpi-val">44 India</div>
+          <div class="kpi-sub">+32 Global</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#ede9fe;color:#7c3aed"><i class="fas fa-chart-column"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">Revenue / Employee</div>
+          <div class="kpi-val">₹48.4L</div>
+          <div class="kpi-badge up">▲ 11.2% YoY</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Employee Count Trend + GST Track -->
+    <div class="grid-row cols-2">
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-users"></i> Headcount Trend vs Revenue Growth</div>
+          <div class="card-controls">
+            <div class="toggle-group">
+              <button class="tgl" data-chart="headcount" data-period="3Y">3Y</button>
+              <button class="tgl active" data-chart="headcount" data-period="5Y">5Y</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container" style="height:250px">
+          <canvas id="headcountChart"></canvas>
+        </div>
+        <div class="card-note amber"><i class="fas fa-triangle-exclamation"></i> FY24-FY25: Headcount declined while revenue grew — productivity-led growth, not hiring-led. Consistent with IT sector-wide trend.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-receipt"></i> GST Compliance &amp; Payments</div>
+        </div>
+        <div class="gst-grid">
+          <div class="gst-stat">
+            <div class="gst-val green">A+</div>
+            <div class="gst-label">GST Compliance Rating</div>
+          </div>
+          <div class="gst-stat">
+            <div class="gst-val">₹18,240 Cr</div>
+            <div class="gst-label">GST Paid (FY25)</div>
+          </div>
+          <div class="gst-stat">
+            <div class="gst-val green">0</div>
+            <div class="gst-label">Notices / Defaults</div>
+          </div>
+          <div class="gst-stat">
+            <div class="gst-val amber">₹2,120 Cr</div>
+            <div class="gst-label">Under Dispute</div>
+          </div>
+        </div>
+        <div class="ground-checks-list">
+          <div class="gc-item green"><i class="fas fa-check-circle"></i> Timely monthly GSTR-1 &amp; GSTR-3B filings (verified 36 months)</div>
+          <div class="gc-item green"><i class="fas fa-check-circle"></i> No record of credit suspension or registration cancellation</div>
+          <div class="gc-item green"><i class="fas fa-check-circle"></i> GST refund claims processed on time (IT exports)</div>
+          <div class="gc-item amber"><i class="fas fa-triangle-exclamation"></i> Service tax dispute (pre-GST) of ₹2,120 Cr still pending appeal</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Growth vs Physical Indicators -->
+    <div class="grid-row cols-3">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-bolt"></i> Reported Growth vs Operating Metrics</div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Indicator</th><th>FY23</th><th>FY24</th><th>FY25</th><th>Consistency</th></tr></thead>
+            <tbody>
+              <tr><td>Revenue Growth %</td><td>21.4%</td><td>4.3%</td><td>5.4%</td><td><span class="badge-pill green">Consistent</span></td></tr>
+              <tr><td>Headcount Change %</td><td>+22.8%</td><td>-6.3%</td><td>-2.5%</td><td><span class="badge-pill amber">Watch</span></td></tr>
+              <tr><td>Office Sq.Ft. Added</td><td>+4.2M</td><td>-1.1M</td><td>+0.8M</td><td><span class="badge-pill green">Aligned</span></td></tr>
+              <tr><td>Power Consumption (MW)</td><td>+18.1%</td><td>+2.4%</td><td>+3.1%</td><td><span class="badge-pill green">Aligned</span></td></tr>
+              <tr><td>Patent Filings</td><td>+182</td><td>+210</td><td>+247</td><td><span class="badge-pill green">Positive</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-city"></i> Campus / Facility Status</div>
+        </div>
+        <div class="facility-list">
+          <div class="facility-item">
+            <div class="fi-name">Bangalore (Electronic City)</div>
+            <div class="fi-detail">HQ · 30,000+ employees · Active</div>
+            <span class="fi-status green">Operational</span>
+          </div>
+          <div class="facility-item">
+            <div class="fi-name">Pune (Hinjewadi)</div>
+            <div class="fi-detail">14,000+ employees · Phase III expansion FY26</div>
+            <span class="fi-status blue">Expanding</span>
+          </div>
+          <div class="facility-item">
+            <div class="fi-name">Hyderabad (Gachibowli)</div>
+            <div class="fi-detail">18,000+ employees · Active</div>
+            <span class="fi-status green">Operational</span>
+          </div>
+          <div class="facility-item">
+            <div class="fi-name">Mysore Training Campus</div>
+            <div class="fi-detail">World's largest corporate university · 10,000 capacity</div>
+            <span class="fi-status amber">Underutilised</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-chart-line-down"></i> Debt Restructuring History</div>
+        </div>
+        <div class="ground-checks-list">
+          <div class="gc-item green"><i class="fas fa-check-circle"></i> No debt restructuring events in company history</div>
+          <div class="gc-item green"><i class="fas fa-check-circle"></i> Zero external borrowings (debt-free since FY08)</div>
+          <div class="gc-item green"><i class="fas fa-check-circle"></i> No NCLT or IBC proceedings</div>
+          <div class="gc-item green"><i class="fas fa-check-circle"></i> No NPA classification by any bank/lender</div>
+          <div class="gc-item green"><i class="fas fa-check-circle"></i> Credit lines: Undrawn ₹3,000 Cr RCF (precautionary only)</div>
+        </div>
+        <div class="card-note green-text"><i class="fas fa-circle-check"></i> One of the cleanest debt profiles in Indian IT sector</div>
+      </div>
+    </div>
+
+    <div class="insight-callout orange">
+      <div class="ic-icon"><i class="fas fa-lightbulb"></i></div>
+      <div class="ic-content">
+        <div class="ic-title">Ground Check Verdict</div>
+        <div class="ic-text">Operating verification strongly supports reported financials. Revenue/employee productivity improvement despite headcount reduction is consistent with AI-led efficiency narrative. Power consumption and office space metrics align with reported activity levels. GST compliance is exemplary with zero defaults. The Mysore training campus operating at below-normal utilisation warrants watching as a leading indicator of hiring plans and demand outlook.</div>
+      </div>
+      <div class="ic-score"><div class="ic-score-val green">Verified</div><div class="ic-score-label">Ground Check</div></div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 6: Ownership, Valuation, Catalysts & Risk ========== -->
+  <section class="dash-section" id="s6">
+    <div class="section-header">
+      <div class="sh-left">
+        <div class="sh-icon" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)"><i class="fas fa-sliders"></i></div>
+        <div>
+          <h2 class="sh-title">Ownership, Valuation, Catalysts &amp; Risk Monitor</h2>
+          <p class="sh-sub">Institutional holdings, valuation band, upcoming triggers, and risk register</p>
+        </div>
+      </div>
+      <div class="sh-right">
+        <span class="last-refreshed"><i class="fas fa-clock"></i> Refreshed: Apr 10, 2025, 09:50 AM</span>
+        <button class="refresh-btn" onclick="refreshSection(this,'s6')"><i class="fas fa-rotate-right"></i> Refresh</button>
+      </div>
+    </div>
+
+    <!-- Ownership KPIs -->
+    <div class="grid-row cols-5">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#fce7f3;color:#db2777"><i class="fas fa-earth-asia"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">FII Holding</div>
+          <div class="kpi-val">33.8%</div>
+          <div class="kpi-badge up">▲ 1.2pp QoQ</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#dbeafe;color:#2563eb"><i class="fas fa-landmark"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">DII Holding</div>
+          <div class="kpi-val">18.4%</div>
+          <div class="kpi-badge down">▼ 0.4pp QoQ</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#dcfce7;color:#16a34a"><i class="fas fa-building-columns"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">MF Holding</div>
+          <div class="kpi-val">12.6%</div>
+          <div class="kpi-badge neutral">Stable</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#fef3c7;color:#d97706"><i class="fas fa-water"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">Free Float</div>
+          <div class="kpi-val">85.1%</div>
+          <div class="kpi-sub">High Liquidity</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#ede9fe;color:#7c3aed"><i class="fas fa-gauge"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-label">Avg Daily Volume</div>
+          <div class="kpi-val">₹840 Cr</div>
+          <div class="kpi-sub">NSE + BSE Combined</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ownership Trend + Valuation Band -->
+    <div class="grid-row cols-2">
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-pie-chart"></i> Ownership Mix Trend</div>
+          <div class="card-controls">
+            <div class="toggle-group">
+              <button class="tgl" data-chart="ownershipTrend" data-period="3Y">3Y</button>
+              <button class="tgl active" data-chart="ownershipTrend" data-period="5Y">5Y</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container" style="height:260px">
+          <canvas id="ownershipTrendChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-chart-area"></i> Historical P/E Valuation Band</div>
+          <div class="card-controls">
+            <div class="toggle-group">
+              <button class="tgl" data-chart="valBand" data-period="3Y">3Y</button>
+              <button class="tgl active" data-chart="valBand" data-period="5Y">5Y</button>
+              <button class="tgl" data-chart="valBand" data-period="10Y">10Y</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container" style="height:260px">
+          <canvas id="valBandChart"></canvas>
+        </div>
+        <div class="val-band-legend">
+          <span class="vbl-item" style="--c:#ef444444;--bc:#ef4444">Premium (30x+)</span>
+          <span class="vbl-item" style="--c:#f59e0b44;--bc:#f59e0b">Fair (20–30x)</span>
+          <span class="vbl-item" style="--c:#22c55e44;--bc:#22c55e">Value (&lt;20x)</span>
+          <span class="vbl-item" style="--c:#6366f1;--bc:#6366f1">CMP P/E</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Peer Valuation + Catalysts + Risk -->
+    <div class="grid-row cols-3">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-scale-unbalanced"></i> Relative Valuation vs Peers</div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Company</th><th>P/E</th><th>EV/EBITDA</th><th>P/B</th><th>Div Yield</th></tr></thead>
+            <tbody>
+              <tr class="highlight-row">
+                <td><strong>INFY</strong></td><td>23.4x</td><td>16.2x</td><td>7.4x</td><td>2.8%</td>
+              </tr>
+              <tr><td>TCS</td><td>28.1x</td><td>20.4x</td><td>12.8x</td><td>1.9%</td></tr>
+              <tr><td>HCL Tech</td><td>20.2x</td><td>14.1x</td><td>5.6x</td><td>3.4%</td></tr>
+              <tr><td>Wipro</td><td>18.9x</td><td>12.4x</td><td>3.2x</td><td>1.8%</td></tr>
+              <tr><td>LTIMindtree</td><td>27.6x</td><td>18.9x</td><td>6.2x</td><td>1.2%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="valuation-verdict">
+          <div class="vv-item">
+            <div class="vv-label">vs TCS Premium</div>
+            <div class="vv-val green">-17% Discount</div>
+          </div>
+          <div class="vv-item">
+            <div class="vv-label">5Y Avg P/E</div>
+            <div class="vv-val">24.8x</div>
+          </div>
+          <div class="vv-item">
+            <div class="vv-label">CMP vs 5Y Avg</div>
+            <div class="vv-val amber">-5.6% Below</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-rocket"></i> Upcoming Catalysts</div>
+        </div>
+        <div class="catalyst-list">
+          <div class="catalyst-item high">
+            <div class="cat-date">Apr 17, 2025</div>
+            <div class="cat-content">
+              <div class="cat-title">Q4 FY25 Earnings + FY26 Guidance</div>
+              <div class="cat-desc">High-impact: guidance tone will drive stock 5–12%</div>
+            </div>
+            <div class="cat-impact high">High</div>
+          </div>
+          <div class="catalyst-item medium">
+            <div class="cat-date">May 2025</div>
+            <div class="cat-content">
+              <div class="cat-title">Annual General Meeting</div>
+              <div class="cat-desc">Final dividend declaration expected ₹22–24/share</div>
+            </div>
+            <div class="cat-impact medium">Medium</div>
+          </div>
+          <div class="catalyst-item high">
+            <div class="cat-date">Jun 2025</div>
+            <div class="cat-content">
+              <div class="cat-title">GenAI Deal Pipeline Disclosure</div>
+              <div class="cat-desc">Analyst day: Cobalt AI platform milestones expected</div>
+            </div>
+            <div class="cat-impact high">High</div>
+          </div>
+          <div class="catalyst-item low">
+            <div class="cat-date">Q3 FY26</div>
+            <div class="cat-content">
+              <div class="cat-title">Potential Buyback Announcement</div>
+              <div class="cat-desc">Historical pattern suggests buyback cycle due</div>
+            </div>
+            <div class="cat-impact low">Speculative</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-triangle-exclamation"></i> Risk Register</div>
+        </div>
+        <div class="risk-list">
+          <div class="risk-item">
+            <div class="risk-header">
+              <span class="risk-name">US H-1B Visa Policy Tightening</span>
+              <span class="risk-level high">High</span>
+            </div>
+            <div class="risk-bar-wrap">
+              <div class="risk-bar" style="--w:75%;--c:#ef4444"></div>
+            </div>
+            <div class="risk-desc">~60% of US revenue dependent on onsite delivery. Cost could increase ₹2,000–4,000 Cr annually.</div>
+          </div>
+          <div class="risk-item">
+            <div class="risk-header">
+              <span class="risk-name">USD/INR Appreciation Risk</span>
+              <span class="risk-level medium">Medium</span>
+            </div>
+            <div class="risk-bar-wrap">
+              <div class="risk-bar" style="--w:55%;--c:#f59e0b"></div>
+            </div>
+            <div class="risk-desc">~65% revenue in USD. Every 1% INR appreciation = ~60bps margin impact.</div>
+          </div>
+          <div class="risk-item">
+            <div class="risk-header">
+              <span class="risk-name">AI Disruption / Displacement</span>
+              <span class="risk-level medium">Medium</span>
+            </div>
+            <div class="risk-bar-wrap">
+              <div class="risk-bar" style="--w:50%;--c:#f59e0b"></div>
+            </div>
+            <div class="risk-desc">Generative AI may reduce per-unit billing. Revenue model shift from T&amp;M to outcome-based required.</div>
+          </div>
+          <div class="risk-item">
+            <div class="risk-header">
+              <span class="risk-name">Key Client Concentration</span>
+              <span class="risk-level low">Low</span>
+            </div>
+            <div class="risk-bar-wrap">
+              <div class="risk-bar" style="--w:30%;--c:#22c55e"></div>
+            </div>
+            <div class="risk-desc">Top 10 clients = 32% revenue. No single client &gt;5%. Well diversified.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-callout pink">
+      <div class="ic-icon"><i class="fas fa-lightbulb"></i></div>
+      <div class="ic-content">
+        <div class="ic-title">Valuation &amp; Positioning Insight</div>
+        <div class="ic-text">Infosys trades at 23.4x P/E — a ~5.6% discount to its 5-year average of 24.8x and a ~17% discount to TCS — which may reflect the market pricing in slower-than-TCS growth rather than a structural de-rating. FII interest has been rising (+1.2pp QoQ), while DII selling may reflect portfolio rebalancing. Q4 FY25 earnings (Apr 17) and FY26 guidance will be the primary near-term catalyst. Key risk is H-1B visa tightening under US policy changes, which could meaningfully affect delivery costs.</div>
+      </div>
+      <div class="ic-score"><div class="ic-score-val amber">Fair Value</div><div class="ic-score-label">Valuation</div></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- SCROLL TO TOP -->
+<button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<script src="js/dashboard.js"></script>
+</body>
+</html>
