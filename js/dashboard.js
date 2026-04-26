@@ -24,159 +24,11 @@ const MOCK_DATA = {
   },
 
   // ---- SECTION 1 CHARTS ----
-  // Business / Service Mix is keyed by company ticker so the donut updates
-  // live whenever the user picks a different company from the search.
-  bizMix: {
-    INFY: {
-      FY25: {
-        labels: ['Financial Services', 'Retail & CPG', 'Manufacturing', 'Energy & Utilities', 'Hi-Tech', 'Life Sciences', 'Others'],
-        data: [31.2, 15.4, 14.8, 12.1, 11.3, 8.6, 6.6],
-        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899','#14b8a6','#94a3b8']
-      },
-      FY23: {
-        labels: ['Financial Services', 'Retail & CPG', 'Manufacturing', 'Energy & Utilities', 'Hi-Tech', 'Life Sciences', 'Others'],
-        data: [32.8, 15.1, 12.4, 11.8, 12.1, 7.2, 8.6],
-        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899','#14b8a6','#94a3b8']
-      }
-    },
-    TCS: {
-      FY25: {
-        labels: ['BFSI', 'Retail & CPG', 'Manufacturing', 'Communications & Media', 'Technology & Services', 'Life Sciences & Healthcare', 'Others'],
-        data: [31.6, 15.8, 10.2, 16.4, 8.9, 11.0, 6.1],
-        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899','#14b8a6','#94a3b8']
-      },
-      FY23: {
-        labels: ['BFSI', 'Retail & CPG', 'Manufacturing', 'Communications & Media', 'Technology & Services', 'Life Sciences & Healthcare', 'Others'],
-        data: [31.5, 16.5, 9.6, 17.7, 9.0, 10.6, 5.1],
-        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899','#14b8a6','#94a3b8']
-      }
-    },
-    HDFCBANK: {
-      FY25: {
-        labels: ['Retail Banking', 'Wholesale Banking', 'Treasury', 'Other Banking Operations', 'Insurance & Subsidiaries'],
-        data: [54.6, 26.8, 9.2, 5.4, 4.0],
-        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899']
-      },
-      FY23: {
-        labels: ['Retail Banking', 'Wholesale Banking', 'Treasury', 'Other Banking Operations', 'Insurance & Subsidiaries'],
-        data: [51.2, 28.4, 10.6, 6.3, 3.5],
-        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899']
-      }
-    },
-    RELIANCE: {
-      FY25: {
-        labels: ['Oil-to-Chemicals (O2C)', 'Retail', 'Digital Services (Jio)', 'Oil & Gas (E&P)', 'Others'],
-        data: [56.3, 24.1, 12.8, 1.6, 5.2],
-        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#94a3b8']
-      },
-      FY23: {
-        labels: ['Oil-to-Chemicals (O2C)', 'Retail', 'Digital Services (Jio)', 'Oil & Gas (E&P)', 'Others'],
-        data: [62.4, 19.8, 11.5, 1.9, 4.4],
-        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#94a3b8']
-      }
-    },
-    ASIANPAINT: {
-      FY25: {
-        labels: ['Decorative — India', 'Industrial Coatings', 'Home Improvement (Bath & Kitchen)', 'International (Asia, MEA, SA)', 'Others'],
-        data: [72.8, 8.4, 4.6, 12.3, 1.9],
-        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#94a3b8']
-      },
-      FY23: {
-        labels: ['Decorative — India', 'Industrial Coatings', 'Home Improvement (Bath & Kitchen)', 'International (Asia, MEA, SA)', 'Others'],
-        data: [74.5, 7.6, 3.9, 12.2, 1.8],
-        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#94a3b8']
-      }
-    },
-    BAJFINANCE: {
-      FY25: {
-        labels: ['Consumer B2C (Personal & Auto)', 'Consumer B2B (Sales Finance)', 'SME Lending', 'Commercial Lending', 'Rural Finance', 'Mortgages'],
-        data: [27.4, 18.6, 14.8, 11.2, 9.5, 18.5],
-        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899','#14b8a6']
-      },
-      FY23: {
-        labels: ['Consumer B2C (Personal & Auto)', 'Consumer B2B (Sales Finance)', 'SME Lending', 'Commercial Lending', 'Rural Finance', 'Mortgages'],
-        data: [25.8, 21.2, 13.6, 10.4, 8.7, 20.3],
-        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899','#14b8a6']
-      }
-    }
-  },
-
-  // Geography Mix is also keyed by company so the donut updates live on
-  // company select.
-  geoMix: {
-    INFY: {
-      FY25: {
-        labels: ['North America', 'Europe', 'India', 'Rest of World'],
-        data: [58.1, 25.4, 9.2, 7.3],
-        colors: ['#6366f1','#3b82f6','#10b981','#f59e0b']
-      },
-      FY23: {
-        labels: ['North America', 'Europe', 'India', 'Rest of World'],
-        data: [60.2, 23.1, 9.8, 6.9],
-        colors: ['#6366f1','#3b82f6','#10b981','#f59e0b']
-      }
-    },
-    TCS: {
-      FY25: {
-        labels: ['North America', 'Europe (UK + Cont.)', 'India', 'Rest of World'],
-        data: [51.4, 31.2, 5.6, 11.8],
-        colors: ['#6366f1','#3b82f6','#10b981','#f59e0b']
-      },
-      FY23: {
-        labels: ['North America', 'Europe (UK + Cont.)', 'India', 'Rest of World'],
-        data: [52.6, 30.0, 5.4, 12.0],
-        colors: ['#6366f1','#3b82f6','#10b981','#f59e0b']
-      }
-    },
-    HDFCBANK: {
-      FY25: {
-        labels: ['India', 'GIFT City / IBU', 'International Branches (Bahrain, HK, Dubai)', 'Representative Offices'],
-        data: [96.4, 1.8, 1.6, 0.2],
-        colors: ['#10b981','#6366f1','#3b82f6','#f59e0b']
-      },
-      FY23: {
-        labels: ['India', 'GIFT City / IBU', 'International Branches (Bahrain, HK, Dubai)', 'Representative Offices'],
-        data: [95.6, 1.5, 2.6, 0.3],
-        colors: ['#10b981','#6366f1','#3b82f6','#f59e0b']
-      }
-    },
-    RELIANCE: {
-      FY25: {
-        labels: ['India (Domestic)', 'Exports — Asia', 'Exports — Americas', 'Exports — Europe', 'Exports — Africa & RoW'],
-        data: [68.4, 14.2, 7.6, 6.8, 3.0],
-        colors: ['#10b981','#6366f1','#3b82f6','#f59e0b','#ec4899']
-      },
-      FY23: {
-        labels: ['India (Domestic)', 'Exports — Asia', 'Exports — Americas', 'Exports — Europe', 'Exports — Africa & RoW'],
-        data: [64.8, 15.6, 8.4, 7.9, 3.3],
-        colors: ['#10b981','#6366f1','#3b82f6','#f59e0b','#ec4899']
-      }
-    },
-    ASIANPAINT: {
-      FY25: {
-        labels: ['India', 'Asia (Bangladesh, Nepal, Sri Lanka, Indonesia)', 'Middle East', 'Africa', 'South Asia & Others'],
-        data: [86.2, 6.4, 3.1, 2.9, 1.4],
-        colors: ['#10b981','#6366f1','#3b82f6','#f59e0b','#ec4899']
-      },
-      FY23: {
-        labels: ['India', 'Asia (Bangladesh, Nepal, Sri Lanka, Indonesia)', 'Middle East', 'Africa', 'South Asia & Others'],
-        data: [87.0, 6.0, 2.8, 2.9, 1.3],
-        colors: ['#10b981','#6366f1','#3b82f6','#f59e0b','#ec4899']
-      }
-    },
-    BAJFINANCE: {
-      FY25: {
-        labels: ['India — Urban', 'India — Rural', 'India — Metro/Tier-1'],
-        data: [48.6, 18.4, 33.0],
-        colors: ['#6366f1','#10b981','#3b82f6']
-      },
-      FY23: {
-        labels: ['India — Urban', 'India — Rural', 'India — Metro/Tier-1'],
-        data: [47.2, 17.1, 35.7],
-        colors: ['#6366f1','#10b981','#3b82f6']
-      }
-    }
-  },
+  // bizMix and geoMix are loaded from data/companies.json at startup
+  // (see loadCompanyData below). Until the fetch resolves these are empty;
+  // initBizMixChart/initGeoMixChart fall back to safe placeholders.
+  bizMix: {},
+  geoMix: {},
 
   mktShare: {
     '3Y': {
@@ -405,7 +257,9 @@ function initBizMixChart(period = activeBizMixPeriod, companyKey = activeCompany
   activeBizMixPeriod = period;
   destroyChart('bizMixChart');
   const company = MOCK_DATA.bizMix[companyKey] || MOCK_DATA.bizMix.INFY;
+  if (!company) return; // data/companies.json not loaded yet — loader will re-init
   const d = company[period] || company.FY25;
+  if (!d) return;
   charts['bizMixChart'] = new Chart(getCtx('bizMixChart'), {
     type: 'doughnut',
     data: {
@@ -434,7 +288,9 @@ function initGeoMixChart(period = activeGeoMixPeriod, companyKey = activeCompany
   activeGeoMixPeriod = period;
   destroyChart('geoMixChart');
   const company = MOCK_DATA.geoMix[companyKey] || MOCK_DATA.geoMix.INFY;
+  if (!company) return; // data/companies.json not loaded yet — loader will re-init
   const d = company[period] || company.FY25;
+  if (!d) return;
   charts['geoMixChart'] = new Chart(getCtx('geoMixChart'), {
     type: 'doughnut',
     data: {
@@ -1467,13 +1323,43 @@ function animateProgressBars() {
 }
 
 // ============================================================
+// COMPANY DATA LOADER
+// ============================================================
+// Fetches data/companies.json (produced by scripts/fetch-company-data.mjs)
+// and merges bizMix + geoMix into MOCK_DATA, then re-renders the donuts.
+// On failure (e.g. opened via file:// without a server) the donuts will
+// stay empty and a console warning is logged.
+async function loadCompanyData() {
+  try {
+    const res = await fetch('data/companies.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (json.bizMix) MOCK_DATA.bizMix = json.bizMix;
+    if (json.geoMix) MOCK_DATA.geoMix = json.geoMix;
+
+    // Re-render the company-aware charts now that data is available
+    initBizMixChart(activeBizMixPeriod, activeCompanyKey);
+    initGeoMixChart(activeGeoMixPeriod, activeCompanyKey);
+
+    // Surface seed-vs-fetched status in the console so it's easy to verify
+    const status = json._meta?.status || 'unknown';
+    const updated = json._meta?.lastUpdated || '?';
+    console.log(`[ForensIQ] companies.json loaded (status=${status}, lastUpdated=${updated})`);
+  } catch (err) {
+    console.warn('[ForensIQ] Could not load data/companies.json — bizMix and geoMix charts will be empty.', err);
+    console.warn('[ForensIQ] Tip: serve the dashboard over http (e.g. `python3 -m http.server`) instead of opening index.html via file://.');
+  }
+}
+
+// ============================================================
 // MAIN INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-  // Init all section 1 charts (active by default)
-  initBizMixChart('FY25');
-  initGeoMixChart('FY25');
+  // Init non-company-specific charts immediately
   initMktShareChart('5Y');
+
+  // Company-aware charts (bizMix, geoMix) wait for the JSON load
+  loadCompanyData();
 
   // Init interaction handlers
   initSectionNav();

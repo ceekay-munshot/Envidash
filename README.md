@@ -37,10 +37,53 @@ A complete, professional investor research dashboard with 6 forensic analysis se
 
 ## File Structure
 ```
-index.html          — Main dashboard HTML (all 6 sections)
-css/style.css       — Full dashboard stylesheet (1500+ lines)
-js/dashboard.js     — Charts, interactivity, search, toggles
-README.md           — This file
+index.html                      — Main dashboard HTML (all 6 sections)
+css/style.css                   — Full dashboard stylesheet (1500+ lines)
+js/dashboard.js                 — Charts, interactivity, search, toggles
+data/companies.json             — Per-company bizMix + geoMix data (loaded at runtime)
+scripts/fetch-company-data.mjs  — Refresher: pulls real data into companies.json
+README.md                       — This file
+```
+
+## Data flow — Business / Service Mix & Geography Mix
+
+The two donut charts in Section 1 are now driven by `data/companies.json`,
+not hardcoded JavaScript. This is so the figures can be refreshed without
+touching code.
+
+`_meta.status` in the JSON tells you what you're looking at:
+- `"seed"`     — approximate placeholder values, NOT verified
+- `"partial"`  — refresh ran but some companies failed
+- `"live"`     — every company refreshed successfully on the date in
+                 `_meta.lastUpdated`
+
+### Refreshing the data
+
+Requires Node 18+ (built-in `fetch`). Zero dependencies.
+
+```bash
+node scripts/fetch-company-data.mjs
+```
+
+The script scrapes Screener.in's consolidated page for each company and
+writes the segment-revenue and geographic-revenue tables back into
+`data/companies.json`. If Screener returns 403, supply your browser
+cookies:
+
+```bash
+COOKIE='csrftoken=...; sessionid=...' node scripts/fetch-company-data.mjs
+```
+
+After it runs successfully, commit the updated `data/companies.json`.
+
+### Serving the dashboard
+
+`fetch('data/companies.json')` does not work over the `file://` protocol.
+Serve the folder over HTTP:
+
+```bash
+python3 -m http.server 8000
+# then open http://localhost:8000
 ```
 
 ## Design Style
@@ -50,14 +93,18 @@ README.md           — This file
 - Clean Inter + JetBrains Mono typography
 - Responsive (works on tablet/mobile with adapted layouts)
 
-## Mock Company: Infosys Ltd. (Default)
-All data is realistic mock data based on Infosys's publicly known financials and profile. No real data is fetched or wired.
+## Default Company: Infosys Ltd.
+Most data outside of `bizMix` / `geoMix` is still realistic mock data based on
+Infosys's publicly known financials and profile.
+
+## Real-data status
+- **Wired** to refreshable JSON: Business / Service Mix, Geography Mix
+  (see "Data flow" above).
+- **Still mocked**: every other chart and table (financials, ownership,
+  market share trend, peers, valuation bands, etc.).
 
 ## Not Implemented (UI Only)
-- Real data API integration
 - Backend / server
 - Authentication
 - PDF export
 - Real-time price feeds
-"# Envidash" 
-"# Envidash" 
