@@ -24,16 +24,80 @@ const MOCK_DATA = {
   },
 
   // ---- SECTION 1 CHARTS ----
+  // Business / Service Mix is keyed by company ticker so the donut updates
+  // live whenever the user picks a different company from the search.
   bizMix: {
-    FY25: {
-      labels: ['Financial Services', 'Retail & CPG', 'Manufacturing', 'Energy & Utilities', 'Hi-Tech', 'Life Sciences', 'Others'],
-      data: [31.2, 15.4, 14.8, 12.1, 11.3, 8.6, 6.6],
-      colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899','#14b8a6','#94a3b8']
+    INFY: {
+      FY25: {
+        labels: ['Financial Services', 'Retail & CPG', 'Manufacturing', 'Energy & Utilities', 'Hi-Tech', 'Life Sciences', 'Others'],
+        data: [31.2, 15.4, 14.8, 12.1, 11.3, 8.6, 6.6],
+        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899','#14b8a6','#94a3b8']
+      },
+      FY23: {
+        labels: ['Financial Services', 'Retail & CPG', 'Manufacturing', 'Energy & Utilities', 'Hi-Tech', 'Life Sciences', 'Others'],
+        data: [32.8, 15.1, 12.4, 11.8, 12.1, 7.2, 8.6],
+        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899','#14b8a6','#94a3b8']
+      }
     },
-    FY23: {
-      labels: ['Financial Services', 'Retail & CPG', 'Manufacturing', 'Energy & Utilities', 'Hi-Tech', 'Life Sciences', 'Others'],
-      data: [32.8, 15.1, 12.4, 11.8, 12.1, 7.2, 8.6],
-      colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899','#14b8a6','#94a3b8']
+    TCS: {
+      FY25: {
+        labels: ['BFSI', 'Retail & CPG', 'Manufacturing', 'Communications & Media', 'Technology & Services', 'Life Sciences & Healthcare', 'Others'],
+        data: [31.6, 15.8, 10.2, 16.4, 8.9, 11.0, 6.1],
+        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899','#14b8a6','#94a3b8']
+      },
+      FY23: {
+        labels: ['BFSI', 'Retail & CPG', 'Manufacturing', 'Communications & Media', 'Technology & Services', 'Life Sciences & Healthcare', 'Others'],
+        data: [31.5, 16.5, 9.6, 17.7, 9.0, 10.6, 5.1],
+        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899','#14b8a6','#94a3b8']
+      }
+    },
+    HDFCBANK: {
+      FY25: {
+        labels: ['Retail Banking', 'Wholesale Banking', 'Treasury', 'Other Banking Operations', 'Insurance & Subsidiaries'],
+        data: [54.6, 26.8, 9.2, 5.4, 4.0],
+        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899']
+      },
+      FY23: {
+        labels: ['Retail Banking', 'Wholesale Banking', 'Treasury', 'Other Banking Operations', 'Insurance & Subsidiaries'],
+        data: [51.2, 28.4, 10.6, 6.3, 3.5],
+        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899']
+      }
+    },
+    RELIANCE: {
+      FY25: {
+        labels: ['Oil-to-Chemicals (O2C)', 'Retail', 'Digital Services (Jio)', 'Oil & Gas (E&P)', 'Others'],
+        data: [56.3, 24.1, 12.8, 1.6, 5.2],
+        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#94a3b8']
+      },
+      FY23: {
+        labels: ['Oil-to-Chemicals (O2C)', 'Retail', 'Digital Services (Jio)', 'Oil & Gas (E&P)', 'Others'],
+        data: [62.4, 19.8, 11.5, 1.9, 4.4],
+        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#94a3b8']
+      }
+    },
+    ASIANPAINT: {
+      FY25: {
+        labels: ['Decorative — India', 'Industrial Coatings', 'Home Improvement (Bath & Kitchen)', 'International (Asia, MEA, SA)', 'Others'],
+        data: [72.8, 8.4, 4.6, 12.3, 1.9],
+        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#94a3b8']
+      },
+      FY23: {
+        labels: ['Decorative — India', 'Industrial Coatings', 'Home Improvement (Bath & Kitchen)', 'International (Asia, MEA, SA)', 'Others'],
+        data: [74.5, 7.6, 3.9, 12.2, 1.8],
+        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#94a3b8']
+      }
+    },
+    BAJFINANCE: {
+      FY25: {
+        labels: ['Consumer B2C (Personal & Auto)', 'Consumer B2B (Sales Finance)', 'SME Lending', 'Commercial Lending', 'Rural Finance', 'Mortgages'],
+        data: [27.4, 18.6, 14.8, 11.2, 9.5, 18.5],
+        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899','#14b8a6']
+      },
+      FY23: {
+        labels: ['Consumer B2C (Personal & Auto)', 'Consumer B2B (Sales Finance)', 'SME Lending', 'Commercial Lending', 'Rural Finance', 'Mortgages'],
+        data: [25.8, 21.2, 13.6, 10.4, 8.7, 20.3],
+        colors: ['#6366f1','#10b981','#f59e0b','#3b82f6','#ec4899','#14b8a6']
+      }
     }
   },
 
@@ -260,9 +324,23 @@ function getCtx(id) {
 // ============================================================
 // SECTION 1 CHARTS
 // ============================================================
-function initBizMixChart(period = 'FY25') {
+// Currently-selected company (drives company-aware charts like Business / Service Mix).
+// Updated by initCompanySearch when the user picks a company from the dropdown.
+let activeCompanyKey = 'INFY';
+let activeBizMixPeriod = 'FY25';
+
+function getCompanyKeyFromTicker(ticker) {
+  // ticker looks like "NSE: INFY" -> return "INFY"
+  if (!ticker) return null;
+  const m = ticker.match(/[:\s]([A-Z0-9]+)\s*$/);
+  return m ? m[1] : ticker.trim().toUpperCase();
+}
+
+function initBizMixChart(period = activeBizMixPeriod, companyKey = activeCompanyKey) {
+  activeBizMixPeriod = period;
   destroyChart('bizMixChart');
-  const d = MOCK_DATA.bizMix[period];
+  const company = MOCK_DATA.bizMix[companyKey] || MOCK_DATA.bizMix.INFY;
+  const d = company[period] || company.FY25;
   charts['bizMixChart'] = new Chart(getCtx('bizMixChart'), {
     type: 'doughnut',
     data: {
@@ -1044,7 +1122,7 @@ function initToggleGroups() {
 
     // Chart-specific update handlers
     switch(chartId) {
-      case 'bizMix': initBizMixChart(period); break;
+      case 'bizMix': initBizMixChart(period, activeCompanyKey); break;
       case 'geoMix': initGeoMixChart(period); break;
       case 'mktShare': initMktShareChart(period); break;
       case 'promoterHolding': initPromoterHoldingChart(period); break;
@@ -1100,6 +1178,10 @@ function initCompanySearch() {
       activeNameEl.textContent = name;
       document.querySelector('.tag-exchange').textContent = ticker;
       heroNameEl.textContent = name;
+
+      // Re-render company-aware charts with the newly selected company
+      activeCompanyKey = getCompanyKeyFromTicker(ticker) || activeCompanyKey;
+      initBizMixChart(activeBizMixPeriod, activeCompanyKey);
 
       // Animate quality score change
       animateScore(qualityScoreEl, parseInt(qualityScoreEl.textContent), Math.floor(Math.random() * 20) + 70);
