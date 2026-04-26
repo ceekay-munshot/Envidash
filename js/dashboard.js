@@ -101,16 +101,80 @@ const MOCK_DATA = {
     }
   },
 
+  // Geography Mix is also keyed by company so the donut updates live on
+  // company select.
   geoMix: {
-    FY25: {
-      labels: ['North America', 'Europe', 'India', 'Rest of World'],
-      data: [58.1, 25.4, 9.2, 7.3],
-      colors: ['#6366f1','#3b82f6','#10b981','#f59e0b']
+    INFY: {
+      FY25: {
+        labels: ['North America', 'Europe', 'India', 'Rest of World'],
+        data: [58.1, 25.4, 9.2, 7.3],
+        colors: ['#6366f1','#3b82f6','#10b981','#f59e0b']
+      },
+      FY23: {
+        labels: ['North America', 'Europe', 'India', 'Rest of World'],
+        data: [60.2, 23.1, 9.8, 6.9],
+        colors: ['#6366f1','#3b82f6','#10b981','#f59e0b']
+      }
     },
-    FY23: {
-      labels: ['North America', 'Europe', 'India', 'Rest of World'],
-      data: [60.2, 23.1, 9.8, 6.9],
-      colors: ['#6366f1','#3b82f6','#10b981','#f59e0b']
+    TCS: {
+      FY25: {
+        labels: ['North America', 'Europe (UK + Cont.)', 'India', 'Rest of World'],
+        data: [51.4, 31.2, 5.6, 11.8],
+        colors: ['#6366f1','#3b82f6','#10b981','#f59e0b']
+      },
+      FY23: {
+        labels: ['North America', 'Europe (UK + Cont.)', 'India', 'Rest of World'],
+        data: [52.6, 30.0, 5.4, 12.0],
+        colors: ['#6366f1','#3b82f6','#10b981','#f59e0b']
+      }
+    },
+    HDFCBANK: {
+      FY25: {
+        labels: ['India', 'GIFT City / IBU', 'International Branches (Bahrain, HK, Dubai)', 'Representative Offices'],
+        data: [96.4, 1.8, 1.6, 0.2],
+        colors: ['#10b981','#6366f1','#3b82f6','#f59e0b']
+      },
+      FY23: {
+        labels: ['India', 'GIFT City / IBU', 'International Branches (Bahrain, HK, Dubai)', 'Representative Offices'],
+        data: [95.6, 1.5, 2.6, 0.3],
+        colors: ['#10b981','#6366f1','#3b82f6','#f59e0b']
+      }
+    },
+    RELIANCE: {
+      FY25: {
+        labels: ['India (Domestic)', 'Exports — Asia', 'Exports — Americas', 'Exports — Europe', 'Exports — Africa & RoW'],
+        data: [68.4, 14.2, 7.6, 6.8, 3.0],
+        colors: ['#10b981','#6366f1','#3b82f6','#f59e0b','#ec4899']
+      },
+      FY23: {
+        labels: ['India (Domestic)', 'Exports — Asia', 'Exports — Americas', 'Exports — Europe', 'Exports — Africa & RoW'],
+        data: [64.8, 15.6, 8.4, 7.9, 3.3],
+        colors: ['#10b981','#6366f1','#3b82f6','#f59e0b','#ec4899']
+      }
+    },
+    ASIANPAINT: {
+      FY25: {
+        labels: ['India', 'Asia (Bangladesh, Nepal, Sri Lanka, Indonesia)', 'Middle East', 'Africa', 'South Asia & Others'],
+        data: [86.2, 6.4, 3.1, 2.9, 1.4],
+        colors: ['#10b981','#6366f1','#3b82f6','#f59e0b','#ec4899']
+      },
+      FY23: {
+        labels: ['India', 'Asia (Bangladesh, Nepal, Sri Lanka, Indonesia)', 'Middle East', 'Africa', 'South Asia & Others'],
+        data: [87.0, 6.0, 2.8, 2.9, 1.3],
+        colors: ['#10b981','#6366f1','#3b82f6','#f59e0b','#ec4899']
+      }
+    },
+    BAJFINANCE: {
+      FY25: {
+        labels: ['India — Urban', 'India — Rural', 'India — Metro/Tier-1'],
+        data: [48.6, 18.4, 33.0],
+        colors: ['#6366f1','#10b981','#3b82f6']
+      },
+      FY23: {
+        labels: ['India — Urban', 'India — Rural', 'India — Metro/Tier-1'],
+        data: [47.2, 17.1, 35.7],
+        colors: ['#6366f1','#10b981','#3b82f6']
+      }
     }
   },
 
@@ -328,6 +392,7 @@ function getCtx(id) {
 // Updated by initCompanySearch when the user picks a company from the dropdown.
 let activeCompanyKey = 'INFY';
 let activeBizMixPeriod = 'FY25';
+let activeGeoMixPeriod = 'FY25';
 
 function getCompanyKeyFromTicker(ticker) {
   // ticker looks like "NSE: INFY" -> return "INFY"
@@ -365,9 +430,11 @@ function initBizMixChart(period = activeBizMixPeriod, companyKey = activeCompany
   renderLegend('bizMixLegend', d.labels, d.colors, d.data, '%');
 }
 
-function initGeoMixChart(period = 'FY25') {
+function initGeoMixChart(period = activeGeoMixPeriod, companyKey = activeCompanyKey) {
+  activeGeoMixPeriod = period;
   destroyChart('geoMixChart');
-  const d = MOCK_DATA.geoMix[period];
+  const company = MOCK_DATA.geoMix[companyKey] || MOCK_DATA.geoMix.INFY;
+  const d = company[period] || company.FY25;
   charts['geoMixChart'] = new Chart(getCtx('geoMixChart'), {
     type: 'doughnut',
     data: {
@@ -1123,7 +1190,7 @@ function initToggleGroups() {
     // Chart-specific update handlers
     switch(chartId) {
       case 'bizMix': initBizMixChart(period, activeCompanyKey); break;
-      case 'geoMix': initGeoMixChart(period); break;
+      case 'geoMix': initGeoMixChart(period, activeCompanyKey); break;
       case 'mktShare': initMktShareChart(period); break;
       case 'promoterHolding': initPromoterHoldingChart(period); break;
       case 'revPat': initRevPatChart(period); break;
@@ -1182,6 +1249,7 @@ function initCompanySearch() {
       // Re-render company-aware charts with the newly selected company
       activeCompanyKey = getCompanyKeyFromTicker(ticker) || activeCompanyKey;
       initBizMixChart(activeBizMixPeriod, activeCompanyKey);
+      initGeoMixChart(activeGeoMixPeriod, activeCompanyKey);
 
       // Animate quality score change
       animateScore(qualityScoreEl, parseInt(qualityScoreEl.textContent), Math.floor(Math.random() * 20) + 70);
