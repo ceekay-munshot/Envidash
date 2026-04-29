@@ -1111,6 +1111,9 @@ function initCompanySearch() {
       activeCompanyKey = getCompanyKeyFromTicker(ticker) || activeCompanyKey;
       initBizMixChart(activeBizMixPeriod, activeCompanyKey);
       initGeoMixChart(activeGeoMixPeriod, activeCompanyKey);
+      displayFinancialMetrics(activeCompanyKey);
+      displayOwnershipData(activeCompanyKey);
+      renderLiveDataPanel(activeCompanyKey);
 
       // Animate quality score change
       animateScore(qualityScoreEl, parseInt(qualityScoreEl.textContent), Math.floor(Math.random() * 20) + 70);
@@ -1152,30 +1155,49 @@ function animateScore(el, from, to) {
 // ============================================================
 // REFRESH SECTION
 // ============================================================
-function refreshSection(btn, sectionId) {
+async function refreshSection(btn, sectionId) {
   btn.classList.add('loading');
   btn.disabled = true;
 
-  setTimeout(() => {
-    btn.classList.remove('loading');
-    btn.disabled = false;
+  // Actually re-fetch the JSON data from the server
+  try {
+    const res = await fetch('data/companies.json?t=' + Date.now(), { cache: 'no-store' });
+    if (res.ok) {
+      const json = await res.json();
+      LIVE_JSON = json;
+      if (json.bizMix) MOCK_DATA.bizMix = json.bizMix;
+      if (json.geoMix) MOCK_DATA.geoMix = json.geoMix;
+      if (json.financialMetrics) MOCK_DATA.financialMetrics = json.financialMetrics;
+      if (json.ownership) MOCK_DATA.ownership = json.ownership;
 
-    // Update timestamp
-    const now = new Date();
-    const timeStr = now.toLocaleString('en-IN', {
-      month: 'short', day: 'numeric', year: 'numeric',
-      hour: '2-digit', minute: '2-digit', hour12: true
-    });
-
-    const refreshSpan = btn.closest('.sh-right').querySelector('.last-refreshed');
-    if (refreshSpan) {
-      refreshSpan.innerHTML = `<i class="fas fa-clock"></i> Refreshed: ${timeStr}`;
-      refreshSpan.style.color = 'var(--green)';
-      setTimeout(() => refreshSpan.style.color = '', 2000);
+      initBizMixChart(activeBizMixPeriod, activeCompanyKey);
+      initGeoMixChart(activeGeoMixPeriod, activeCompanyKey);
+      displayFinancialMetrics(activeCompanyKey);
+      displayOwnershipData(activeCompanyKey);
+      renderLiveDataPanel(activeCompanyKey);
     }
+  } catch (e) {
+    console.warn('[ForensIQ] Section refresh failed:', e);
+  }
 
-    showToast('Section data refreshed');
-  }, 1500);
+  btn.classList.remove('loading');
+  btn.disabled = false;
+
+  const now = new Date();
+  const timeStr = now.toLocaleString('en-IN', {
+    month: 'short', day: 'numeric', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', hour12: true
+  });
+
+  const refreshSpan = btn.closest('.sh-right').querySelector('.last-refreshed');
+  if (refreshSpan) {
+    refreshSpan.innerHTML = `<i class="fas fa-clock"></i> Refreshed: ${timeStr}`;
+    refreshSpan.style.color = 'var(--green)';
+    setTimeout(() => refreshSpan.style.color = '', 2000);
+  }
+
+  const status = LIVE_JSON?._meta?.status || 'ok';
+  showToast(`Section refreshed (${status})`);
 }
 
 // ============================================================
@@ -1328,6 +1350,215 @@ function animateProgressBars() {
 }
 
 // ============================================================
+// LIVE DATA PANEL — show all fetched data
+// ============================================================
+let LIVE_JSON = null;
+
+function renderLiveDataPanel(company) {
+  if (!LIVE_JSON) return;
+
+  const meta = LIVE_JSON._meta || {};
+  const status = meta.status || 'unknown';
+  const updated = meta.lastUpdated || '—';
+
+  // Status badge
+  const statusEl = document.getElementById('ldpStatus');
+  if (statusEl) {
+    statusEl.textContent = status;
+    statusEl.className = 'ldp-status ' + status;
+  }
+
+  // Updated timestamp
+  const updatedEl = document.getElementById('ldpUpdated');
+  if (updatedEl) updatedEl.textContent = `Last updated: ${updated}`;
+
+  // Business Mix
+  const bizEl = document.getElementById('ldpBizMix');
+  const biz = LIVE_JSON.bizMix?.[company]?.FY25;
+  if (bizEl) {
+    if (biz && biz.labels) {
+      const rows = biz.labels.map((lbl, i) =>
+        `<div class="ldp-row"><span class="ldp-row-label">${lbl}</span><span class="ldp-row-value">${biz.data[i]}%</span></div>`
+      ).join('');
+      const srcClass = biz.source === 'screener.in' ? 'live' : '';
+      bizEl.innerHTML = rows + `<div class="ldp-source ${srcClass}">source: ${biz.source || 'seed'}</div>`;
+    } else {
+      bizEl.innerHTML = '<em>No data</em>';
+    }
+  }
+
+  // Geographic Mix
+  const geoEl = document.getElementById('ldpGeoMix');
+  const geo = LIVE_JSON.geoMix?.[company]?.FY25;
+  if (geoEl) {
+    if (geo && geo.labels) {
+      const rows = geo.labels.map((lbl, i) =>
+        `<div class="ldp-row"><span class="ldp-row-label">${lbl}</span><span class="ldp-row-value">${geo.data[i]}%</span></div>`
+      ).join('');
+      const srcClass = geo.source === 'screener.in' ? 'live' : '';
+      geoEl.innerHTML = rows + `<div class="ldp-source ${srcClass}">source: ${geo.source || 'seed'}</div>`;
+    } else {
+      geoEl.innerHTML = '<em>No data</em>';
+    }
+  }
+
+  // Financial Metrics
+  const finEl = document.getElementById('ldpFinMetrics');
+  const fin = LIVE_JSON.financialMetrics?.[company];
+  if (finEl) {
+    if (fin) {
+      const fmtCr = (n) => n >= 100000 ? `₹${(n/100000).toFixed(2)}L Cr` : `₹${n.toLocaleString('en-IN')} Cr`;
+      let rows = '';
+      if (fin.revenue) {
+        rows += `<div class="ldp-row"><span class="ldp-row-label">Revenue (TTM)</span><span class="ldp-row-value">${fmtCr(fin.revenue[0])}</span></div>`;
+        if (fin.revenue[1]) rows += `<div class="ldp-row"><span class="ldp-row-label">Revenue (Prev)</span><span class="ldp-row-value">${fmtCr(fin.revenue[1])}</span></div>`;
+      }
+      if (fin.netProfit) {
+        rows += `<div class="ldp-row"><span class="ldp-row-label">Net Profit (TTM)</span><span class="ldp-row-value">${fmtCr(fin.netProfit[0])}</span></div>`;
+        if (fin.netProfit[1]) rows += `<div class="ldp-row"><span class="ldp-row-label">Net Profit (Prev)</span><span class="ldp-row-value">${fmtCr(fin.netProfit[1])}</span></div>`;
+      }
+      const srcClass = fin.source === 'screener.in' ? 'live' : '';
+      finEl.innerHTML = rows + `<div class="ldp-source ${srcClass}">source: ${fin.source || 'seed'}</div>`;
+    } else {
+      finEl.innerHTML = '<em>No data</em>';
+    }
+  }
+
+  // Ownership
+  const ownEl = document.getElementById('ldpOwnership');
+  const own = LIVE_JSON.ownership?.[company];
+  if (ownEl) {
+    if (own) {
+      let rows = '';
+      if (own.promoter !== undefined) rows += `<div class="ldp-row"><span class="ldp-row-label">Promoter</span><span class="ldp-row-value">${own.promoter.toFixed(1)}%</span></div>`;
+      if (own.fii !== undefined) rows += `<div class="ldp-row"><span class="ldp-row-label">FII</span><span class="ldp-row-value">${own.fii.toFixed(1)}%</span></div>`;
+      if (own.dii !== undefined) rows += `<div class="ldp-row"><span class="ldp-row-label">DII</span><span class="ldp-row-value">${own.dii.toFixed(1)}%</span></div>`;
+      if (own.mutualFund !== undefined) rows += `<div class="ldp-row"><span class="ldp-row-label">Mutual Fund</span><span class="ldp-row-value">${own.mutualFund.toFixed(1)}%</span></div>`;
+      const srcClass = own.source === 'screener.in' ? 'live' : '';
+      ownEl.innerHTML = rows + `<div class="ldp-source ${srcClass}">source: ${own.source || 'seed'}</div>`;
+    } else {
+      ownEl.innerHTML = '<em>No data</em>';
+    }
+  }
+}
+
+// ============================================================
+// REFRESH ALL DATA — re-fetch JSON and update everything
+// ============================================================
+async function refreshAllData(btn) {
+  if (btn) {
+    btn.classList.add('loading');
+    btn.disabled = true;
+  }
+
+  try {
+    const res = await fetch('data/companies.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+
+    LIVE_JSON = json;
+    if (json.bizMix) MOCK_DATA.bizMix = json.bizMix;
+    if (json.geoMix) MOCK_DATA.geoMix = json.geoMix;
+    if (json.financialMetrics) MOCK_DATA.financialMetrics = json.financialMetrics;
+    if (json.ownership) MOCK_DATA.ownership = json.ownership;
+
+    initBizMixChart(activeBizMixPeriod, activeCompanyKey);
+    initGeoMixChart(activeGeoMixPeriod, activeCompanyKey);
+    displayFinancialMetrics(activeCompanyKey);
+    displayOwnershipData(activeCompanyKey);
+    renderLiveDataPanel(activeCompanyKey);
+
+    showToast(`Data refreshed (${json._meta?.status || 'ok'})`);
+  } catch (err) {
+    console.error('[ForensIQ] Refresh failed:', err);
+    showToast('Refresh failed — check console');
+  } finally {
+    if (btn) {
+      btn.classList.remove('loading');
+      btn.disabled = false;
+    }
+  }
+}
+
+// ============================================================
+// DISPLAY FINANCIAL METRICS
+// ============================================================
+function displayFinancialMetrics(company) {
+  const metrics = MOCK_DATA.financialMetrics?.[company];
+  if (!metrics) return;
+
+  const revEl = document.querySelector('[data-metric="revenue"]');
+  const npEl = document.querySelector('[data-metric="netProfit"]');
+
+  if (revEl && metrics.revenue) {
+    const [current, prev1, prev2] = metrics.revenue;
+    const change = ((current - prev1) / prev1 * 100).toFixed(1);
+    const trend = change >= 0 ? '▲' : '▼';
+    revEl.innerHTML = `${(current / 1000).toFixed(1)}K Cr <span style="font-size:0.85em; color:${change >= 0 ? '#10b981' : '#ef4444'}">${trend} ${Math.abs(change)}%</span>`;
+  }
+
+  if (npEl && metrics.netProfit) {
+    const [current, prev1, prev2] = metrics.netProfit;
+    const change = ((current - prev1) / prev1 * 100).toFixed(1);
+    const trend = change >= 0 ? '▲' : '▼';
+    npEl.innerHTML = `${(current / 1000).toFixed(1)}K Cr <span style="font-size:0.85em; color:${change >= 0 ? '#10b981' : '#ef4444'}">${trend} ${Math.abs(change)}%</span>`;
+  }
+}
+
+// ============================================================
+// DISPLAY OWNERSHIP DATA
+// ============================================================
+function displayOwnershipData(company) {
+  const ownership = MOCK_DATA.ownership?.[company];
+  if (!ownership) return;
+
+  const promoterEl = document.querySelector('[data-ownership="promoter"]');
+  const fiiEl = document.querySelector('[data-ownership="fii"]');
+  const diiEl = document.querySelector('[data-ownership="dii"]');
+  const mfEl = document.querySelector('[data-ownership="mutualFund"]');
+
+  if (promoterEl) promoterEl.textContent = (ownership.promoter || 0).toFixed(1) + '%';
+  if (fiiEl) fiiEl.textContent = (ownership.fii || 0).toFixed(1) + '%';
+  if (diiEl) diiEl.textContent = (ownership.dii || 0).toFixed(1) + '%';
+  if (mfEl) mfEl.textContent = (ownership.mutualFund || 0).toFixed(1) + '%';
+
+  // Update ownership donut chart if it exists
+  const ownershipDonut = document.getElementById('ownershipDonut');
+  if (ownershipDonut && (ownership.promoter || ownership.fii || ownership.dii || ownership.mutualFund)) {
+    destroyChart('ownershipDonut');
+    const labels = [];
+    const data = [];
+    const colors = ['#6366f1', '#10b981', '#f59e0b', '#3b82f6'];
+    let colorIdx = 0;
+
+    if (ownership.promoter) { labels.push('Promoter'); data.push(ownership.promoter); }
+    if (ownership.fii) { labels.push('FII'); data.push(ownership.fii); }
+    if (ownership.dii) { labels.push('DII'); data.push(ownership.dii); }
+    if (ownership.mutualFund) { labels.push('Mutual Fund'); data.push(ownership.mutualFund); }
+
+    charts['ownershipDonut'] = new Chart(getCtx('ownershipDonut'), {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: colors.slice(0, labels.length),
+          borderColor: '#fff',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { padding: 15, font: { size: 13 } } }
+        }
+      }
+    });
+  }
+}
+
+// ============================================================
 // COMPANY DATA LOADER
 // ============================================================
 // Fetches data/companies.json (produced by scripts/fetch-company-data.mjs)
@@ -1340,6 +1571,7 @@ async function loadCompanyData() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
 
+    LIVE_JSON = json;
     if (json.bizMix) MOCK_DATA.bizMix = json.bizMix;
     if (json.geoMix) MOCK_DATA.geoMix = json.geoMix;
     if (json.financialMetrics) MOCK_DATA.financialMetrics = json.financialMetrics;
@@ -1348,6 +1580,9 @@ async function loadCompanyData() {
     // Re-render the company-aware charts now that data is available
     initBizMixChart(activeBizMixPeriod, activeCompanyKey);
     initGeoMixChart(activeGeoMixPeriod, activeCompanyKey);
+    displayFinancialMetrics(activeCompanyKey);
+    displayOwnershipData(activeCompanyKey);
+    renderLiveDataPanel(activeCompanyKey);
 
     // Surface seed-vs-fetched status in the console so it's easy to verify
     const status = json._meta?.status || 'unknown';
