@@ -45,11 +45,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add data/companies.json
-          git commit -m "chore: update screener data
-
-Updated business mix and geographic revenue data from screener.in
-
-https://claude.ai/code/session_01VLfrQqPR8BhuU3C3KFrNCy"
+          git commit -m "chore: update screener data from screener.in"
           git push
 
       - name: Report status
