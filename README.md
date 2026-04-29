@@ -45,11 +45,14 @@ scripts/fetch-company-data.mjs  — Refresher: pulls real data into companies.js
 README.md                       — This file
 ```
 
-## Data flow — Business / Service Mix & Geography Mix
+## Data flow — Real Data from Screener.in
 
-The two donut charts in Section 1 are now driven by `data/companies.json`,
-not hardcoded JavaScript. This is so the figures can be refreshed without
-touching code.
+The dashboard pulls real company data from `data/companies.json`, which is
+refreshed from Screener.in periodically. This includes:
+- **Business/Service Mix** — segment-wise revenue breakdown
+- **Geographic Mix** — revenue by region
+- **Financial Metrics** — revenue, net profit trends
+- **Ownership** — promoter, FII, DII, mutual fund shareholding
 
 `_meta.status` in the JSON tells you what you're looking at:
 - `"seed"`     — approximate placeholder values, NOT verified
@@ -57,7 +60,24 @@ touching code.
 - `"live"`     — every company refreshed successfully on the date in
                  `_meta.lastUpdated`
 
-### Refreshing the data
+### Refreshing the data — Automated (GitHub Actions)
+
+The easiest way is to let GitHub Actions update the data daily:
+
+1. **No setup needed** — runs automatically at 02:00 UTC daily
+2. **Manual trigger available** — go to Actions → "Fetch Screener Data" → "Run workflow"
+
+Workflow file: `.github/workflows/fetch-screener-data.yml`
+
+If you hit 403 errors during the workflow, set up authentication:
+
+1. Open https://www.screener.in in your browser and log in
+2. Open DevTools → Application → Cookies and copy the values of `csrftoken` and `sessionid`
+3. Go to your repository Settings → Secrets and variables → Actions
+4. Create a secret named `SCREENER_COOKIE` with value: `csrftoken=...; sessionid=...`
+5. Re-run the workflow
+
+### Refreshing the data — Manual (Node.js)
 
 Requires Node 18+ (built-in `fetch`). Zero dependencies.
 
@@ -66,9 +86,7 @@ node scripts/fetch-company-data.mjs
 ```
 
 The script scrapes Screener.in's consolidated page for each company and
-writes the segment-revenue and geographic-revenue tables back into
-`data/companies.json`. If Screener returns 403, supply your browser
-cookies:
+writes updated data back into `data/companies.json`. If Screener returns 403:
 
 ```bash
 COOKIE='csrftoken=...; sessionid=...' node scripts/fetch-company-data.mjs

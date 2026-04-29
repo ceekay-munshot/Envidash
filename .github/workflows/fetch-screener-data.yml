@@ -1,0 +1,55 @@
+name: Fetch Screener Data
+
+on:
+  schedule:
+    # Run daily at 02:00 UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      force_refresh:
+        description: 'Force refresh even if data is recent'
+        required: false
+        default: 'false'
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Fetch data from Screener.in
+        run: node scripts/fetch-company-data.mjs
+        env:
+          COOKIE: ${{ secrets.SCREENER_COOKIE }}
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet data/companies.json; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data/companies.json
+          git commit -m "chore: update screener data from screener.in"
+          git push
+
+      - name: Report status
+        run: |
+          echo "✅ Screener data fetch completed"
+          echo "Changes detected: ${{ steps.check_changes.outputs.has_changes }}"
+          cat data/companies.json | grep -A2 '"_meta"'
