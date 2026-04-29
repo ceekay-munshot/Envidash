@@ -106,11 +106,76 @@ function parseMixTable(html, sectionTitleRegex) {
   };
 }
 
+function parseFinancialMetrics(html, slug) {
+  try {
+    // Try to extract common financial metrics from Screener's page
+    // These are typically shown in tables with headers like "Revenue", "Net Profit", etc.
+    const metrics = {};
+
+    // Try to find revenue trend data (TTM, FY25, FY24, etc.)
+    const revenueTrendMatch = html.match(/(?:Revenue|TTM)[:\s]*([0-9,]+(?:\.[0-9]+)?)/gi);
+    if (revenueTrendMatch) {
+      metrics.revenue = revenueTrendMatch.slice(0, 3).map(v =>
+        parseFloat(v.replace(/[^\d.]/g, ''))
+      );
+    }
+
+    // Try to find net profit data
+    const npTrendMatch = html.match(/(?:Net Profit|PAT|NP)[:\s]*([0-9,]+(?:\.[0-9]+)?)/gi);
+    if (npTrendMatch) {
+      metrics.netProfit = npTrendMatch.slice(0, 3).map(v =>
+        parseFloat(v.replace(/[^\d.]/g, ''))
+      );
+    }
+
+    return Object.keys(metrics).length > 0 ? metrics : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function parseOwnershipData(html) {
+  try {
+    // Try to extract promoter/institutional ownership percentages
+    const ownership = {};
+
+    // Look for promoter shareholding
+    const promoterMatch = html.match(/Promoter[^%]*?([0-9.]+)\s*%/i);
+    if (promoterMatch) {
+      ownership.promoter = parseFloat(promoterMatch[1]);
+    }
+
+    // Look for FII shareholding
+    const fiiMatch = html.match(/FII[^%]*?([0-9.]+)\s*%/i);
+    if (fiiMatch) {
+      ownership.fii = parseFloat(fiiMatch[1]);
+    }
+
+    // Look for DII shareholding
+    const diiMatch = html.match(/DII[^%]*?([0-9.]+)\s*%/i);
+    if (diiMatch) {
+      ownership.dii = parseFloat(diiMatch[1]);
+    }
+
+    // Look for mutual fund shareholding
+    const mfMatch = html.match(/Mutual Fund[^%]*?([0-9.]+)\s*%/i);
+    if (mfMatch) {
+      ownership.mutualFund = parseFloat(mfMatch[1]);
+    }
+
+    return Object.keys(ownership).length > 0 ? ownership : null;
+  } catch (e) {
+    return null;
+  }
+}
+
 async function refreshCompany(slug) {
   const html = await fetchScreenerHtml(slug);
   const biz = parseMixTable(html, /Segment[-\s]?wise(?:\s*Revenue)?/i);
   const geo = parseMixTable(html, /Geograph(?:ic|y)(?:\s*Revenue)?/i);
-  return { biz, geo };
+  const financialMetrics = parseFinancialMetrics(html, slug);
+  const ownership = parseOwnershipData(html);
+  return { biz, geo, financialMetrics, ownership };
 }
 
 async function main() {
@@ -127,12 +192,20 @@ async function main() {
     const slug = json.companies[ticker].screenerSlug;
     process.stdout.write(`  ${ticker} (${slug}) ... `);
     try {
-      const { biz, geo } = await refreshCompany(slug);
+      const { biz, geo, financialMetrics, ownership } = await refreshCompany(slug);
       if (biz) { json.bizMix[ticker] = biz; }
       if (geo) { json.geoMix[ticker] = geo; }
-      const got = [biz && 'bizMix', geo && 'geoMix'].filter(Boolean).join(' + ') || 'nothing';
+      if (financialMetrics) {
+        json.financialMetrics = json.financialMetrics || {};
+        json.financialMetrics[ticker] = { ...financialMetrics, source: 'screener.in' };
+      }
+      if (ownership) {
+        json.ownership = json.ownership || {};
+        json.ownership[ticker] = { ...ownership, source: 'screener.in' };
+      }
+      const got = [biz && 'bizMix', geo && 'geoMix', financialMetrics && 'metrics', ownership && 'ownership'].filter(Boolean).join(' + ') || 'nothing';
       console.log(got === 'nothing' ? `no tables found (kept seed)` : `ok (${got})`);
-      if (biz || geo) refreshed++; else failed++;
+      if (biz || geo || financialMetrics || ownership) refreshed++; else failed++;
     } catch (err) {
       console.log(`failed: ${err.message}`);
       failed++;

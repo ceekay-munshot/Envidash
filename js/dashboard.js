@@ -30,6 +30,11 @@ const MOCK_DATA = {
   bizMix: {},
   geoMix: {},
 
+  // ---- SECTION 3 & 6 DATA ----
+  // Financial metrics and ownership data loaded from data/companies.json
+  financialMetrics: {},
+  ownership: {},
+
   mktShare: {
     '3Y': {
       labels: ['FY23', 'FY24', 'FY25'],
@@ -1334,8 +1339,11 @@ async function loadCompanyData() {
     const res = await fetch('data/companies.json', { cache: 'no-store' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
+
     if (json.bizMix) MOCK_DATA.bizMix = json.bizMix;
     if (json.geoMix) MOCK_DATA.geoMix = json.geoMix;
+    if (json.financialMetrics) MOCK_DATA.financialMetrics = json.financialMetrics;
+    if (json.ownership) MOCK_DATA.ownership = json.ownership;
 
     // Re-render the company-aware charts now that data is available
     initBizMixChart(activeBizMixPeriod, activeCompanyKey);
@@ -1345,8 +1353,11 @@ async function loadCompanyData() {
     const status = json._meta?.status || 'unknown';
     const updated = json._meta?.lastUpdated || '?';
     console.log(`[ForensIQ] companies.json loaded (status=${status}, lastUpdated=${updated})`);
+    if (json._meta?.sources?.dataTypes) {
+      console.log(`[ForensIQ] available data types: ${json._meta.sources.dataTypes.join(', ')}`);
+    }
   } catch (err) {
-    console.warn('[ForensIQ] Could not load data/companies.json — bizMix and geoMix charts will be empty.', err);
+    console.warn('[ForensIQ] Could not load data/companies.json — charts may fall back to mock data.', err);
     console.warn('[ForensIQ] Tip: serve the dashboard over http (e.g. `python3 -m http.server`) instead of opening index.html via file://.');
   }
 }
