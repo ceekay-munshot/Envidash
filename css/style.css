@@ -1605,3 +1605,205 @@ body {
 }
 
 [data-tooltip]:hover::after { opacity: 1; }
+
+/* ============================================================
+   LIVE FETCHED DATA PANEL
+   ============================================================ */
+.live-data-panel {
+  margin: 20px 32px 0;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 18px 22px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  position: relative;
+  overflow: hidden;
+}
+
+.live-data-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+}
+
+.ldp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.ldp-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 15px;
+  color: #1e293b;
+}
+
+.ldp-title i {
+  color: #6366f1;
+  font-size: 16px;
+}
+
+.ldp-status {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 12px;
+  background: #fef3c7;
+  color: #d97706;
+  letter-spacing: 0.5px;
+}
+
+.ldp-status.live {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.ldp-status.partial {
+  background: #fed7aa;
+  color: #ea580c;
+}
+
+.ldp-status.seed {
+  background: #e2e8f0;
+  color: #64748b;
+}
+
+.ldp-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ldp-updated {
+  font-size: 12px;
+  color: #64748b;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.ldp-refresh-btn {
+  padding: 7px 14px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.ldp-refresh-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.ldp-refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ldp-refresh-btn.loading i {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.ldp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.ldp-section {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  min-height: 100px;
+}
+
+.ldp-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.ldp-section-title i {
+  color: #6366f1;
+  font-size: 11px;
+}
+
+.ldp-content {
+  font-size: 12px;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.ldp-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+  border-bottom: 1px dashed #f1f5f9;
+}
+
+.ldp-row:last-child {
+  border-bottom: none;
+}
+
+.ldp-row-label {
+  color: #64748b;
+  font-size: 11.5px;
+}
+
+.ldp-row-value {
+  font-weight: 600;
+  color: #1e293b;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+}
+
+.ldp-source {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 6px;
+  font-style: italic;
+}
+
+.ldp-source.live {
+  color: #16a34a;
+  font-weight: 600;
+  font-style: normal;
+}
+
+@media (max-width: 1100px) {
+  .ldp-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .ldp-grid { grid-template-columns: 1fr; }
+  .live-data-panel { margin: 16px; }
+  .ldp-header { flex-direction: column; gap: 10px; align-items: flex-start; }
+}
