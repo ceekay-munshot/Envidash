@@ -1,12 +1,17 @@
 {
   "_meta": {
     "lastUpdated": "2026-04-29",
-    "status": "seed",
+    "status": "live",
     "note": "Seed data — awaiting refresh from Screener.in. Use GitHub Actions workflow for automated updates: .github/workflows/fetch-screener-data.yml",
     "sources": {
       "primary": "Screener.in (screener.in/company/{slug}/consolidated/)",
       "fetcher": "scripts/fetch-company-data.mjs (Node.js HTML scraper)",
-      "dataTypes": ["bizMix", "geoMix", "financialMetrics", "ownership"]
+      "dataTypes": [
+        "bizMix",
+        "geoMix",
+        "financialMetrics",
+        "ownership"
+      ]
     },
     "schemaVersion": 2
   },
@@ -660,78 +665,78 @@
   },
   "financialMetrics": {
     "INFY": {
-      "revenue": [153670, 148000, 141200],
-      "netProfit": [15300, 14800, 13900],
-      "source": "seed"
+      "revenue": [
+        178650
+      ],
+      "source": "screener.in"
     },
     "TCS": {
-      "revenue": [326600, 313100, 299300],
-      "netProfit": [61100, 58900, 55300],
-      "source": "seed"
+      "revenue": [
+        267021
+      ],
+      "source": "screener.in"
     },
     "HDFCBANK": {
-      "revenue": [87600, 78400, 69200],
-      "netProfit": [31200, 28100, 24900],
-      "source": "seed"
+      "revenue": [
+        348615
+      ],
+      "source": "screener.in"
     },
     "RELIANCE": {
-      "revenue": [879000, 745000, 680000],
-      "netProfit": [47200, 39100, 35600],
-      "source": "seed"
+      "revenue": [
+        1057219
+      ],
+      "source": "screener.in"
     },
     "ASIANPAINT": {
-      "revenue": [34500, 31200, 28700],
-      "netProfit": [4200, 3800, 3400],
-      "source": "seed"
+      "revenue": [
+        34696
+      ],
+      "source": "screener.in"
     },
     "BAJFINANCE": {
-      "revenue": [48300, 42100, 36800],
-      "netProfit": [14600, 12900, 11100],
-      "source": "seed"
+      "revenue": [
+        79374
+      ],
+      "source": "screener.in"
     }
   },
   "ownership": {
     "INFY": {
-      "promoter": 13.3,
-      "fii": 42.5,
-      "dii": 25.8,
-      "mutualFund": 12.4,
-      "source": "seed"
+      "promoter": 14.4,
+      "fii": 33.44,
+      "dii": 34.58,
+      "source": "screener.in"
     },
     "TCS": {
-      "promoter": 72.5,
-      "fii": 18.2,
-      "dii": 6.1,
-      "mutualFund": 2.8,
-      "source": "seed"
+      "promoter": 71.8,
+      "fii": 12.46,
+      "dii": 9.8,
+      "source": "screener.in"
     },
     "HDFCBANK": {
-      "promoter": 0.0,
-      "fii": 46.3,
-      "dii": 34.2,
-      "mutualFund": 14.5,
-      "source": "seed"
+      "promoter": 100,
+      "fii": 33.38,
+      "dii": 26.75,
+      "source": "screener.in"
     },
     "RELIANCE": {
-      "promoter": 50.6,
-      "fii": 22.4,
-      "dii": 18.3,
-      "mutualFund": 6.2,
-      "source": "seed"
+      "promoter": 50,
+      "fii": 22.55,
+      "dii": 16.13,
+      "source": "screener.in"
     },
     "ASIANPAINT": {
-      "promoter": 55.2,
-      "fii": 24.6,
-      "dii": 12.8,
-      "mutualFund": 5.2,
-      "source": "seed"
+      "promoter": 52.6,
+      "fii": 17.48,
+      "dii": 10.01,
+      "source": "screener.in"
     },
     "BAJFINANCE": {
-      "promoter": 61.5,
-      "fii": 18.7,
-      "dii": 11.2,
-      "mutualFund": 6.4,
-      "source": "seed"
+      "promoter": 54.7,
+      "fii": 20.09,
+      "dii": 12.83,
+      "source": "screener.in"
     }
   }
 }
