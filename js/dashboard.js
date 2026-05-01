@@ -208,6 +208,32 @@ const MOCK_DATA = {
 };
 
 // ============================================================
+// LIVE DATA (populated by loadCompanyData from data/companies.json)
+// ============================================================
+// Per-company series derived from Screener.in. The chart helpers below
+// prefer this over MOCK_DATA so any company in the dropdown shows real
+// numbers; missing series silently fall back to mock so the dashboard
+// keeps rendering even when scraping fails.
+const LIVE_DERIVED = {
+  revPat: {}, marginTrend: {}, cfoPat: {}, wc: {}, returns: {},
+  promoterHolding: {}, ownershipTrend: {}
+};
+const LIVE_SUMMARY = {}; // summary[ticker] -> { marketCap, currentPrice, pe, ... }
+
+// Pull a (kind, period) series for the active company, falling back to
+// mock data if the live JSON didn't carry it.
+function getSeries(kind, period) {
+  const live = LIVE_DERIVED[kind]?.[activeCompanyKey]?.[period];
+  if (live) return live;
+  // try other periods if requested one is missing
+  const liveAny = LIVE_DERIVED[kind]?.[activeCompanyKey];
+  if (liveAny) {
+    return liveAny[period] || liveAny['5Y'] || liveAny['3Y'] || liveAny['10Y'] || MOCK_DATA[kind]?.[period];
+  }
+  return MOCK_DATA[kind]?.[period];
+}
+
+// ============================================================
 // CHART INSTANCES REGISTRY
 // ============================================================
 const charts = {};
@@ -250,6 +276,14 @@ function getCtx(id) {
 let activeCompanyKey = 'INFY';
 let activeBizMixPeriod = 'FY25';
 let activeGeoMixPeriod = 'FY25';
+
+// Active period per trend chart, mutated by toggle-group clicks. Used so
+// reinitCompanyAwareCharts() refreshes each chart at whichever period the
+// user last selected.
+const activePeriods = {
+  promoterHolding: '5Y', revPat: '5Y', marginTrend: '5Y',
+  cfoPat: '5Y', wc: '5Y', returns: '5Y', ownershipTrend: '5Y'
+};
 
 function getCompanyKeyFromTicker(ticker) {
   // ticker looks like "NSE: INFY" -> return "INFY"
@@ -371,7 +405,8 @@ function renderLegend(containerId, labels, colors, data, suffix = '') {
 // ============================================================
 function initPromoterHoldingChart(period = '5Y') {
   destroyChart('promoterHoldingChart');
-  const d = MOCK_DATA.promoterHolding[period];
+  const d = getSeries('promoterHolding', period);
+  if (!d) return;
   charts['promoterHoldingChart'] = new Chart(getCtx('promoterHoldingChart'), {
     type: 'line',
     data: {
@@ -444,7 +479,8 @@ function initCapAllocChart() {
 // ============================================================
 function initRevPatChart(period = '5Y') {
   destroyChart('revPatChart');
-  const d = MOCK_DATA.revPat[period];
+  const d = getSeries('revPat', period);
+  if (!d) return;
   charts['revPatChart'] = new Chart(getCtx('revPatChart'), {
     type: 'bar',
     data: {
@@ -498,7 +534,8 @@ function initRevPatChart(period = '5Y') {
 
 function initMarginTrendChart(period = '5Y') {
   destroyChart('marginTrendChart');
-  const d = MOCK_DATA.marginTrend[period];
+  const d = getSeries('marginTrend', period);
+  if (!d) return;
   charts['marginTrendChart'] = new Chart(getCtx('marginTrendChart'), {
     type: 'line',
     data: {
@@ -558,7 +595,8 @@ function initMarginTrendChart(period = '5Y') {
 
 function initCfoPatChart(period = '5Y') {
   destroyChart('cfoPatChart');
-  const d = MOCK_DATA.cfoPat[period];
+  const d = getSeries('cfoPat', period);
+  if (!d) return;
   charts['cfoPatChart'] = new Chart(getCtx('cfoPatChart'), {
     type: 'bar',
     data: {
@@ -606,7 +644,8 @@ function initCfoPatChart(period = '5Y') {
 
 function initWcChart(period = '5Y') {
   destroyChart('wcChart');
-  const d = MOCK_DATA.wc[period];
+  const d = getSeries('wc', period);
+  if (!d) return;
   charts['wcChart'] = new Chart(getCtx('wcChart'), {
     type: 'line',
     data: {
@@ -614,7 +653,7 @@ function initWcChart(period = '5Y') {
       datasets: [
         {
           label: 'DSO',
-          data: d.dso,
+          data: d.dso || [],
           borderColor: '#f59e0b',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -626,7 +665,7 @@ function initWcChart(period = '5Y') {
         },
         {
           label: 'DPO',
-          data: d.dpo,
+          data: d.dpo || [],
           borderColor: '#3b82f6',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -638,7 +677,7 @@ function initWcChart(period = '5Y') {
         },
         {
           label: 'NWC Days',
-          data: d.nwc,
+          data: d.nwc || [],
           borderColor: '#10b981',
           backgroundColor: 'rgba(16,185,129,0.08)',
           borderWidth: 2.5,
@@ -677,7 +716,8 @@ function initWcChart(period = '5Y') {
 
 function initReturnsChart(period = '5Y') {
   destroyChart('returnsChart');
-  const d = MOCK_DATA.returns[period];
+  const d = getSeries('returns', period);
+  if (!d) return;
   charts['returnsChart'] = new Chart(getCtx('returnsChart'), {
     type: 'line',
     data: {
@@ -685,7 +725,7 @@ function initReturnsChart(period = '5Y') {
       datasets: [
         {
           label: 'ROCE',
-          data: d.roce,
+          data: d.roce || [],
           borderColor: '#6366f1',
           backgroundColor: 'transparent',
           borderWidth: 2.5,
@@ -697,7 +737,7 @@ function initReturnsChart(period = '5Y') {
         },
         {
           label: 'ROE',
-          data: d.roe,
+          data: d.roe || [],
           borderColor: '#10b981',
           backgroundColor: 'transparent',
           borderWidth: 2.5,
@@ -709,7 +749,7 @@ function initReturnsChart(period = '5Y') {
         },
         {
           label: 'ROA',
-          data: d.roa,
+          data: d.roa || [],
           borderColor: '#f59e0b',
           backgroundColor: 'transparent',
           borderWidth: 2,
@@ -817,7 +857,8 @@ function initHeadcountChart(period = '5Y') {
 // ============================================================
 function initOwnershipTrendChart(period = '5Y') {
   destroyChart('ownershipTrendChart');
-  const d = MOCK_DATA.ownershipTrend[period];
+  const d = getSeries('ownershipTrend', period);
+  if (!d) return;
   charts['ownershipTrendChart'] = new Chart(getCtx('ownershipTrendChart'), {
     type: 'line',
     data: {
@@ -1009,21 +1050,21 @@ function initSectionCharts(sectionId) {
 
   switch(sectionId) {
     case 's2':
-      initPromoterHoldingChart('5Y');
+      initPromoterHoldingChart(activePeriods.promoterHolding);
       initCapAllocChart();
       break;
     case 's3':
-      initRevPatChart('5Y');
-      initMarginTrendChart('5Y');
-      initCfoPatChart('5Y');
-      initWcChart('5Y');
-      initReturnsChart('5Y');
+      initRevPatChart(activePeriods.revPat);
+      initMarginTrendChart(activePeriods.marginTrend);
+      initCfoPatChart(activePeriods.cfoPat);
+      initWcChart(activePeriods.wc);
+      initReturnsChart(activePeriods.returns);
       break;
     case 's5':
       initHeadcountChart('5Y');
       break;
     case 's6':
-      initOwnershipTrendChart('5Y');
+      initOwnershipTrendChart(activePeriods.ownershipTrend);
       initValBandChart('5Y');
       break;
   }
@@ -1047,6 +1088,7 @@ function initToggleGroups() {
     const period = btn.dataset.period;
 
     if (!chartId || !period) return;
+    if (chartId in activePeriods) activePeriods[chartId] = period;
 
     // Chart-specific update handlers
     switch(chartId) {
@@ -1109,10 +1151,7 @@ function initCompanySearch() {
 
       // Re-render company-aware charts with the newly selected company
       activeCompanyKey = getCompanyKeyFromTicker(ticker) || activeCompanyKey;
-      initBizMixChart(activeBizMixPeriod, activeCompanyKey);
-      initGeoMixChart(activeGeoMixPeriod, activeCompanyKey);
-      displayFinancialMetrics(activeCompanyKey);
-      displayOwnershipData(activeCompanyKey);
+      reinitCompanyAwareCharts();
       renderLiveDataPanel(activeCompanyKey);
 
       // Animate quality score change
@@ -1169,11 +1208,9 @@ async function refreshSection(btn, sectionId) {
       if (json.geoMix) MOCK_DATA.geoMix = json.geoMix;
       if (json.financialMetrics) MOCK_DATA.financialMetrics = json.financialMetrics;
       if (json.ownership) MOCK_DATA.ownership = json.ownership;
+      ingestLiveJson(json);
 
-      initBizMixChart(activeBizMixPeriod, activeCompanyKey);
-      initGeoMixChart(activeGeoMixPeriod, activeCompanyKey);
-      displayFinancialMetrics(activeCompanyKey);
-      displayOwnershipData(activeCompanyKey);
+      reinitCompanyAwareCharts();
       renderLiveDataPanel(activeCompanyKey);
     }
   } catch (e) {
@@ -1461,11 +1498,9 @@ async function refreshAllData(btn) {
     if (json.geoMix) MOCK_DATA.geoMix = json.geoMix;
     if (json.financialMetrics) MOCK_DATA.financialMetrics = json.financialMetrics;
     if (json.ownership) MOCK_DATA.ownership = json.ownership;
+    ingestLiveJson(json);
 
-    initBizMixChart(activeBizMixPeriod, activeCompanyKey);
-    initGeoMixChart(activeGeoMixPeriod, activeCompanyKey);
-    displayFinancialMetrics(activeCompanyKey);
-    displayOwnershipData(activeCompanyKey);
+    reinitCompanyAwareCharts();
     renderLiveDataPanel(activeCompanyKey);
 
     showToast(`Data refreshed (${json._meta?.status || 'ok'})`);
@@ -1559,6 +1594,76 @@ function displayOwnershipData(company) {
 }
 
 // ============================================================
+// HERO STATS — populate from LIVE_SUMMARY[ticker]
+// ============================================================
+function fmtRupeeCr(n) {
+  if (n == null || isNaN(n)) return '—';
+  if (n >= 100000) return `₹${(n / 100000).toFixed(2)}T`;       // 1 lakh cr = ₹1T
+  if (n >= 1000) return `₹${(n / 1000).toFixed(1)}K Cr`;
+  return `₹${n.toLocaleString('en-IN')} Cr`;
+}
+function fmtRupee(n) {
+  if (n == null || isNaN(n)) return '—';
+  return `₹${n.toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
+}
+
+function applySummary(ticker) {
+  const s = LIVE_SUMMARY[ticker];
+  if (!s) return;
+
+  // CMP + change pill
+  const cmpEl = document.querySelector('.hero-cmp strong');
+  if (cmpEl && s.currentPrice != null) cmpEl.textContent = `₹${s.currentPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
+  const chgEl = document.querySelector('.hero-change');
+  if (chgEl && s.changePct != null) {
+    const dir = s.changeDir || (s.changePct >= 0 ? 'up' : 'down');
+    chgEl.classList.remove('up', 'down');
+    chgEl.classList.add(dir);
+    const arrow = dir === 'up' ? '▲' : '▼';
+    chgEl.textContent = `${arrow} ${Math.abs(s.changePct).toFixed(2)}%`;
+  }
+
+  // Hero stat cards — match by .hs-label text
+  document.querySelectorAll('.hero-stat').forEach((card) => {
+    const label = (card.querySelector('.hs-label')?.textContent || '').toLowerCase();
+    const valEl = card.querySelector('.hs-val');
+    if (!valEl) return;
+    if (/market\s*cap/.test(label) && s.marketCap != null) {
+      valEl.textContent = fmtRupeeCr(s.marketCap);
+    } else if (/p\/?e/.test(label) && s.pe != null) {
+      valEl.textContent = `${s.pe.toFixed(1)}x`;
+    }
+    // Revenue TTM and PAT TTM are still owned by displayFinancialMetrics()
+  });
+}
+
+// Re-render every chart that depends on the active company. Charts that
+// haven't been initialized yet (their section was never opened) are
+// skipped — they'll pick up live data when the user navigates to them.
+function reinitCompanyAwareCharts() {
+  initBizMixChart(activeBizMixPeriod, activeCompanyKey);
+  initGeoMixChart(activeGeoMixPeriod, activeCompanyKey);
+  if (charts['promoterHoldingChart']) initPromoterHoldingChart(activePeriods.promoterHolding);
+  if (charts['revPatChart']) initRevPatChart(activePeriods.revPat);
+  if (charts['marginTrendChart']) initMarginTrendChart(activePeriods.marginTrend);
+  if (charts['cfoPatChart']) initCfoPatChart(activePeriods.cfoPat);
+  if (charts['wcChart']) initWcChart(activePeriods.wc);
+  if (charts['returnsChart']) initReturnsChart(activePeriods.returns);
+  if (charts['ownershipTrendChart']) initOwnershipTrendChart(activePeriods.ownershipTrend);
+  displayFinancialMetrics(activeCompanyKey);
+  displayOwnershipData(activeCompanyKey);
+  applySummary(activeCompanyKey);
+}
+
+// Pull derived series + summary from the JSON the loader/refresh fetched.
+function ingestLiveJson(json) {
+  for (const k of Object.keys(LIVE_DERIVED)) {
+    if (json.derived?.[k]) Object.assign(LIVE_DERIVED[k], json.derived[k]);
+  }
+  if (json.summary) Object.assign(LIVE_SUMMARY, json.summary);
+}
+
+// ============================================================
 // COMPANY DATA LOADER
 // ============================================================
 // Fetches data/companies.json (produced by scripts/fetch-company-data.mjs)
@@ -1576,12 +1681,10 @@ async function loadCompanyData() {
     if (json.geoMix) MOCK_DATA.geoMix = json.geoMix;
     if (json.financialMetrics) MOCK_DATA.financialMetrics = json.financialMetrics;
     if (json.ownership) MOCK_DATA.ownership = json.ownership;
+    ingestLiveJson(json);
 
     // Re-render the company-aware charts now that data is available
-    initBizMixChart(activeBizMixPeriod, activeCompanyKey);
-    initGeoMixChart(activeGeoMixPeriod, activeCompanyKey);
-    displayFinancialMetrics(activeCompanyKey);
-    displayOwnershipData(activeCompanyKey);
+    reinitCompanyAwareCharts();
     renderLiveDataPanel(activeCompanyKey);
 
     // Surface seed-vs-fetched status in the console so it's easy to verify
