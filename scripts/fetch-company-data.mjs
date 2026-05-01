@@ -215,12 +215,29 @@ function parseTopRatios(html) {
   return summary;
 }
 
-function parseProfitLoss(html, debugLabel = 'profit-loss') {
+function parseProfitLoss(html, debugLabel = 'profit-loss', notes = []) {
   const sec = extractSection(html, 'profit-loss', /Profit\s*&(?:amp;)?\s*Loss/);
+  if (!sec) {
+    const seenIds = [...html.matchAll(/<section[^>]*\bid=["']([^"']+)["']/g)].map((m) => m[1]);
+    const note = `[${debugLabel}] section "profit-loss" not found. <section> ids seen: ${seenIds.join(', ') || '(none)'}`;
+    console.log(`    ${note}`);
+    notes.push(note);
+    return null;
+  }
   const tbl = parseFirstTable(sec);
-  if (!tbl) return null;
+  if (!tbl) {
+    const note = `[${debugLabel}] section found (${sec.length}b) but no parseable table inside. snippet: ${sec.slice(0, 240).replace(/\s+/g, ' ').trim()}`;
+    console.log(`    ${note}`);
+    notes.push(note);
+    return null;
+  }
   const years = tbl.headers; // e.g. ["Mar 2014", ..., "Mar 2025", "TTM"]
-  if (!years.length) return null;
+  if (!years.length) {
+    const note = `[${debugLabel}] table parsed but headers empty. snippet: ${sec.slice(0, 240).replace(/\s+/g, ' ').trim()}`;
+    console.log(`    ${note}`);
+    notes.push(note);
+    return null;
+  }
   // Banks use "Revenue" / "Interest Earned"; insurers use "Net Premium Income".
   const sales = numericRow(findRow(tbl.rows, /\bsales\b|\brevenue\b|interest\s*earned|net\s*premium|operating\s*income|total\s*income/));
   const expenses = numericRow(findRow(tbl.rows, /\bexpenses\b|operating\s*expenses/));
@@ -235,13 +252,15 @@ function parseProfitLoss(html, debugLabel = 'profit-loss') {
   const eps = numericRow(findRow(tbl.rows, /^\s*eps\b|earnings\s*per\s*share/));
 
   if (!sales || !netProfit) {
-    console.log(`    [${debugLabel}] missing sales/netProfit row. labels seen: ${Object.keys(tbl.rows).slice(0, 20).map((s) => `"${s}"`).join(', ')}`);
+    const note = `[${debugLabel}] missing sales/netProfit row. labels seen: ${Object.keys(tbl.rows).slice(0, 30).map((s) => `"${s}"`).join(', ')}`;
+    console.log(`    ${note}`);
+    notes.push(note);
     return null;
   }
   return { years, sales, expenses, opProfit, opmPct, otherIncome, interest, depreciation, pbt, taxPct, netProfit, eps };
 }
 
-function parseQuarters(html, debugLabel = 'quarters') {
+function parseQuarters(html, debugLabel = 'quarters', notes = []) {
   const sec = extractSection(html, 'quarters', /Quarterly\s*Results/);
   const tbl = parseFirstTable(sec);
   if (!tbl) return null;
@@ -253,7 +272,9 @@ function parseQuarters(html, debugLabel = 'quarters') {
   const netProfit = numericRow(findRow(tbl.rows, /net\s*profit|\bpat\b|profit\s*after\s*tax/));
   const eps = numericRow(findRow(tbl.rows, /^\s*eps\b|earnings\s*per\s*share/));
   if (!sales) {
-    console.log(`    [${debugLabel}] missing sales/revenue row. labels seen: ${Object.keys(tbl.rows).slice(0, 20).map((s) => `"${s}"`).join(', ')}`);
+    const note = `[${debugLabel}] missing sales/revenue row. labels seen: ${Object.keys(tbl.rows).slice(0, 30).map((s) => `"${s}"`).join(', ')}`;
+    console.log(`    ${note}`);
+    notes.push(note);
   }
   return {
     quarters,
@@ -266,7 +287,7 @@ function parseQuarters(html, debugLabel = 'quarters') {
   };
 }
 
-function parseCashFlow(html, debugLabel = 'cash-flow') {
+function parseCashFlow(html, debugLabel = 'cash-flow', notes = []) {
   const sec = extractSection(html, 'cash-flow', /Cash\s*Flows?/);
   const tbl = parseFirstTable(sec);
   if (!tbl) return null;
@@ -275,7 +296,9 @@ function parseCashFlow(html, debugLabel = 'cash-flow') {
   const cff = numericRow(findRow(tbl.rows, /cash\s*(?:from|flow\s*from)?\s*financing/));
   const netCash = numericRow(findRow(tbl.rows, /net\s*cash\s*flow|net\s*increase\s*in\s*cash|net\s*change\s*in\s*cash/));
   if (!cfo) {
-    console.log(`    [${debugLabel}] missing CFO row. labels seen: ${Object.keys(tbl.rows).slice(0, 20).map((s) => `"${s}"`).join(', ')}`);
+    const note = `[${debugLabel}] missing CFO row. labels seen: ${Object.keys(tbl.rows).slice(0, 30).map((s) => `"${s}"`).join(', ')}`;
+    console.log(`    ${note}`);
+    notes.push(note);
   }
   return { years: tbl.headers, cfo, cfi, cff, netCash };
 }
@@ -295,12 +318,13 @@ function parseRatios(html) {
   };
 }
 
-function parseShareholding(html, debugLabel = 'shareholding') {
-  // Screener has tabs Quarterly / Yearly under the shareholding section.
-  // We extract the FIRST table — that's the quarterly view by default.
+function parseShareholding(html, debugLabel = 'shareholding', notes = []) {
   const sec = extractSection(html, 'shareholding', /Shareholding\s*Pattern/);
   if (!sec) {
-    console.log(`    [${debugLabel}] no <section id="shareholding"> nor "Shareholding Pattern" header found`);
+    const seenIds = [...html.matchAll(/<section[^>]*\bid=["']([^"']+)["']/g)].map((m) => m[1]);
+    const note = `[${debugLabel}] section "shareholding" not found. <section> ids seen: ${seenIds.join(', ') || '(none)'}`;
+    console.log(`    ${note}`);
+    notes.push(note);
     return null;
   }
 
@@ -312,7 +336,9 @@ function parseShareholding(html, debugLabel = 'shareholding') {
 
   const tbl = parseFirstTable(chunk);
   if (!tbl) {
-    console.log(`    [${debugLabel}] section found but no <table class="data-table"> inside; section length=${sec.length}`);
+    const note = `[${debugLabel}] section (${sec.length}b) found but no parseable table. snippet: ${sec.slice(0, 240).replace(/\s+/g, ' ').trim()}`;
+    console.log(`    ${note}`);
+    notes.push(note);
     return null;
   }
 
@@ -324,7 +350,9 @@ function parseShareholding(html, debugLabel = 'shareholding') {
   const publicShare = numericRow(findRow(tbl.rows, /\bpublic\b/));
 
   if (!promoter && !fii && !dii) {
-    console.log(`    [${debugLabel}] no promoter/fii/dii row matched. labels seen: ${Object.keys(tbl.rows).slice(0, 20).map((s) => `"${s}"`).join(', ')}`);
+    const note = `[${debugLabel}] no promoter/fii/dii row matched. labels seen: ${Object.keys(tbl.rows).slice(0, 30).map((s) => `"${s}"`).join(', ')}`;
+    console.log(`    ${note}`);
+    notes.push(note);
     return null;
   }
   return { quarters, promoter, fii, dii, govt, public: publicShare };
@@ -579,14 +607,15 @@ function deriveOwnership(shp) {
 // ----------------------------------------------------------------------------
 async function refreshCompany(slug, ticker = slug) {
   const html = await fetchScreenerHtml(slug);
+  const notes = [];
   return {
-    html, // returned so we can dump on-demand debugging if needed
+    notes,
     summary: parseTopRatios(html),
-    profitLoss: parseProfitLoss(html, `${ticker} P&L`),
-    quarterly: parseQuarters(html, `${ticker} Q`),
-    cashFlow: parseCashFlow(html, `${ticker} CF`),
+    profitLoss: parseProfitLoss(html, `${ticker} P&L`, notes),
+    quarterly: parseQuarters(html, `${ticker} Q`, notes),
+    cashFlow: parseCashFlow(html, `${ticker} CF`, notes),
     ratios: parseRatios(html),
-    shareholding: parseShareholding(html, `${ticker} SHP`),
+    shareholding: parseShareholding(html, `${ticker} SHP`, notes),
     bizMix: parseMixTable(html, /Segment[-\s]?wise(?:\s*Revenue)?/i),
     geoMix: parseMixTable(html, /Geograph(?:ic|y)(?:\s*Revenue)?/i),
   };
@@ -607,6 +636,9 @@ async function main() {
   json.derived = { revPat: {}, marginTrend: {}, cfoPat: {}, wc: {}, returns: {}, promoterHolding: {}, ownershipTrend: {} };
   json.financialMetrics = json.financialMetrics || {};
   json.ownership = json.ownership || {};
+  // Diagnostic notes from this run — committed alongside the data so we
+  // can see why a section parser failed without combing GitHub Actions logs.
+  const debugNotes = [];
 
   const tickers = Object.keys(json.companies);
   console.log(`Refreshing ${tickers.length} companies from screener.in${COOKIE ? ' (with cookie)' : ' (no cookie — limited to ~5y)'} ...`);
@@ -618,6 +650,7 @@ async function main() {
     console.log(`  ${ticker.padEnd(12)} (${slug.padEnd(14)})`);
     try {
       const got = await refreshCompany(slug, ticker);
+      if (got.notes?.length) debugNotes.push(...got.notes);
 
       // Raw sections
       if (got.summary && Object.keys(got.summary).length) {
@@ -700,6 +733,8 @@ async function main() {
     fetcher: 'scripts/fetch-company-data.mjs',
     dataTypes: ['summary', 'profitLoss', 'quarterly', 'cashFlow', 'ratios', 'shareholdingHistory', 'derived', 'bizMix', 'geoMix', 'financialMetrics', 'ownership'],
   };
+  if (debugNotes.length) json._debug = debugNotes;
+  else delete json._debug;
 
   await writeFile(DATA_FILE, JSON.stringify(json, null, 2) + '\n');
   console.log(`\nDone. refreshed=${refreshed} failed=${failed} -> ${DATA_FILE}`);
