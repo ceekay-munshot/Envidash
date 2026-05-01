@@ -71,7 +71,9 @@ async function fetchScreenerHtml(slug) {
 // ----------------------------------------------------------------------------
 const stripHtml = (s) =>
   String(s)
-    .replace(/<button[\s\S]*?<\/button>/gi, ' ')
+    // Screener wraps expandable row labels (Sales, Expenses, Net Profit,
+    // Promoters, etc.) inside <button class="button-plain">…</button>. Drop
+    // the tags but keep the inner text so the label survives.
     .replace(/<svg[\s\S]*?<\/svg>/gi, ' ')
     .replace(/<[^>]+>/g, ' ')
     .replace(/&nbsp;/g, ' ')
@@ -234,10 +236,12 @@ function parseProfitLoss(html, debugLabel = 'profit-loss') {
   const netProfit = numericRow(findRow(tbl.rows, /net\s*profit|\bpat\b|profit\s*after\s*tax/));
   const eps = numericRow(findRow(tbl.rows, /^\s*eps\b|earnings\s*per\s*share/));
 
-  if (!sales || !netProfit) {
-    console.log(`    [${debugLabel}] missing sales/netProfit row. labels seen: ${Object.keys(tbl.rows).slice(0, 20).map((s) => `"${s}"`).join(', ')}`);
+  if (!sales && !netProfit && !opProfit) {
+    console.log(`    [${debugLabel}] no sales/netProfit/opProfit rows matched. labels seen: ${Object.keys(tbl.rows).slice(0, 20).map((s) => `"${s}"`).join(', ')}`);
     return null;
   }
+  if (!sales) console.log(`    [${debugLabel}] no sales row matched. labels seen: ${Object.keys(tbl.rows).slice(0, 20).map((s) => `"${s}"`).join(', ')}`);
+  if (!netProfit) console.log(`    [${debugLabel}] no netProfit row matched.`);
   return { years, sales, expenses, opProfit, opmPct, otherIncome, interest, depreciation, pbt, taxPct, netProfit, eps };
 }
 
