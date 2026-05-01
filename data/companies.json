@@ -5,15 +5,22 @@
     "note": "Seed data — awaiting refresh from Screener.in. Use GitHub Actions workflow for automated updates: .github/workflows/fetch-screener-data.yml",
     "sources": {
       "primary": "Screener.in (screener.in/company/{slug}/consolidated/)",
-      "fetcher": "scripts/fetch-company-data.mjs (Node.js HTML scraper)",
+      "fetcher": "scripts/fetch-company-data.mjs",
       "dataTypes": [
+        "summary",
+        "profitLoss",
+        "quarterly",
+        "cashFlow",
+        "ratios",
+        "shareholdingHistory",
+        "derived",
         "bizMix",
         "geoMix",
         "financialMetrics",
         "ownership"
       ]
     },
-    "schemaVersion": 2
+    "schemaVersion": 3
   },
   "companies": {
     "INFY": {
@@ -738,5 +745,1546 @@
       "dii": 12.83,
       "source": "screener.in"
     }
+  },
+  "summary": {
+    "INFY": {
+      "marketCap": 479294,
+      "currentPrice": 1182,
+      "high52w": 1728,
+      "low52w": 1150,
+      "pe": 15.9,
+      "bookValue": 229,
+      "dividendYield": 4.06,
+      "roce": 40,
+      "roe": 31.9,
+      "faceValue": 5,
+      "source": "screener.in"
+    },
+    "TCS": {
+      "marketCap": 895079,
+      "currentPrice": 2474,
+      "high52w": 3630,
+      "low52w": 2346,
+      "pe": 17.1,
+      "bookValue": 296,
+      "dividendYield": 2.43,
+      "roce": 63,
+      "roe": 51.8,
+      "faceValue": 1,
+      "source": "screener.in"
+    },
+    "HDFCBANK": {
+      "marketCap": 1188074,
+      "currentPrice": 772,
+      "high52w": 1020,
+      "low52w": 727,
+      "pe": 15.6,
+      "bookValue": 378,
+      "dividendYield": 1.68,
+      "roce": 7.04,
+      "roe": 13.8,
+      "faceValue": 1,
+      "source": "screener.in"
+    },
+    "RELIANCE": {
+      "marketCap": 1936235,
+      "currentPrice": 1431,
+      "high52w": 1612,
+      "low52w": 1290,
+      "pe": 24,
+      "bookValue": 668,
+      "dividendYield": 0.38,
+      "roce": 10.5,
+      "roe": 9.25,
+      "faceValue": 10,
+      "source": "screener.in"
+    },
+    "ASIANPAINT": {
+      "marketCap": 234476,
+      "currentPrice": 2444,
+      "high52w": 2986,
+      "low52w": 2115,
+      "pe": 57.5,
+      "bookValue": 204,
+      "dividendYield": 1.01,
+      "roce": 25.7,
+      "roe": 20.6,
+      "faceValue": 1,
+      "source": "screener.in"
+    },
+    "BAJFINANCE": {
+      "marketCap": 583372,
+      "currentPrice": 937,
+      "high52w": 1102,
+      "low52w": 788,
+      "pe": 30.4,
+      "bookValue": 183,
+      "dividendYield": 0.47,
+      "roce": 10.8,
+      "roe": 18.2,
+      "faceValue": 1,
+      "source": "screener.in"
+    }
+  },
+  "profitLoss": {},
+  "quarterly": {
+    "INFY": {
+      "quarters": [
+        "Mar 2023",
+        "Jun 2023",
+        "Sep 2023",
+        "Dec 2023",
+        "Mar 2024",
+        "Jun 2024",
+        "Sep 2024",
+        "Dec 2024",
+        "Mar 2025",
+        "Jun 2025",
+        "Sep 2025",
+        "Dec 2025",
+        "Mar 2026"
+      ],
+      "sales": null,
+      "expenses": null,
+      "opProfit": [
+        8998,
+        9064,
+        9440,
+        9137,
+        8784,
+        9437,
+        9809,
+        10115,
+        9874,
+        9943,
+        10535,
+        10634,
+        11167
+      ],
+      "opmPct": [
+        24,
+        24,
+        24,
+        24,
+        23,
+        24,
+        24,
+        24,
+        24,
+        24,
+        24,
+        23,
+        24
+      ],
+      "netProfit": null,
+      "eps": [
+        14.77,
+        14.32,
+        14.97,
+        14.71,
+        19.2,
+        15.34,
+        15.67,
+        16.39,
+        16.93,
+        16.66,
+        17.73,
+        16.41,
+        20.96
+      ],
+      "source": "screener.in"
+    },
+    "TCS": {
+      "quarters": [
+        "Mar 2023",
+        "Jun 2023",
+        "Sep 2023",
+        "Dec 2023",
+        "Mar 2024",
+        "Jun 2024",
+        "Sep 2024",
+        "Dec 2024",
+        "Mar 2025",
+        "Jun 2025",
+        "Sep 2025",
+        "Dec 2025",
+        "Mar 2026"
+      ],
+      "sales": null,
+      "expenses": null,
+      "opProfit": [
+        15774,
+        14998,
+        15746,
+        16388,
+        17164,
+        16662,
+        16731,
+        17034,
+        16980,
+        16875,
+        17978,
+        18269,
+        19276
+      ],
+      "opmPct": [
+        27,
+        25,
+        26,
+        27,
+        28,
+        27,
+        26,
+        27,
+        26,
+        27,
+        27,
+        27,
+        27
+      ],
+      "netProfit": null,
+      "eps": [
+        31.13,
+        30.26,
+        31,
+        30.56,
+        34.37,
+        33.28,
+        32.92,
+        34.22,
+        33.79,
+        35.27,
+        33.37,
+        29.45,
+        37.92
+      ],
+      "source": "screener.in"
+    },
+    "HDFCBANK": {
+      "quarters": [
+        "Mar 2023",
+        "Jun 2023",
+        "Sep 2023",
+        "Dec 2023",
+        "Mar 2024",
+        "Jun 2024",
+        "Sep 2024",
+        "Dec 2024",
+        "Mar 2025",
+        "Jun 2025",
+        "Sep 2025",
+        "Dec 2025",
+        "Mar 2026"
+      ],
+      "sales": null,
+      "expenses": null,
+      "opProfit": null,
+      "opmPct": null,
+      "netProfit": null,
+      "eps": [
+        11.29,
+        11.06,
+        11.09,
+        11.37,
+        11.6,
+        10.83,
+        11.68,
+        11.54,
+        12.31,
+        10.6,
+        12.76,
+        12.87,
+        13.22
+      ],
+      "source": "screener.in"
+    },
+    "RELIANCE": {
+      "quarters": [
+        "Mar 2023",
+        "Jun 2023",
+        "Sep 2023",
+        "Dec 2023",
+        "Mar 2024",
+        "Jun 2024",
+        "Sep 2024",
+        "Dec 2024",
+        "Mar 2025",
+        "Jun 2025",
+        "Sep 2025",
+        "Dec 2025",
+        "Mar 2026"
+      ],
+      "sales": null,
+      "expenses": null,
+      "opProfit": [
+        38356,
+        38093,
+        40968,
+        40656,
+        42516,
+        38765,
+        39058,
+        43789,
+        43832,
+        42905,
+        45885,
+        46018,
+        44141
+      ],
+      "opmPct": [
+        18,
+        18,
+        18,
+        18,
+        18,
+        17,
+        17,
+        18,
+        17,
+        18,
+        18,
+        17,
+        15
+      ],
+      "netProfit": null,
+      "eps": [
+        14.26,
+        11.83,
+        12.85,
+        12.76,
+        14.01,
+        11.19,
+        12.24,
+        13.7,
+        14.34,
+        19.95,
+        13.42,
+        13.78,
+        12.54
+      ],
+      "source": "screener.in"
+    },
+    "ASIANPAINT": {
+      "quarters": [
+        "Dec 2022",
+        "Mar 2023",
+        "Jun 2023",
+        "Sep 2023",
+        "Dec 2023",
+        "Mar 2024",
+        "Jun 2024",
+        "Sep 2024",
+        "Dec 2024",
+        "Mar 2025",
+        "Jun 2025",
+        "Sep 2025",
+        "Dec 2025"
+      ],
+      "sales": null,
+      "expenses": null,
+      "opProfit": [
+        1611,
+        1865,
+        2121,
+        1716,
+        2056,
+        1691,
+        1694,
+        1240,
+        1637,
+        1436,
+        1625,
+        1503,
+        1781
+      ],
+      "opmPct": [
+        19,
+        21,
+        23,
+        20,
+        23,
+        19,
+        19,
+        15,
+        19,
+        17,
+        18,
+        18,
+        20
+      ],
+      "netProfit": null,
+      "eps": [
+        11.18,
+        12.87,
+        16.16,
+        12.57,
+        15.09,
+        13.1,
+        12.2,
+        7.24,
+        11.58,
+        7.22,
+        11.47,
+        10.36,
+        11.05
+      ],
+      "source": "screener.in"
+    },
+    "BAJFINANCE": {
+      "quarters": [
+        "Mar 2023",
+        "Jun 2023",
+        "Sep 2023",
+        "Dec 2023",
+        "Mar 2024",
+        "Jun 2024",
+        "Sep 2024",
+        "Dec 2024",
+        "Mar 2025",
+        "Jun 2025",
+        "Sep 2025",
+        "Dec 2025",
+        "Mar 2026"
+      ],
+      "sales": null,
+      "expenses": null,
+      "opProfit": null,
+      "opmPct": null,
+      "netProfit": null,
+      "eps": [
+        5.22,
+        5.67,
+        5.86,
+        5.89,
+        6.18,
+        6.32,
+        6.46,
+        6.86,
+        7.21,
+        7.56,
+        7.84,
+        6.39,
+        8.78
+      ],
+      "source": "screener.in"
+    }
+  },
+  "cashFlow": {
+    "INFY": {
+      "years": [
+        "Mar 2015",
+        "Mar 2016",
+        "Mar 2017",
+        "Mar 2018",
+        "Mar 2019",
+        "Mar 2020",
+        "Mar 2021",
+        "Mar 2022",
+        "Mar 2023",
+        "Mar 2024",
+        "Mar 2025",
+        "Mar 2026"
+      ],
+      "cfo": null,
+      "cfi": null,
+      "cff": null,
+      "netCash": [
+        4417,
+        2330,
+        -10072,
+        -2754,
+        -303,
+        -919,
+        6065,
+        -7242,
+        -5299,
+        2613,
+        9669,
+        -2254
+      ],
+      "source": "screener.in"
+    },
+    "TCS": {
+      "years": [
+        "Mar 2015",
+        "Mar 2016",
+        "Mar 2017",
+        "Mar 2018",
+        "Mar 2019",
+        "Mar 2020",
+        "Mar 2021",
+        "Mar 2022",
+        "Mar 2023",
+        "Mar 2024",
+        "Mar 2025",
+        "Mar 2026"
+      ],
+      "cfo": null,
+      "cfi": null,
+      "cff": null,
+      "netCash": [
+        394,
+        4433,
+        -2698,
+        1286,
+        2341,
+        1422,
+        -1788,
+        5630,
+        -5365,
+        1893,
+        -674,
+        -1925
+      ],
+      "source": "screener.in"
+    },
+    "HDFCBANK": {
+      "years": [
+        "Mar 2015",
+        "Mar 2016",
+        "Mar 2017",
+        "Mar 2018",
+        "Mar 2019",
+        "Mar 2020",
+        "Mar 2021",
+        "Mar 2022",
+        "Mar 2023",
+        "Mar 2024",
+        "Mar 2025",
+        "Mar 2026"
+      ],
+      "cfo": null,
+      "cfi": null,
+      "cff": null,
+      "netCash": [
+        -3387,
+        2542,
+        10242,
+        73750,
+        -41244,
+        6122,
+        33332,
+        34113,
+        41762,
+        31687,
+        21113,
+        60864
+      ],
+      "source": "screener.in"
+    },
+    "RELIANCE": {
+      "years": [
+        "Mar 2015",
+        "Mar 2016",
+        "Mar 2017",
+        "Mar 2018",
+        "Mar 2019",
+        "Mar 2020",
+        "Mar 2021",
+        "Mar 2022",
+        "Mar 2023",
+        "Mar 2024",
+        "Mar 2025",
+        "Mar 2026"
+      ],
+      "cfo": null,
+      "cfi": null,
+      "cff": null,
+      "netCash": [
+        -21888,
+        -1262,
+        -8034,
+        1266,
+        3745,
+        19839,
+        -13523,
+        18781,
+        32486,
+        28561,
+        9277,
+        39475
+      ],
+      "source": "screener.in"
+    },
+    "ASIANPAINT": {
+      "years": [
+        "Mar 2014",
+        "Mar 2015",
+        "Mar 2016",
+        "Mar 2017",
+        "Mar 2018",
+        "Mar 2019",
+        "Mar 2020",
+        "Mar 2021",
+        "Mar 2022",
+        "Mar 2023",
+        "Mar 2024",
+        "Mar 2025"
+      ],
+      "cfo": null,
+      "cfi": null,
+      "cff": null,
+      "netCash": [
+        190,
+        147,
+        528,
+        90,
+        -822,
+        434,
+        -351,
+        2492,
+        -1138,
+        771,
+        573,
+        -270
+      ],
+      "source": "screener.in"
+    },
+    "BAJFINANCE": {
+      "years": [
+        "Mar 2015",
+        "Mar 2016",
+        "Mar 2017",
+        "Mar 2018",
+        "Mar 2019",
+        "Mar 2020",
+        "Mar 2021",
+        "Mar 2022",
+        "Mar 2023",
+        "Mar 2024",
+        "Mar 2025",
+        "Mar 2026"
+      ],
+      "cfo": null,
+      "cfi": null,
+      "cff": null,
+      "netCash": [
+        -557,
+        1100,
+        -972,
+        13,
+        9,
+        998,
+        505,
+        1532,
+        -1831,
+        2484,
+        -392,
+        -1746
+      ],
+      "source": "screener.in"
+    }
+  },
+  "ratios": {
+    "INFY": {
+      "years": [
+        "Mar 2015",
+        "Mar 2016",
+        "Mar 2017",
+        "Mar 2018",
+        "Mar 2019",
+        "Mar 2020",
+        "Mar 2021",
+        "Mar 2022",
+        "Mar 2023",
+        "Mar 2024",
+        "Mar 2025",
+        "Mar 2026"
+      ],
+      "debtorDays": [
+        66,
+        66,
+        66,
+        68,
+        65,
+        74,
+        70,
+        68,
+        63,
+        72,
+        70,
+        72
+      ],
+      "inventoryDays": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "daysPayable": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "cashConvCycle": [
+        66,
+        66,
+        66,
+        68,
+        65,
+        74,
+        70,
+        68,
+        63,
+        72,
+        70,
+        72
+      ],
+      "workingCapitalDays": [
+        3,
+        34,
+        38,
+        50,
+        36,
+        42,
+        36,
+        28,
+        31,
+        54,
+        39,
+        33
+      ],
+      "roce": [
+        36,
+        33,
+        30,
+        30,
+        32,
+        32,
+        35,
+        37,
+        40,
+        40,
+        38,
+        40
+      ],
+      "source": "screener.in"
+    },
+    "TCS": {
+      "years": [
+        "Mar 2015",
+        "Mar 2016",
+        "Mar 2017",
+        "Mar 2018",
+        "Mar 2019",
+        "Mar 2020",
+        "Mar 2021",
+        "Mar 2022",
+        "Mar 2023",
+        "Mar 2024",
+        "Mar 2025",
+        "Mar 2026"
+      ],
+      "debtorDays": [
+        79,
+        81,
+        70,
+        74,
+        68,
+        71,
+        67,
+        80,
+        81,
+        81,
+        84,
+        93
+      ],
+      "inventoryDays": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "daysPayable": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "cashConvCycle": [
+        79,
+        81,
+        70,
+        74,
+        68,
+        71,
+        67,
+        80,
+        81,
+        81,
+        84,
+        93
+      ],
+      "workingCapitalDays": [
+        33,
+        62,
+        62,
+        61,
+        70,
+        64,
+        59,
+        33,
+        30,
+        34,
+        34,
+        38
+      ],
+      "roce": [
+        50,
+        51,
+        44,
+        39,
+        47,
+        47,
+        49,
+        54,
+        59,
+        64,
+        65,
+        63
+      ],
+      "source": "screener.in"
+    },
+    "HDFCBANK": {
+      "years": [
+        "Mar 2015",
+        "Mar 2016",
+        "Mar 2017",
+        "Mar 2018",
+        "Mar 2019",
+        "Mar 2020",
+        "Mar 2021",
+        "Mar 2022",
+        "Mar 2023",
+        "Mar 2024",
+        "Mar 2025",
+        "Mar 2026"
+      ],
+      "debtorDays": null,
+      "inventoryDays": null,
+      "daysPayable": null,
+      "cashConvCycle": null,
+      "workingCapitalDays": null,
+      "roce": null,
+      "source": "screener.in"
+    },
+    "RELIANCE": {
+      "years": [
+        "Mar 2015",
+        "Mar 2016",
+        "Mar 2017",
+        "Mar 2018",
+        "Mar 2019",
+        "Mar 2020",
+        "Mar 2021",
+        "Mar 2022",
+        "Mar 2023",
+        "Mar 2024",
+        "Mar 2025",
+        "Mar 2026"
+      ],
+      "debtorDays": [
+        5,
+        6,
+        10,
+        16,
+        19,
+        12,
+        15,
+        12,
+        12,
+        13,
+        16,
+        20
+      ],
+      "inventoryDays": [
+        66,
+        90,
+        84,
+        83,
+        63,
+        67,
+        102,
+        83,
+        87,
+        95,
+        85,
+        88
+      ],
+      "daysPayable": [
+        74,
+        117,
+        132,
+        146,
+        100,
+        87,
+        136,
+        123,
+        91,
+        111,
+        108,
+        84
+      ],
+      "cashConvCycle": [
+        -2,
+        -21,
+        -38,
+        -46,
+        -18,
+        -9,
+        -19,
+        -27,
+        7,
+        -3,
+        -8,
+        24
+      ],
+      "workingCapitalDays": [
+        -64,
+        -148,
+        -179,
+        -179,
+        -108,
+        -158,
+        -58,
+        -56,
+        -66,
+        -53,
+        -68,
+        -32
+      ],
+      "roce": [
+        9,
+        10,
+        10,
+        11,
+        12,
+        11,
+        8,
+        8,
+        9,
+        10,
+        10,
+        10
+      ],
+      "source": "screener.in"
+    },
+    "ASIANPAINT": {
+      "years": [
+        "Mar 2014",
+        "Mar 2015",
+        "Mar 2016",
+        "Mar 2017",
+        "Mar 2018",
+        "Mar 2019",
+        "Mar 2020",
+        "Mar 2021",
+        "Mar 2022",
+        "Mar 2023",
+        "Mar 2024",
+        "Mar 2025"
+      ],
+      "debtorDays": [
+        33,
+        32,
+        30,
+        35,
+        38,
+        36,
+        32,
+        44,
+        49,
+        49,
+        50,
+        46
+      ],
+      "inventoryDays": [
+        121,
+        123,
+        108,
+        138,
+        117,
+        119,
+        127,
+        134,
+        142,
+        121,
+        122,
+        142
+      ],
+      "daysPayable": [
+        102,
+        84,
+        84,
+        101,
+        95,
+        90,
+        80,
+        119,
+        96,
+        71,
+        79,
+        81
+      ],
+      "cashConvCycle": [
+        52,
+        70,
+        54,
+        72,
+        60,
+        65,
+        79,
+        59,
+        94,
+        99,
+        93,
+        107
+      ],
+      "workingCapitalDays": [
+        5,
+        11,
+        15,
+        22,
+        22,
+        16,
+        34,
+        37,
+        57,
+        54,
+        49,
+        52
+      ],
+      "roce": [
+        45,
+        42,
+        42,
+        38,
+        36,
+        33,
+        33,
+        34,
+        29,
+        34,
+        38,
+        26
+      ],
+      "source": "screener.in"
+    },
+    "BAJFINANCE": {
+      "years": [
+        "Mar 2015",
+        "Mar 2016",
+        "Mar 2017",
+        "Mar 2018",
+        "Mar 2019",
+        "Mar 2020",
+        "Mar 2021",
+        "Mar 2022",
+        "Mar 2023",
+        "Mar 2024",
+        "Mar 2025",
+        "Mar 2026"
+      ],
+      "debtorDays": null,
+      "inventoryDays": null,
+      "daysPayable": null,
+      "cashConvCycle": null,
+      "workingCapitalDays": null,
+      "roce": null,
+      "source": "screener.in"
+    }
+  },
+  "shareholdingHistory": {},
+  "derived": {
+    "revPat": {},
+    "marginTrend": {},
+    "cfoPat": {},
+    "wc": {
+      "INFY": {
+        "5Y": {
+          "labels": [
+            "FY22",
+            "FY23",
+            "FY24",
+            "FY25",
+            "FY26"
+          ],
+          "dso": [
+            68,
+            63,
+            72,
+            70,
+            72
+          ],
+          "dpo": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "nwc": [
+            28,
+            31,
+            54,
+            39,
+            33
+          ]
+        },
+        "10Y": {
+          "labels": [
+            "FY17",
+            "FY18",
+            "FY19",
+            "FY20",
+            "FY21",
+            "FY22",
+            "FY23",
+            "FY24",
+            "FY25",
+            "FY26"
+          ],
+          "dso": [
+            66,
+            68,
+            65,
+            74,
+            70,
+            68,
+            63,
+            72,
+            70,
+            72
+          ],
+          "dpo": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "nwc": [
+            38,
+            50,
+            36,
+            42,
+            36,
+            28,
+            31,
+            54,
+            39,
+            33
+          ]
+        }
+      },
+      "TCS": {
+        "5Y": {
+          "labels": [
+            "FY22",
+            "FY23",
+            "FY24",
+            "FY25",
+            "FY26"
+          ],
+          "dso": [
+            80,
+            81,
+            81,
+            84,
+            93
+          ],
+          "dpo": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "nwc": [
+            33,
+            30,
+            34,
+            34,
+            38
+          ]
+        },
+        "10Y": {
+          "labels": [
+            "FY17",
+            "FY18",
+            "FY19",
+            "FY20",
+            "FY21",
+            "FY22",
+            "FY23",
+            "FY24",
+            "FY25",
+            "FY26"
+          ],
+          "dso": [
+            70,
+            74,
+            68,
+            71,
+            67,
+            80,
+            81,
+            81,
+            84,
+            93
+          ],
+          "dpo": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "nwc": [
+            62,
+            61,
+            70,
+            64,
+            59,
+            33,
+            30,
+            34,
+            34,
+            38
+          ]
+        }
+      },
+      "RELIANCE": {
+        "5Y": {
+          "labels": [
+            "FY22",
+            "FY23",
+            "FY24",
+            "FY25",
+            "FY26"
+          ],
+          "dso": [
+            12,
+            12,
+            13,
+            16,
+            20
+          ],
+          "dpo": [
+            123,
+            91,
+            111,
+            108,
+            84
+          ],
+          "nwc": [
+            -56,
+            -66,
+            -53,
+            -68,
+            -32
+          ]
+        },
+        "10Y": {
+          "labels": [
+            "FY17",
+            "FY18",
+            "FY19",
+            "FY20",
+            "FY21",
+            "FY22",
+            "FY23",
+            "FY24",
+            "FY25",
+            "FY26"
+          ],
+          "dso": [
+            10,
+            16,
+            19,
+            12,
+            15,
+            12,
+            12,
+            13,
+            16,
+            20
+          ],
+          "dpo": [
+            132,
+            146,
+            100,
+            87,
+            136,
+            123,
+            91,
+            111,
+            108,
+            84
+          ],
+          "nwc": [
+            -179,
+            -179,
+            -108,
+            -158,
+            -58,
+            -56,
+            -66,
+            -53,
+            -68,
+            -32
+          ]
+        }
+      },
+      "ASIANPAINT": {
+        "5Y": {
+          "labels": [
+            "FY21",
+            "FY22",
+            "FY23",
+            "FY24",
+            "FY25"
+          ],
+          "dso": [
+            44,
+            49,
+            49,
+            50,
+            46
+          ],
+          "dpo": [
+            119,
+            96,
+            71,
+            79,
+            81
+          ],
+          "nwc": [
+            37,
+            57,
+            54,
+            49,
+            52
+          ]
+        },
+        "10Y": {
+          "labels": [
+            "FY16",
+            "FY17",
+            "FY18",
+            "FY19",
+            "FY20",
+            "FY21",
+            "FY22",
+            "FY23",
+            "FY24",
+            "FY25"
+          ],
+          "dso": [
+            30,
+            35,
+            38,
+            36,
+            32,
+            44,
+            49,
+            49,
+            50,
+            46
+          ],
+          "dpo": [
+            84,
+            101,
+            95,
+            90,
+            80,
+            119,
+            96,
+            71,
+            79,
+            81
+          ],
+          "nwc": [
+            15,
+            22,
+            22,
+            16,
+            34,
+            37,
+            57,
+            54,
+            49,
+            52
+          ]
+        }
+      }
+    },
+    "returns": {
+      "INFY": {
+        "3Y": {
+          "labels": [
+            "FY24",
+            "FY25",
+            "FY26"
+          ],
+          "roce": [
+            40,
+            38,
+            40
+          ]
+        },
+        "5Y": {
+          "labels": [
+            "FY22",
+            "FY23",
+            "FY24",
+            "FY25",
+            "FY26"
+          ],
+          "roce": [
+            37,
+            40,
+            40,
+            38,
+            40
+          ]
+        }
+      },
+      "TCS": {
+        "3Y": {
+          "labels": [
+            "FY24",
+            "FY25",
+            "FY26"
+          ],
+          "roce": [
+            64,
+            65,
+            63
+          ]
+        },
+        "5Y": {
+          "labels": [
+            "FY22",
+            "FY23",
+            "FY24",
+            "FY25",
+            "FY26"
+          ],
+          "roce": [
+            54,
+            59,
+            64,
+            65,
+            63
+          ]
+        }
+      },
+      "RELIANCE": {
+        "3Y": {
+          "labels": [
+            "FY24",
+            "FY25",
+            "FY26"
+          ],
+          "roce": [
+            10,
+            10,
+            10
+          ]
+        },
+        "5Y": {
+          "labels": [
+            "FY22",
+            "FY23",
+            "FY24",
+            "FY25",
+            "FY26"
+          ],
+          "roce": [
+            8,
+            9,
+            10,
+            10,
+            10
+          ]
+        }
+      },
+      "ASIANPAINT": {
+        "3Y": {
+          "labels": [
+            "FY23",
+            "FY24",
+            "FY25"
+          ],
+          "roce": [
+            34,
+            38,
+            26
+          ]
+        },
+        "5Y": {
+          "labels": [
+            "FY21",
+            "FY22",
+            "FY23",
+            "FY24",
+            "FY25"
+          ],
+          "roce": [
+            34,
+            29,
+            34,
+            38,
+            26
+          ]
+        }
+      }
+    },
+    "promoterHolding": {},
+    "ownershipTrend": {}
   }
 }
