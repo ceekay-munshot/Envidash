@@ -111,9 +111,12 @@ function extractSection(html, sectionId, headerRegex = null) {
 
 // Parse the FIRST <table> inside `chunk` into { headers, rows: { lcLabel -> values[] } }.
 // Header strip handles "Mar 2024", "TTM", "Jun 2024" — we keep the raw text.
+// Prefers <table class="data-table"> when present, since Screener decorates
+// helper / preview tables with a different class.
 function parseFirstTable(chunk) {
   if (!chunk) return null;
-  const tableMatch = chunk.match(/<table[\s\S]*?<\/table>/i);
+  const dataTableMatch = chunk.match(/<table[^>]*class=["'][^"']*\bdata-table\b[^"']*["'][\s\S]*?<\/table>/i);
+  const tableMatch = dataTableMatch || chunk.match(/<table[\s\S]*?<\/table>/i);
   if (!tableMatch) return null;
   const t = tableMatch[0];
 
@@ -212,56 +215,69 @@ function parseTopRatios(html) {
   return summary;
 }
 
-function parseProfitLoss(html) {
-  const sec = extractSection(html, 'profit-loss', /Profit\s*&\s*Loss/);
+function parseProfitLoss(html, debugLabel = 'profit-loss') {
+  const sec = extractSection(html, 'profit-loss', /Profit\s*&(?:amp;)?\s*Loss/);
   const tbl = parseFirstTable(sec);
   if (!tbl) return null;
   const years = tbl.headers; // e.g. ["Mar 2014", ..., "Mar 2025", "TTM"]
   if (!years.length) return null;
-  const sales = numericRow(findRow(tbl.rows, /^sales\b|^revenue\b/));
-  const expenses = numericRow(findRow(tbl.rows, /^expenses\b/));
-  const opProfit = numericRow(findRow(tbl.rows, /^operating\s*profit\b/));
-  const opmPct = numericRow(findRow(tbl.rows, /^opm\s*%/));
-  const otherIncome = numericRow(findRow(tbl.rows, /^other\s*income\b/));
-  const interest = numericRow(findRow(tbl.rows, /^interest\b/));
-  const depreciation = numericRow(findRow(tbl.rows, /^depreciation\b/));
-  const pbt = numericRow(findRow(tbl.rows, /profit\s*before\s*tax|^pbt\b/));
-  const taxPct = numericRow(findRow(tbl.rows, /^tax\s*%/));
-  const netProfit = numericRow(findRow(tbl.rows, /^net\s*profit\b|^pat\b/));
-  const eps = numericRow(findRow(tbl.rows, /^eps\b|earnings\s*per\s*share/));
+  // Banks use "Revenue" / "Interest Earned"; insurers use "Net Premium Income".
+  const sales = numericRow(findRow(tbl.rows, /\bsales\b|\brevenue\b|interest\s*earned|net\s*premium|operating\s*income|total\s*income/));
+  const expenses = numericRow(findRow(tbl.rows, /\bexpenses\b|operating\s*expenses/));
+  const opProfit = numericRow(findRow(tbl.rows, /operating\s*profit|operating\s*income(?!.*tax)|financing\s*profit/));
+  const opmPct = numericRow(findRow(tbl.rows, /\bopm\b|operating\s*margin|financing\s*margin/));
+  const otherIncome = numericRow(findRow(tbl.rows, /other\s*income/));
+  const interest = numericRow(findRow(tbl.rows, /\binterest\b(?!\s*earned)/));
+  const depreciation = numericRow(findRow(tbl.rows, /depreciation|amortis/));
+  const pbt = numericRow(findRow(tbl.rows, /profit\s*before\s*tax|\bpbt\b/));
+  const taxPct = numericRow(findRow(tbl.rows, /^\s*tax\s*%|tax\s*rate/));
+  const netProfit = numericRow(findRow(tbl.rows, /net\s*profit|\bpat\b|profit\s*after\s*tax/));
+  const eps = numericRow(findRow(tbl.rows, /^\s*eps\b|earnings\s*per\s*share/));
 
-  if (!sales || !netProfit) return null;
+  if (!sales || !netProfit) {
+    console.log(`    [${debugLabel}] missing sales/netProfit row. labels seen: ${Object.keys(tbl.rows).slice(0, 20).map((s) => `"${s}"`).join(', ')}`);
+    return null;
+  }
   return { years, sales, expenses, opProfit, opmPct, otherIncome, interest, depreciation, pbt, taxPct, netProfit, eps };
 }
 
-function parseQuarters(html) {
+function parseQuarters(html, debugLabel = 'quarters') {
   const sec = extractSection(html, 'quarters', /Quarterly\s*Results/);
   const tbl = parseFirstTable(sec);
   if (!tbl) return null;
   const quarters = tbl.headers;
   if (!quarters.length) return null;
+  const sales = numericRow(findRow(tbl.rows, /\bsales\b|\brevenue\b|interest\s*earned|net\s*premium|operating\s*income|total\s*income/));
+  const opProfit = numericRow(findRow(tbl.rows, /operating\s*profit|financing\s*profit/));
+  const opmPct = numericRow(findRow(tbl.rows, /\bopm\b|operating\s*margin|financing\s*margin/));
+  const netProfit = numericRow(findRow(tbl.rows, /net\s*profit|\bpat\b|profit\s*after\s*tax/));
+  const eps = numericRow(findRow(tbl.rows, /^\s*eps\b|earnings\s*per\s*share/));
+  if (!sales) {
+    console.log(`    [${debugLabel}] missing sales/revenue row. labels seen: ${Object.keys(tbl.rows).slice(0, 20).map((s) => `"${s}"`).join(', ')}`);
+  }
   return {
     quarters,
-    sales: numericRow(findRow(tbl.rows, /^sales\b|^revenue\b/)),
-    expenses: numericRow(findRow(tbl.rows, /^expenses\b/)),
-    opProfit: numericRow(findRow(tbl.rows, /^operating\s*profit\b/)),
-    opmPct: numericRow(findRow(tbl.rows, /^opm\s*%/)),
-    netProfit: numericRow(findRow(tbl.rows, /^net\s*profit\b|^pat\b/)),
-    eps: numericRow(findRow(tbl.rows, /^eps\b/)),
+    sales,
+    expenses: numericRow(findRow(tbl.rows, /\bexpenses\b/)),
+    opProfit,
+    opmPct,
+    netProfit,
+    eps,
   };
 }
 
-function parseCashFlow(html) {
+function parseCashFlow(html, debugLabel = 'cash-flow') {
   const sec = extractSection(html, 'cash-flow', /Cash\s*Flows?/);
   const tbl = parseFirstTable(sec);
   if (!tbl) return null;
-  return {
-    years: tbl.headers,
-    cfo: numericRow(findRow(tbl.rows, /cash\s*from\s*operating/)),
-    cfi: numericRow(findRow(tbl.rows, /cash\s*from\s*investing/)),
-    cff: numericRow(findRow(tbl.rows, /cash\s*from\s*financing/)),
-    netCash: numericRow(findRow(tbl.rows, /net\s*cash\s*flow/)),
-  };
+  const cfo = numericRow(findRow(tbl.rows, /cash\s*(?:from|flow\s*from)?\s*operating|cash\s*generated\s*from\s*operations/));
+  const cfi = numericRow(findRow(tbl.rows, /cash\s*(?:from|flow\s*from)?\s*investing/));
+  const cff = numericRow(findRow(tbl.rows, /cash\s*(?:from|flow\s*from)?\s*financing/));
+  const netCash = numericRow(findRow(tbl.rows, /net\s*cash\s*flow|net\s*increase\s*in\s*cash|net\s*change\s*in\s*cash/));
+  if (!cfo) {
+    console.log(`    [${debugLabel}] missing CFO row. labels seen: ${Object.keys(tbl.rows).slice(0, 20).map((s) => `"${s}"`).join(', ')}`);
+  }
+  return { years: tbl.headers, cfo, cfi, cff, netCash };
 }
 
 function parseRatios(html) {
@@ -279,32 +295,38 @@ function parseRatios(html) {
   };
 }
 
-function parseShareholding(html) {
+function parseShareholding(html, debugLabel = 'shareholding') {
   // Screener has tabs Quarterly / Yearly under the shareholding section.
   // We extract the FIRST table — that's the quarterly view by default.
   const sec = extractSection(html, 'shareholding', /Shareholding\s*Pattern/);
-  if (!sec) return null;
+  if (!sec) {
+    console.log(`    [${debugLabel}] no <section id="shareholding"> nor "Shareholding Pattern" header found`);
+    return null;
+  }
 
-  // The two tabs may both be in the DOM. Prefer the one with <h2>Quarterly</h2>
-  // marker if present; otherwise just the first table.
+  // The two tabs may both be in the DOM. Prefer the quarterly tab when its
+  // wrapper is present; otherwise fall back to whichever table is first.
   let chunk = sec;
-  const quarterlyDiv = sec.match(/<div[^>]*\bid=["']quarterly-shp["'][^>]*>([\s\S]*?)<\/div>\s*<div[^>]*\bid=["']yearly-shp["']/i);
+  const quarterlyDiv = sec.match(/<div[^>]*\bid=["']quarterly-shp["'][^>]*>([\s\S]*?)(?=<div[^>]*\bid=["']yearly-shp["']|<\/section>|$)/i);
   if (quarterlyDiv) chunk = quarterlyDiv[1];
 
   const tbl = parseFirstTable(chunk);
-  if (!tbl) return null;
+  if (!tbl) {
+    console.log(`    [${debugLabel}] section found but no <table class="data-table"> inside; section length=${sec.length}`);
+    return null;
+  }
 
   const quarters = tbl.headers;
   const promoter = numericRow(findRow(tbl.rows, /promoter/));
-  const fii = numericRow(findRow(tbl.rows, /^fii|foreign\s*inst/));
-  const dii = numericRow(findRow(tbl.rows, /^dii|domestic\s*inst/));
+  const fii = numericRow(findRow(tbl.rows, /\bfii|foreign\s*inst/));
+  const dii = numericRow(findRow(tbl.rows, /\bdii|domestic\s*inst/));
   const govt = numericRow(findRow(tbl.rows, /government/));
-  const publicShare = numericRow(findRow(tbl.rows, /^public/));
+  const publicShare = numericRow(findRow(tbl.rows, /\bpublic\b/));
 
-  // No reliable mutual-fund-specific row on Screener; downstream UI treats
-  // it as optional. Return quarterly history; the dashboard derives the
-  // latest-quarter ownership from index 0/last as needed.
-  if (!promoter && !fii && !dii) return null;
+  if (!promoter && !fii && !dii) {
+    console.log(`    [${debugLabel}] no promoter/fii/dii row matched. labels seen: ${Object.keys(tbl.rows).slice(0, 20).map((s) => `"${s}"`).join(', ')}`);
+    return null;
+  }
   return { quarters, promoter, fii, dii, govt, public: publicShare };
 }
 
@@ -555,15 +577,16 @@ function deriveOwnership(shp) {
 // ----------------------------------------------------------------------------
 // Per-company refresh
 // ----------------------------------------------------------------------------
-async function refreshCompany(slug) {
+async function refreshCompany(slug, ticker = slug) {
   const html = await fetchScreenerHtml(slug);
   return {
+    html, // returned so we can dump on-demand debugging if needed
     summary: parseTopRatios(html),
-    profitLoss: parseProfitLoss(html),
-    quarterly: parseQuarters(html),
-    cashFlow: parseCashFlow(html),
+    profitLoss: parseProfitLoss(html, `${ticker} P&L`),
+    quarterly: parseQuarters(html, `${ticker} Q`),
+    cashFlow: parseCashFlow(html, `${ticker} CF`),
     ratios: parseRatios(html),
-    shareholding: parseShareholding(html),
+    shareholding: parseShareholding(html, `${ticker} SHP`),
     bizMix: parseMixTable(html, /Segment[-\s]?wise(?:\s*Revenue)?/i),
     geoMix: parseMixTable(html, /Geograph(?:ic|y)(?:\s*Revenue)?/i),
   };
@@ -592,9 +615,9 @@ async function main() {
 
   for (const ticker of tickers) {
     const slug = json.companies[ticker].screenerSlug;
-    process.stdout.write(`  ${ticker.padEnd(12)} (${slug.padEnd(14)}) ... `);
+    console.log(`  ${ticker.padEnd(12)} (${slug.padEnd(14)})`);
     try {
-      const got = await refreshCompany(slug);
+      const got = await refreshCompany(slug, ticker);
 
       // Raw sections
       if (got.summary && Object.keys(got.summary).length) {
@@ -652,14 +675,14 @@ async function main() {
       const tags = [
         got.summary && Object.keys(got.summary).length ? 'summary' : null,
         got.profitLoss && 'P&L',
-        got.cashFlow && 'CF',
+        got.cashFlow?.cfo && 'CF',
         got.ratios && 'ratios',
         got.shareholding && 'shp',
-        got.quarterly && 'Q',
+        got.quarterly?.sales && 'Q',
         got.bizMix && 'biz',
         got.geoMix && 'geo',
       ].filter(Boolean);
-      console.log(tags.length ? `ok (${tags.join('+')})` : 'no tables found (kept seed)');
+      console.log(`    -> ${tags.length ? `ok (${tags.join('+')})` : 'no tables found (kept seed)'}`);
       if (tags.length) refreshed++; else failed++;
     } catch (err) {
       console.log(`failed: ${err.message}`);
