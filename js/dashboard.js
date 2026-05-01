@@ -1518,25 +1518,58 @@ async function refreshAllData(btn) {
 // ============================================================
 // DISPLAY FINANCIAL METRICS
 // ============================================================
+// Source revenue + net-profit TTM (with prior FY for the YoY pill) from
+// LIVE_JSON.profitLoss when it's available — that's the structured P&L
+// table from Screener with full year history. Fall back to the legacy
+// financialMetrics block (which may only carry the latest TTM) and
+// finally to whatever's already rendered. Never emit "NaN%".
 function displayFinancialMetrics(company) {
-  const metrics = MOCK_DATA.financialMetrics?.[company];
-  if (!metrics) return;
+  let revenue = null, netProfit = null;
 
-  const revEl = document.querySelector('[data-metric="revenue"]');
-  const npEl = document.querySelector('[data-metric="netProfit"]');
-
-  if (revEl && metrics.revenue) {
-    const [current, prev1, prev2] = metrics.revenue;
-    const change = ((current - prev1) / prev1 * 100).toFixed(1);
-    const trend = change >= 0 ? '▲' : '▼';
-    revEl.innerHTML = `${(current / 1000).toFixed(1)}K Cr <span style="font-size:0.85em; color:${change >= 0 ? '#10b981' : '#ef4444'}">${trend} ${Math.abs(change)}%</span>`;
+  // Preferred: use the full P&L table — gives us TTM + prev FY reliably.
+  const pl = LIVE_JSON?.profitLoss?.[company];
+  if (pl?.sales?.length && pl?.netProfit?.length && pl?.years?.length) {
+    const isTtm = (h) => /\bTTM\b/i.test(h || '');
+    const ttmIdx = pl.years.findIndex(isTtm);
+    const fyIdxs = pl.years.map((_, i) => i).filter((i) => !isTtm(pl.years[i]));
+    const lastFy = fyIdxs.slice(-2).reverse(); // [latest FY, prev FY]
+    const ttmRev = ttmIdx >= 0 ? pl.sales[ttmIdx] : null;
+    const ttmNp = ttmIdx >= 0 ? pl.netProfit[ttmIdx] : null;
+    revenue = [
+      ttmRev != null ? ttmRev : (lastFy[0] != null ? pl.sales[lastFy[0]] : null),
+      lastFy[lastFy.length - 1] != null ? pl.sales[lastFy[lastFy.length - 1]] : null,
+    ];
+    netProfit = [
+      ttmNp != null ? ttmNp : (lastFy[0] != null ? pl.netProfit[lastFy[0]] : null),
+      lastFy[lastFy.length - 1] != null ? pl.netProfit[lastFy[lastFy.length - 1]] : null,
+    ];
   }
 
-  if (npEl && metrics.netProfit) {
-    const [current, prev1, prev2] = metrics.netProfit;
-    const change = ((current - prev1) / prev1 * 100).toFixed(1);
+  // Fallback: legacy financialMetrics (may be a single-element array).
+  const legacy = MOCK_DATA.financialMetrics?.[company];
+  if ((!revenue || revenue[0] == null) && legacy?.revenue) revenue = legacy.revenue;
+  if ((!netProfit || netProfit[0] == null) && legacy?.netProfit) netProfit = legacy.netProfit;
+
+  const fmt = (current, prev) => {
+    if (current == null || !isFinite(current)) return null;
+    const valStr = `${(current / 1000).toFixed(1)}K Cr`;
+    if (prev == null || !isFinite(prev) || prev === 0) return valStr;
+    const change = ((current - prev) / prev) * 100;
+    if (!isFinite(change)) return valStr;
     const trend = change >= 0 ? '▲' : '▼';
-    npEl.innerHTML = `${(current / 1000).toFixed(1)}K Cr <span style="font-size:0.85em; color:${change >= 0 ? '#10b981' : '#ef4444'}">${trend} ${Math.abs(change)}%</span>`;
+    const color = change >= 0 ? '#10b981' : '#ef4444';
+    return `${valStr} <span style="font-size:0.85em; color:${color}">${trend} ${Math.abs(change).toFixed(1)}%</span>`;
+  };
+
+  const revEl = document.querySelector('[data-metric="revenue"]');
+  if (revEl && revenue?.[0] != null) {
+    const html = fmt(revenue[0], revenue[1]);
+    if (html) revEl.innerHTML = html;
+  }
+  const npEl = document.querySelector('[data-metric="netProfit"]');
+  if (npEl && netProfit?.[0] != null) {
+    const html = fmt(netProfit[0], netProfit[1]);
+    if (html) npEl.innerHTML = html;
   }
 }
 
