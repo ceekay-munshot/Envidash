@@ -1109,18 +1109,16 @@ function initToggleGroups() {
 }
 
 // ============================================================
-// COMPANY SEARCH (backed by Birdnest / Muns)
+// COMPANY SEARCH (backed by Muns)
 // ============================================================
 // POST {MUNS_API_BASE}/stock/search
 //   headers: Authorization: Bearer ${MUNS_BEARER_TOKEN}
 //   body:    { query }
 //   reply:   { data: { results: { [ticker]: [country, name, industry] } } }
 
-const MUNS_DEFAULT_API_BASE = 'https://birdnest.muns.io';
-
 function getMunsConfig() {
   return {
-    apiBase: (window.MUNS_API_BASE || MUNS_DEFAULT_API_BASE).replace(/\/$/, ''),
+    apiBase: (window.MUNS_API_BASE || '').replace(/\/$/, ''),
     token: (window.MUNS_BEARER_TOKEN || '').trim(),
   };
 }
@@ -1134,7 +1132,7 @@ function exchangeForCountry(country) {
   return country.toUpperCase().slice(0, 4);
 }
 
-function mapBirdnestEntry(ticker, entry) {
+function mapSearchEntry(ticker, entry) {
   const [country, name, industry] = Array.isArray(entry) ? entry : [];
   return {
     ticker: String(ticker || '').toUpperCase(),
@@ -1145,7 +1143,7 @@ function mapBirdnestEntry(ticker, entry) {
   };
 }
 
-function rankBirdnestResults(rows, query) {
+function rankSearchResults(rows, query) {
   const q = (query || '').trim().toUpperCase();
   if (!q) return rows;
   // Exact ticker > prefix ticker > prefix name > everything else.
@@ -1162,11 +1160,16 @@ function rankBirdnestResults(rows, query) {
     .map((x) => x.r);
 }
 
-async function searchBirdnest(query, signal) {
+async function searchStocks(query, signal) {
   const { apiBase, token } = getMunsConfig();
   if (!token) {
     const err = new Error('Missing MUNS_BEARER_TOKEN. Set it in js/config.js.');
     err.code = 'NO_TOKEN';
+    throw err;
+  }
+  if (!apiBase) {
+    const err = new Error('Missing MUNS_API_BASE. Set it in js/config.js.');
+    err.code = 'NO_API_BASE';
     throw err;
   }
   const res = await fetch(`${apiBase}/stock/search`, {
@@ -1179,14 +1182,14 @@ async function searchBirdnest(query, signal) {
     signal,
   });
   if (!res.ok) {
-    const err = new Error(`Birdnest search failed (${res.status})`);
+    const err = new Error(`Stock search failed (${res.status})`);
     err.code = 'HTTP_' + res.status;
     throw err;
   }
   const json = await res.json();
   const results = json?.data?.results || {};
-  const rows = Object.entries(results).map(([t, e]) => mapBirdnestEntry(t, e));
-  return rankBirdnestResults(rows, query);
+  const rows = Object.entries(results).map(([t, e]) => mapSearchEntry(t, e));
+  return rankSearchResults(rows, query);
 }
 
 function escapeHtml(s) {
@@ -1238,7 +1241,7 @@ function initCompanySearch() {
 
   function showLoading() {
     setHeader('Searching…');
-    results.innerHTML = '<div class="search-loading"><span class="spinner"></span> Searching Birdnest…</div>';
+    results.innerHTML = '<div class="search-loading"><span class="spinner"></span> Searching…</div>';
   }
 
   function showError(err) {
@@ -1255,14 +1258,14 @@ function initCompanySearch() {
     inflight = controller;
     showLoading();
     try {
-      const rows = await searchBirdnest(query, controller.signal);
+      const rows = await searchStocks(query, controller.signal);
       if (controller.signal.aborted) return;
       lastRows = rows;
       setHeader(`Results for "${query}"`);
       renderSearchResults(results, rows);
     } catch (err) {
       if (err.name === 'AbortError') return;
-      console.warn('[ForensIQ] Birdnest search failed:', err);
+      console.warn('[ForensIQ] Stock search failed:', err);
       lastRows = [];
       showError(err);
     } finally {
