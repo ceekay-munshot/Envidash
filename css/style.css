@@ -272,6 +272,11 @@ body {
   background: var(--surface-2);
 }
 
+.search-results {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
 .search-item {
   display: flex;
   align-items: center;
@@ -286,21 +291,65 @@ body {
 
 .search-item:hover { background: var(--surface-2); }
 
-.si-ticker {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  font-weight: 500;
-  background: var(--brand-light);
-  color: var(--brand-dark);
-  padding: 3px 7px;
-  border-radius: 5px;
+.si-info { flex: 1; min-width: 0; }
+.si-name {
+  font-weight: 600;
+  font-size: 13px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.si-meta {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.si-info { flex: 1; }
-.si-name { font-weight: 600; font-size: 13px; }
-.si-meta { font-size: 11px; color: var(--text-3); margin-top: 1px; }
-.si-cap { font-size: 12px; font-weight: 600; color: var(--text-2); }
+.si-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  background: var(--brand-light);
+  color: var(--brand-dark);
+  padding: 4px 9px;
+  border-radius: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.si-pill-sep { opacity: 0.5; font-weight: 400; }
+.si-pill-exch { font-weight: 500; }
+
+.search-hint,
+.search-empty,
+.search-loading,
+.search-error {
+  padding: 14px 16px;
+  font-size: 12.5px;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.search-empty { color: var(--text-2); }
+.search-error { color: var(--red, #ef4444); }
+
+.search-loading .spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--border);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 /* ===== HEADER RIGHT ===== */
 .header-right {
