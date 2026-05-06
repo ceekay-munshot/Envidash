@@ -1109,68 +1109,233 @@ function initToggleGroups() {
 }
 
 // ============================================================
-// COMPANY SEARCH
+// COMPANY SEARCH (backed by Muns)
 // ============================================================
+// POST {MUNS_API_BASE}/stock/search
+//   headers: Authorization: Bearer ${MUNS_BEARER_TOKEN}
+//   body:    { query }
+//   reply:   { data: { results: { [ticker]: [country, name, industry] } } }
+
+function getMunsConfig() {
+  return {
+    apiBase: (window.MUNS_API_BASE || '').replace(/\/$/, ''),
+    token: (window.MUNS_BEARER_TOKEN || '').trim(),
+  };
+}
+
+// Indian companies come back with country="India"; the dashboard treats them
+// as NSE-listed (matches the "NSE: INFY" tag the rest of the UI expects).
+function exchangeForCountry(country) {
+  if (!country) return '';
+  if (/india/i.test(country)) return 'NSE';
+  if (/united states|^us$|usa/i.test(country)) return 'NASDAQ';
+  return country.toUpperCase().slice(0, 4);
+}
+
+function mapSearchEntry(ticker, entry) {
+  const [country, name, industry] = Array.isArray(entry) ? entry : [];
+  return {
+    ticker: String(ticker || '').toUpperCase(),
+    name: name || ticker,
+    industry: industry || '',
+    country: country || '',
+    exchange: exchangeForCountry(country),
+  };
+}
+
+function rankSearchResults(rows, query) {
+  const q = (query || '').trim().toUpperCase();
+  if (!q) return rows;
+  // Exact ticker > prefix ticker > prefix name > everything else.
+  // Stable within each tier by original API order.
+  const tier = (r) => {
+    if (r.ticker === q) return 0;
+    if (r.ticker.startsWith(q)) return 1;
+    if (r.name.toUpperCase().startsWith(q)) return 2;
+    return 3;
+  };
+  return rows
+    .map((r, i) => ({ r, i, t: tier(r) }))
+    .sort((a, b) => a.t - b.t || a.i - b.i)
+    .map((x) => x.r);
+}
+
+async function searchStocks(query, signal) {
+  const { apiBase, token } = getMunsConfig();
+  if (!token) {
+    const err = new Error('Missing MUNS_BEARER_TOKEN. Set it in js/config.js.');
+    err.code = 'NO_TOKEN';
+    throw err;
+  }
+  if (!apiBase) {
+    const err = new Error('Missing MUNS_API_BASE. Set it in js/config.js.');
+    err.code = 'NO_API_BASE';
+    throw err;
+  }
+  const res = await fetch(`${apiBase}/stock/search`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ query }),
+    signal,
+  });
+  if (!res.ok) {
+    const err = new Error(`Stock search failed (${res.status})`);
+    err.code = 'HTTP_' + res.status;
+    throw err;
+  }
+  const json = await res.json();
+  const results = json?.data?.results || {};
+  const rows = Object.entries(results).map(([t, e]) => mapSearchEntry(t, e));
+  return rankSearchResults(rows, query);
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  })[c]);
+}
+
+function renderSearchResults(container, rows) {
+  if (!rows.length) {
+    container.innerHTML = '<div class="search-empty">No matching companies.</div>';
+    return;
+  }
+  container.innerHTML = rows.map((r) => `
+    <div class="search-item" data-ticker="${escapeHtml(r.ticker)}" data-name="${escapeHtml(r.name)}" data-exchange="${escapeHtml(r.exchange)}">
+      <div class="si-info">
+        <div class="si-name">${escapeHtml(r.name)}</div>
+        <div class="si-meta">${escapeHtml(r.industry || r.country || '')}</div>
+      </div>
+      <div class="si-pill">
+        <span class="si-pill-ticker">${escapeHtml(r.ticker)}</span>
+        ${r.exchange ? `<span class="si-pill-sep">·</span><span class="si-pill-exch">${escapeHtml(r.exchange)}</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
 function initCompanySearch() {
   const input = document.getElementById('companySearchInput');
   const dropdown = document.getElementById('searchDropdown');
-  const items = document.querySelectorAll('.search-item');
+  const header = document.getElementById('searchDropdownHeader');
+  const results = document.getElementById('searchResults');
   const activeNameEl = document.getElementById('activeCompanyName');
   const heroNameEl = document.getElementById('heroCompanyName');
   const qualityScoreEl = document.getElementById('qualityScore');
 
+  let debounceId = null;
+  let inflight = null;
+  let lastRows = [];
+
+  function setHeader(text) {
+    if (header) header.textContent = text;
+  }
+
+  function showHint(message) {
+    setHeader('Search companies');
+    results.innerHTML = `<div class="search-hint">${escapeHtml(message)}</div>`;
+  }
+
+  function showLoading() {
+    setHeader('Searching…');
+    results.innerHTML = '<div class="search-loading"><span class="spinner"></span> Searching…</div>';
+  }
+
+  function showError(err) {
+    setHeader('Search error');
+    const detail = err?.code === 'NO_TOKEN'
+      ? 'Set window.MUNS_BEARER_TOKEN in js/config.js.'
+      : (err?.message || 'Unknown error');
+    results.innerHTML = `<div class="search-error">${escapeHtml(detail)}</div>`;
+  }
+
+  async function runSearch(query) {
+    if (inflight) inflight.abort();
+    const controller = new AbortController();
+    inflight = controller;
+    showLoading();
+    try {
+      const rows = await searchStocks(query, controller.signal);
+      if (controller.signal.aborted) return;
+      lastRows = rows;
+      setHeader(`Results for "${query}"`);
+      renderSearchResults(results, rows);
+    } catch (err) {
+      if (err.name === 'AbortError') return;
+      console.warn('[ForensIQ] Stock search failed:', err);
+      lastRows = [];
+      showError(err);
+    } finally {
+      if (inflight === controller) inflight = null;
+    }
+  }
+
   input.addEventListener('focus', () => {
     dropdown.classList.add('active');
-    input.value = '';
+    if (!input.value.trim() && !lastRows.length) {
+      showHint('Type a company name or ticker to search.');
+    }
   });
 
   input.addEventListener('input', () => {
-    const query = input.value.toLowerCase();
-    items.forEach(item => {
-      const name = item.querySelector('.si-name').textContent.toLowerCase();
-      const ticker = item.querySelector('.si-ticker').textContent.toLowerCase();
-      item.style.display = (name.includes(query) || ticker.includes(query)) ? 'flex' : 'none';
-    });
+    const query = input.value.trim();
+    clearTimeout(debounceId);
+    if (!query) {
+      if (inflight) inflight.abort();
+      lastRows = [];
+      showHint('Type a company name or ticker to search.');
+      return;
+    }
+    if (query.length < 2) {
+      if (inflight) inflight.abort();
+      showHint('Keep typing… (2+ characters)');
+      return;
+    }
+    debounceId = setTimeout(() => runSearch(query), 220);
   });
 
+  // Close dropdown on outside click
   document.addEventListener('click', (e) => {
     if (!input.closest('.company-search-wrap')?.contains(e.target)) {
       dropdown.classList.remove('active');
     }
   });
 
-  items.forEach(item => {
-    item.addEventListener('click', () => {
-      const name = item.dataset.name;
-      const ticker = item.dataset.ticker;
-
-      // Update UI
-      activeNameEl.textContent = name;
-      document.querySelector('.tag-exchange').textContent = ticker;
-      heroNameEl.textContent = name;
-
-      // Re-render company-aware charts with the newly selected company
-      activeCompanyKey = getCompanyKeyFromTicker(ticker) || activeCompanyKey;
-      reinitCompanyAwareCharts();
-      renderLiveDataPanel(activeCompanyKey);
-
-      // Animate quality score change
-      animateScore(qualityScoreEl, parseInt(qualityScoreEl.textContent), Math.floor(Math.random() * 20) + 70);
-
-      // Close dropdown
-      dropdown.classList.remove('active');
-      input.value = '';
-
-      // Trigger hero bar flash
-      const hero = document.getElementById('companyHero');
-      hero.style.animation = 'none';
-      requestAnimationFrame(() => {
-        hero.style.animation = 'heroFlash 0.5s ease';
-      });
-
-      showToast(`Switched to ${name}`);
-    });
+  // Delegated click on result rows
+  results.addEventListener('click', (e) => {
+    const item = e.target.closest('.search-item');
+    if (!item) return;
+    const ticker = item.dataset.ticker;
+    const name = item.dataset.name;
+    const exchange = item.dataset.exchange || 'NSE';
+    selectCompany({ ticker, name, exchange });
   });
+
+  function selectCompany({ ticker, name, exchange }) {
+    activeNameEl.textContent = name;
+    document.querySelector('.tag-exchange').textContent = `${exchange}: ${ticker}`;
+    heroNameEl.textContent = name;
+
+    activeCompanyKey = (ticker || '').toUpperCase() || activeCompanyKey;
+    reinitCompanyAwareCharts();
+    renderLiveDataPanel(activeCompanyKey);
+
+    animateScore(qualityScoreEl, parseInt(qualityScoreEl.textContent, 10), Math.floor(Math.random() * 20) + 70);
+
+    dropdown.classList.remove('active');
+    input.value = '';
+
+    const hero = document.getElementById('companyHero');
+    hero.style.animation = 'none';
+    requestAnimationFrame(() => {
+      hero.style.animation = 'heroFlash 0.5s ease';
+    });
+
+    showToast(`Switched to ${name}`);
+  }
 }
 
 function animateScore(el, from, to) {
