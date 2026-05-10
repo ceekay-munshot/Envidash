@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "lastUpdated": "2026-05-09",
+    "lastUpdated": "2026-05-10",
     "status": "live",
     "note": "Seed data — awaiting refresh from Screener.in. Use GitHub Actions workflow for automated updates: .github/workflows/fetch-screener-data.yml",
     "sources": {
