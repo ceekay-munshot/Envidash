@@ -1109,19 +1109,12 @@ function initToggleGroups() {
 }
 
 // ============================================================
-// COMPANY SEARCH (backed by Muns)
+// COMPANY SEARCH (backed by Muns, via Worker proxy)
 // ============================================================
-// POST {MUNS_API_BASE}/stock/search
-//   headers: Authorization: Bearer ${MUNS_BEARER_TOKEN}
-//   body:    { query }
-//   reply:   { data: { results: { [ticker]: [country, name, industry] } } }
-
-function getMunsConfig() {
-  return {
-    apiBase: (window.MUNS_API_BASE || '').replace(/\/$/, ''),
-    token: (window.MUNS_BEARER_TOKEN || '').trim(),
-  };
-}
+// POST /api/stock/search          (same-origin; handled by worker.js)
+//   body:  { query }
+//   reply: { data: { results: { [ticker]: [country, name, industry] } } }
+// The worker injects the bearer token and user_index before calling Muns.
 
 // Indian companies come back with country="India"; the dashboard treats them
 // as NSE-listed (matches the "NSE: INFY" tag the rest of the UI expects).
@@ -1161,23 +1154,9 @@ function rankSearchResults(rows, query) {
 }
 
 async function searchStocks(query, signal) {
-  const { apiBase, token } = getMunsConfig();
-  if (!token) {
-    const err = new Error('Missing MUNS_BEARER_TOKEN. Set it in js/config.js.');
-    err.code = 'NO_TOKEN';
-    throw err;
-  }
-  if (!apiBase) {
-    const err = new Error('Missing MUNS_API_BASE. Set it in js/config.js.');
-    err.code = 'NO_API_BASE';
-    throw err;
-  }
-  const res = await fetch(`${apiBase}/stock/search`, {
+  const res = await fetch('/api/stock/search', {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query }),
     signal,
   });
@@ -1246,9 +1225,7 @@ function initCompanySearch() {
 
   function showError(err) {
     setHeader('Search error');
-    const detail = err?.code === 'NO_TOKEN'
-      ? 'Set window.MUNS_BEARER_TOKEN in js/config.js.'
-      : (err?.message || 'Unknown error');
+    const detail = err?.message || 'Unknown error';
     results.innerHTML = `<div class="search-error">${escapeHtml(detail)}</div>`;
   }
 
