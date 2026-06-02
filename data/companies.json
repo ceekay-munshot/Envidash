@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "lastUpdated": "2026-06-01",
+    "lastUpdated": "2026-06-02",
     "status": "live",
     "note": "Seed data — awaiting refresh from Screener.in. Use GitHub Actions workflow for automated updates: .github/workflows/fetch-screener-data.yml",
     "sources": {
@@ -712,7 +712,7 @@
     },
     "RELIANCE": {
       "revenue": [
-        1057219,
+        1055780,
         962820,
         899041
       ],
@@ -790,78 +790,78 @@
   },
   "summary": {
     "INFY": {
-      "marketCap": 492256,
-      "currentPrice": 1214,
+      "marketCap": 518639,
+      "currentPrice": 1278,
       "high52w": 1728,
       "low52w": 1089,
-      "pe": 16.4,
+      "pe": 17.2,
       "bookValue": 229,
-      "dividendYield": 3.9,
+      "dividendYield": 3.81,
       "roce": 40,
       "roe": 31.9,
       "faceValue": 5,
       "source": "screener.in"
     },
     "TCS": {
-      "marketCap": 843123,
-      "currentPrice": 2330,
+      "marketCap": 885238,
+      "currentPrice": 2447,
       "high52w": 3539,
       "low52w": 2206,
-      "pe": 16.2,
+      "pe": 16.9,
       "bookValue": 296,
-      "dividendYield": 2.81,
+      "dividendYield": 2.71,
       "roce": 63,
       "roe": 51.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "HDFCBANK": {
-      "marketCap": 1147566,
+      "marketCap": 1147818,
       "currentPrice": 745,
       "high52w": 1020,
       "low52w": 727,
       "pe": 15.1,
       "bookValue": 378,
-      "dividendYield": 1.74,
+      "dividendYield": 1.76,
       "roce": 7.04,
       "roe": 13.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "RELIANCE": {
-      "marketCap": 1791843,
-      "currentPrice": 1324,
+      "marketCap": 1763289,
+      "currentPrice": 1303,
       "high52w": 1612,
       "low52w": 1290,
-      "pe": 22.2,
+      "pe": 22.7,
       "bookValue": 668,
       "dividendYield": 0.45,
-      "roce": 10.5,
-      "roe": 9.25,
+      "roce": 10.3,
+      "roe": 8.91,
       "faceValue": 10,
       "source": "screener.in"
     },
     "ASIANPAINT": {
-      "marketCap": 257458,
-      "currentPrice": 2684,
+      "marketCap": 250907,
+      "currentPrice": 2616,
       "high52w": 2986,
       "low52w": 2115,
-      "pe": 58,
+      "pe": 56.6,
       "bookValue": 223,
-      "dividendYield": 1,
+      "dividendYield": 1.04,
       "roce": 26.3,
       "roe": 21.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "BAJFINANCE": {
-      "marketCap": 555573,
-      "currentPrice": 892,
+      "marketCap": 542592,
+      "currentPrice": 872,
       "high52w": 1102,
       "low52w": 788,
-      "pe": 29,
+      "pe": 28.3,
       "bookValue": 183,
-      "dividendYield": 0.59,
+      "dividendYield": 0.63,
       "roce": 10.8,
       "roe": 18.2,
       "faceValue": 1,
@@ -1409,7 +1409,7 @@
         876396,
         899041,
         962820,
-        1057219
+        1055780
       ],
       "expenses": [
         336923,
@@ -1423,7 +1423,7 @@
         734078,
         736543,
         797222,
-        878270
+        876715
       ],
       "opProfit": [
         37449,
@@ -1437,7 +1437,7 @@
         142318,
         162498,
         165598,
-        178949
+        179065
       ],
       "opmPct": [
         10,
@@ -1465,7 +1465,7 @@
         12020,
         15792,
         17824,
-        28962
+        28846
       ],
       "interest": [
         3316,
@@ -3281,7 +3281,7 @@
         7,
         -3,
         -8,
-        24
+        25
       ],
       "workingCapitalDays": [
         -64,
@@ -3295,7 +3295,7 @@
         -66,
         -53,
         -68,
-        -32
+        -66
       ],
       "roce": [
         9,
@@ -4214,7 +4214,7 @@
           "revenue": [
             899041,
             962820,
-            1057219
+            1055780
           ],
           "pat": [
             79020,
@@ -4235,7 +4235,7 @@
             876396,
             899041,
             962820,
-            1057219
+            1055780
           ],
           "pat": [
             67845,
@@ -4268,7 +4268,7 @@
             876396,
             899041,
             962820,
-            1057219
+            1055780
           ],
           "pat": [
             29833,
@@ -4701,7 +4701,7 @@
           "pat": [
             8.79,
             8.44,
-            9.06
+            9.07
           ]
         },
         "5Y": {
@@ -4724,7 +4724,7 @@
             8.45,
             8.79,
             8.44,
-            9.06
+            9.07
           ]
         },
         "10Y": {
@@ -4762,7 +4762,7 @@
             8.45,
             8.79,
             8.44,
-            9.06
+            9.07
           ]
         }
       },
@@ -5374,7 +5374,7 @@
             -66,
             -53,
             -68,
-            -32
+            -66
           ]
         },
         "10Y": {
@@ -5424,7 +5424,7 @@
             -66,
             -53,
             -68,
-            -32
+            -66
           ]
         }
       },
