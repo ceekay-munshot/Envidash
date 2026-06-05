@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "lastUpdated": "2026-06-04",
+    "lastUpdated": "2026-06-05",
     "status": "live",
     "note": "Seed data — awaiting refresh from Screener.in. Use GitHub Actions workflow for automated updates: .github/workflows/fetch-screener-data.yml",
     "sources": {
@@ -790,33 +790,33 @@
   },
   "summary": {
     "INFY": {
-      "marketCap": 488696,
-      "currentPrice": 1204,
+      "marketCap": 488210,
+      "currentPrice": 1203,
       "high52w": 1728,
       "low52w": 1089,
-      "pe": 16.3,
+      "pe": 16.2,
       "bookValue": 229,
-      "dividendYield": 3.98,
+      "dividendYield": 4.02,
       "roce": 40,
       "roe": 31.9,
       "faceValue": 5,
       "source": "screener.in"
     },
     "TCS": {
-      "marketCap": 810090,
-      "currentPrice": 2239,
+      "marketCap": 804048,
+      "currentPrice": 2222,
       "high52w": 3539,
       "low52w": 2206,
-      "pe": 15.6,
+      "pe": 15.4,
       "bookValue": 296,
-      "dividendYield": 2.85,
+      "dividendYield": 2.89,
       "roce": 63,
       "roe": 51.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "HDFCBANK": {
-      "marketCap": 1155979,
+      "marketCap": 1156979,
       "currentPrice": 751,
       "high52w": 1020,
       "low52w": 727,
@@ -829,11 +829,11 @@
       "source": "screener.in"
     },
     "RELIANCE": {
-      "marketCap": 1770056,
-      "currentPrice": 1308,
+      "marketCap": 1751110,
+      "currentPrice": 1294,
       "high52w": 1612,
       "low52w": 1290,
-      "pe": 22.7,
+      "pe": 22.4,
       "bookValue": 668,
       "dividendYield": 0.46,
       "roce": 10.3,
@@ -842,11 +842,11 @@
       "source": "screener.in"
     },
     "ASIANPAINT": {
-      "marketCap": 256523,
-      "currentPrice": 2674,
+      "marketCap": 257626,
+      "currentPrice": 2686,
       "high52w": 2986,
       "low52w": 2115,
-      "pe": 57.8,
+      "pe": 58.1,
       "bookValue": 223,
       "dividendYield": 1.02,
       "roce": 26.3,
@@ -855,11 +855,11 @@
       "source": "screener.in"
     },
     "BAJFINANCE": {
-      "marketCap": 544366,
-      "currentPrice": 874,
+      "marketCap": 562577,
+      "currentPrice": 904,
       "high52w": 1102,
       "low52w": 788,
-      "pe": 28.3,
+      "pe": 29.3,
       "bookValue": 183,
       "dividendYield": 0.62,
       "roce": 10.8,
