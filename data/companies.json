@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "lastUpdated": "2026-06-15",
+    "lastUpdated": "2026-06-16",
     "status": "live",
     "note": "Seed data — awaiting refresh from Screener.in. Use GitHub Actions workflow for automated updates: .github/workflows/fetch-screener-data.yml",
     "sources": {
@@ -790,78 +790,78 @@
   },
   "summary": {
     "INFY": {
-      "marketCap": 461290,
+      "marketCap": 461472,
       "currentPrice": 1137,
       "high52w": 1728,
       "low52w": 1089,
-      "pe": 15.4,
+      "pe": 15.3,
       "bookValue": 229,
-      "dividendYield": 4.24,
+      "dividendYield": 4.14,
       "roce": 40,
       "roe": 31.9,
       "faceValue": 5,
       "source": "screener.in"
     },
     "TCS": {
-      "marketCap": 785378,
-      "currentPrice": 2171,
+      "marketCap": 790082,
+      "currentPrice": 2184,
       "high52w": 3539,
       "low52w": 2110,
       "pe": 15,
       "bookValue": 296,
-      "dividendYield": 2.92,
+      "dividendYield": 2.93,
       "roce": 63,
       "roe": 51.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "HDFCBANK": {
-      "marketCap": 1198476,
-      "currentPrice": 778,
+      "marketCap": 1208715,
+      "currentPrice": 785,
       "high52w": 1020,
       "low52w": 727,
-      "pe": 15.8,
+      "pe": 16,
       "bookValue": 378,
-      "dividendYield": 1.65,
+      "dividendYield": 1.66,
       "roce": 7.04,
       "roe": 13.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "RELIANCE": {
-      "marketCap": 1768026,
-      "currentPrice": 1306,
+      "marketCap": 1800436,
+      "currentPrice": 1330,
       "high52w": 1612,
       "low52w": 1253,
-      "pe": 22.7,
+      "pe": 23.1,
       "bookValue": 668,
-      "dividendYield": 0.45,
+      "dividendYield": 0.46,
       "roce": 10.3,
       "roe": 8.91,
       "faceValue": 10,
       "source": "screener.in"
     },
     "ASIANPAINT": {
-      "marketCap": 263981,
+      "marketCap": 263971,
       "currentPrice": 2752,
       "high52w": 2986,
       "low52w": 2115,
-      "pe": 59.5,
+      "pe": 59.4,
       "bookValue": 223,
-      "dividendYield": 0.97,
+      "dividendYield": 1,
       "roce": 26.3,
       "roe": 21.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "BAJFINANCE": {
-      "marketCap": 590220,
-      "currentPrice": 948,
+      "marketCap": 595824,
+      "currentPrice": 957,
       "high52w": 1102,
       "low52w": 788,
-      "pe": 30.8,
+      "pe": 31,
       "bookValue": 183,
-      "dividendYield": 0.57,
+      "dividendYield": 0.56,
       "roce": 10.8,
       "roe": 18.2,
       "faceValue": 1,
@@ -1594,7 +1594,7 @@
         28229,
         27910,
         27899,
-        28888
+        28884
       ],
       "opProfit": [
         2243,
@@ -1608,7 +1608,7 @@
         6260,
         7585,
         6006,
-        6696
+        6700
       ],
       "opmPct": [
         16,
@@ -1636,7 +1636,7 @@
         431,
         821,
         350,
-        732
+        728
       ],
       "interest": [
         42,
@@ -2880,7 +2880,7 @@
         -1282,
         -2548,
         -941,
-        -1334
+        -1328
       ],
       "cff": [
         -576,
@@ -2908,7 +2908,7 @@
         771,
         573,
         -270,
-        3378
+        3383
       ],
       "source": "screener.in"
     },
@@ -3354,7 +3354,7 @@
         121,
         122,
         142,
-        105
+        118
       ],
       "daysPayable": [
         84,
@@ -3368,7 +3368,7 @@
         71,
         79,
         81,
-        70
+        79
       ],
       "cashConvCycle": [
         70,
@@ -3382,7 +3382,7 @@
         99,
         93,
         107,
-        80
+        84
       ],
       "workingCapitalDays": [
         11,
@@ -3396,7 +3396,7 @@
         54,
         49,
         52,
-        102
+        38
       ],
       "roce": [
         42,
@@ -5449,14 +5449,14 @@
             71,
             79,
             81,
-            70
+            79
           ],
           "nwc": [
             57,
             54,
             49,
             52,
-            102
+            38
           ]
         },
         "10Y": {
@@ -5494,7 +5494,7 @@
             71,
             79,
             81,
-            70
+            79
           ],
           "nwc": [
             22,
@@ -5506,7 +5506,7 @@
             54,
             49,
             52,
-            102
+            38
           ]
         }
       }
