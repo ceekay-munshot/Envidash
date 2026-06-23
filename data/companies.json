@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "lastUpdated": "2026-06-22",
+    "lastUpdated": "2026-06-23",
     "status": "live",
     "note": "Seed data — awaiting refresh from Screener.in. Use GitHub Actions workflow for automated updates: .github/workflows/fetch-screener-data.yml",
     "sources": {
@@ -790,34 +790,34 @@
   },
   "summary": {
     "INFY": {
-      "marketCap": 433254,
-      "currentPrice": 1068,
+      "marketCap": 420555,
+      "currentPrice": 1037,
       "high52w": 1728,
       "low52w": 1030,
-      "pe": 14.4,
+      "pe": 14,
       "bookValue": 229,
-      "dividendYield": 4.47,
+      "dividendYield": 4.59,
       "roce": 40,
       "roe": 31.9,
       "faceValue": 5,
       "source": "screener.in"
     },
     "TCS": {
-      "marketCap": 775845,
-      "currentPrice": 2144,
+      "marketCap": 750663,
+      "currentPrice": 2075,
       "high52w": 3490,
       "low52w": 2060,
-      "pe": 14.8,
+      "pe": 14.3,
       "bookValue": 296,
-      "dividendYield": 2.96,
+      "dividendYield": 3.07,
       "roce": 63,
       "roe": 51.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "HDFCBANK": {
-      "marketCap": 1208579,
-      "currentPrice": 785,
+      "marketCap": 1211967,
+      "currentPrice": 787,
       "high52w": 1020,
       "low52w": 727,
       "pe": 15.9,
@@ -829,11 +829,11 @@
       "source": "screener.in"
     },
     "RELIANCE": {
-      "marketCap": 1801316,
-      "currentPrice": 1331,
+      "marketCap": 1795023,
+      "currentPrice": 1326,
       "high52w": 1612,
       "low52w": 1253,
-      "pe": 23.2,
+      "pe": 23,
       "bookValue": 668,
       "dividendYield": 0.45,
       "roce": 10.3,
@@ -842,24 +842,24 @@
       "source": "screener.in"
     },
     "ASIANPAINT": {
-      "marketCap": 259386,
-      "currentPrice": 2704,
+      "marketCap": 257674,
+      "currentPrice": 2686,
       "high52w": 2986,
       "low52w": 2115,
-      "pe": 58.4,
+      "pe": 58,
       "bookValue": 223,
-      "dividendYield": 1.01,
+      "dividendYield": 1.04,
       "roce": 26.3,
       "roe": 21.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "BAJFINANCE": {
-      "marketCap": 601085,
-      "currentPrice": 965,
+      "marketCap": 608276,
+      "currentPrice": 977,
       "high52w": 1102,
       "low52w": 788,
-      "pe": 31.3,
+      "pe": 31.6,
       "bookValue": 183,
       "dividendYield": 0.56,
       "roce": 10.8,
@@ -1747,8 +1747,8 @@
         18487,
         26375,
         26673,
-        31633,
-        41411,
+        31641,
+        41398,
         54974,
         69709,
         81982
@@ -1762,7 +1762,7 @@
         9159,
         10839,
         11880,
-        12693,
+        12680,
         16099,
         21754,
         26249
@@ -1775,7 +1775,7 @@
         6310,
         7609,
         6314,
-        9905,
+        9906,
         16018,
         19989,
         22963,
@@ -1804,7 +1804,7 @@
         8,
         3,
         -17,
-        -5,
+        -4,
         4,
         -2,
         -242
@@ -1817,7 +1817,7 @@
         6723,
         9608,
         9519,
-        9848,
+        9855,
         12701,
         18886,
         24992,
@@ -2936,7 +2936,7 @@
         -24412,
         -807,
         -37090,
-        -42112,
+        -42140,
         -69843,
         -68154,
         -65790
@@ -2950,7 +2950,7 @@
         -8758,
         -429,
         6347,
-        -10394,
+        -10365,
         -10088,
         -2765,
         -3389
@@ -4391,8 +4391,8 @@
             "FY26"
           ],
           "revenue": [
-            31633,
-            41411,
+            31641,
+            41398,
             54974,
             69709,
             81982
@@ -4424,8 +4424,8 @@
             18487,
             26375,
             26673,
-            31633,
-            41411,
+            31641,
+            41398,
             54974,
             69709,
             81982
@@ -4880,8 +4880,8 @@
             33
           ],
           "pat": [
-            22.22,
-            27.79,
+            22.21,
+            27.8,
             26.29,
             24.07,
             23.58
@@ -4918,8 +4918,8 @@
             21.61,
             19.96,
             16.57,
-            22.22,
-            27.79,
+            22.21,
+            27.8,
             26.29,
             24.07,
             23.58
@@ -5166,7 +5166,7 @@
           ],
           "cfo": [
             -37090,
-            -42112,
+            -42140,
             -69843,
             -68154,
             -65790
