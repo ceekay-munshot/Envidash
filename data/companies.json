@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "lastUpdated": "2026-06-29",
+    "lastUpdated": "2026-06-30",
     "status": "live",
     "note": "Seed data — awaiting refresh from Screener.in. Use GitHub Actions workflow for automated updates: .github/workflows/fetch-screener-data.yml",
     "sources": {
@@ -790,33 +790,33 @@
   },
   "summary": {
     "INFY": {
-      "marketCap": 418945,
-      "currentPrice": 1032,
+      "marketCap": 412209,
+      "currentPrice": 1016,
       "high52w": 1728,
-      "low52w": 1026,
-      "pe": 13.9,
+      "low52w": 1006,
+      "pe": 13.7,
       "bookValue": 229,
-      "dividendYield": 4.65,
+      "dividendYield": 4.75,
       "roce": 40,
       "roe": 31.9,
       "faceValue": 5,
       "source": "screener.in"
     },
     "TCS": {
-      "marketCap": 753286,
-      "currentPrice": 2082,
+      "marketCap": 744241,
+      "currentPrice": 2057,
       "high52w": 3490,
-      "low52w": 2055,
-      "pe": 14.4,
+      "low52w": 2038,
+      "pe": 14.2,
       "bookValue": 296,
-      "dividendYield": 3.1,
+      "dividendYield": 3.14,
       "roce": 63,
       "roe": 51.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "HDFCBANK": {
-      "marketCap": 1231372,
+      "marketCap": 1231798,
       "currentPrice": 800,
       "high52w": 1020,
       "low52w": 727,
@@ -829,8 +829,8 @@
       "source": "screener.in"
     },
     "RELIANCE": {
-      "marketCap": 1761665,
-      "currentPrice": 1302,
+      "marketCap": 1756185,
+      "currentPrice": 1298,
       "high52w": 1612,
       "low52w": 1253,
       "pe": 22.6,
@@ -842,11 +842,11 @@
       "source": "screener.in"
     },
     "ASIANPAINT": {
-      "marketCap": 253818,
-      "currentPrice": 2646,
+      "marketCap": 255914,
+      "currentPrice": 2668,
       "high52w": 2986,
       "low52w": 2115,
-      "pe": 57.1,
+      "pe": 57.6,
       "bookValue": 223,
       "dividendYield": 1.03,
       "roce": 26.3,
@@ -855,11 +855,11 @@
       "source": "screener.in"
     },
     "BAJFINANCE": {
-      "marketCap": 614408,
-      "currentPrice": 987,
+      "marketCap": 618019,
+      "currentPrice": 993,
       "high52w": 1102,
       "low52w": 788,
-      "pe": 32,
+      "pe": 32.1,
       "bookValue": 183,
       "dividendYield": 0.55,
       "roce": 10.8,
