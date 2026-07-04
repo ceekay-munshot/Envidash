@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "lastUpdated": "2026-07-03",
+    "lastUpdated": "2026-07-04",
     "status": "live",
     "note": "Seed data — awaiting refresh from Screener.in. Use GitHub Actions workflow for automated updates: .github/workflows/fetch-screener-data.yml",
     "sources": {
@@ -764,9 +764,8 @@
       "source": "screener.in"
     },
     "HDFCBANK": {
-      "promoter": 0,
-      "fii": 44.05,
-      "dii": 40.14,
+      "fii": 41.82,
+      "dii": 41.75,
       "source": "screener.in"
     },
     "RELIANCE": {
@@ -790,24 +789,24 @@
   },
   "summary": {
     "INFY": {
-      "marketCap": 428988,
-      "currentPrice": 1057,
+      "marketCap": 424910,
+      "currentPrice": 1047,
       "high52w": 1728,
       "low52w": 982,
-      "pe": 14.3,
+      "pe": 14.1,
       "bookValue": 229,
-      "dividendYield": 4.53,
+      "dividendYield": 4.58,
       "roce": 40,
       "roe": 31.9,
       "faceValue": 5,
       "source": "screener.in"
     },
     "TCS": {
-      "marketCap": 763018,
-      "currentPrice": 2109,
-      "high52w": 3427,
+      "marketCap": 757447,
+      "currentPrice": 2094,
+      "high52w": 3426,
       "low52w": 1976,
-      "pe": 14.6,
+      "pe": 14.5,
       "bookValue": 296,
       "dividendYield": 3.06,
       "roce": 63,
@@ -816,11 +815,11 @@
       "source": "screener.in"
     },
     "HDFCBANK": {
-      "marketCap": 1238883,
-      "currentPrice": 804,
+      "marketCap": 1233723,
+      "currentPrice": 801,
       "high52w": 1020,
       "low52w": 727,
-      "pe": 16.4,
+      "pe": 16.2,
       "bookValue": 378,
       "dividendYield": 1.62,
       "roce": 7.04,
@@ -829,7 +828,7 @@
       "source": "screener.in"
     },
     "RELIANCE": {
-      "marketCap": 1764778,
+      "marketCap": 1764643,
       "currentPrice": 1304,
       "high52w": 1612,
       "low52w": 1253,
@@ -842,24 +841,24 @@
       "source": "screener.in"
     },
     "ASIANPAINT": {
-      "marketCap": 263535,
-      "currentPrice": 2747,
+      "marketCap": 262609,
+      "currentPrice": 2738,
       "high52w": 2986,
       "low52w": 2115,
-      "pe": 59.3,
+      "pe": 59.1,
       "bookValue": 223,
-      "dividendYield": 0.99,
+      "dividendYield": 1,
       "roce": 26.3,
       "roe": 21.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "BAJFINANCE": {
-      "marketCap": 643203,
-      "currentPrice": 1033,
+      "marketCap": 642145,
+      "currentPrice": 1031,
       "high52w": 1102,
       "low52w": 788,
-      "pe": 33.5,
+      "pe": 33.4,
       "bookValue": 183,
       "dividendYield": 0.52,
       "roce": 10.8,
@@ -3615,7 +3614,6 @@
     },
     "HDFCBANK": {
       "quarters": [
-        "Jun 2023",
         "Sep 2023",
         "Dec 2023",
         "Mar 2024",
@@ -3626,24 +3624,11 @@
         "Jun 2025",
         "Sep 2025",
         "Dec 2025",
-        "Mar 2026"
+        "Mar 2026",
+        "Jun 2026"
       ],
-      "promoter": [
-        25.52,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
+      "promoter": null,
       "fii": [
-        33.38,
         52.13,
         52.31,
         47.83,
@@ -3654,10 +3639,10 @@
         48.84,
         48.38,
         47.67,
-        44.05
+        44.05,
+        41.82
       ],
       "dii": [
-        26.75,
         30.39,
         30.54,
         33.33,
@@ -3668,12 +3653,13 @@
         35.77,
         36.07,
         37,
-        40.14
+        40.14,
+        41.75
       ],
       "govt": [
-        0.16,
         0.17,
         0.17,
+        0.18,
         0.18,
         0.18,
         0.18,
@@ -3685,7 +3671,6 @@
         0.18
       ],
       "public": [
-        14.19,
         17.3,
         16.98,
         18.64,
@@ -3696,7 +3681,8 @@
         15.19,
         15.33,
         15.11,
-        15.64
+        15.64,
+        16.27
       ],
       "source": "screener.in"
     },
@@ -5747,47 +5733,13 @@
         }
       },
       "HDFCBANK": {
-        "3Y": {
-          "labels": [
-            "Q1FY24",
-            "Q2FY24",
-            "Q3FY24",
-            "Q4FY24",
-            "Q1FY25",
-            "Q2FY25",
-            "Q3FY25",
-            "Q4FY25",
-            "Q1FY26",
-            "Q2FY26",
-            "Q3FY26",
-            "Q4FY26"
-          ],
-          "data": [
-            25.52,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-          ]
-        },
         "5Y": {
           "labels": [
             "FY24",
             "FY25",
             "FY26"
           ],
-          "data": [
-            0,
-            0,
-            0
-          ]
+          "data": null
         },
         "10Y": {
           "labels": [
@@ -5795,11 +5747,7 @@
             "FY25",
             "FY26"
           ],
-          "data": [
-            0,
-            0,
-            0
-          ]
+          "data": null
         }
       },
       "RELIANCE": {
@@ -6139,7 +6087,6 @@
       "HDFCBANK": {
         "3Y": {
           "labels": [
-            "Q1FY24",
             "Q2FY24",
             "Q3FY24",
             "Q4FY24",
@@ -6150,24 +6097,11 @@
             "Q1FY26",
             "Q2FY26",
             "Q3FY26",
-            "Q4FY26"
+            "Q4FY26",
+            "Q1FY27"
           ],
-          "promoter": [
-            25.52,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-          ],
+          "promoter": null,
           "fii": [
-            33.38,
             52.13,
             52.31,
             47.83,
@@ -6178,10 +6112,10 @@
             48.84,
             48.38,
             47.67,
-            44.05
+            44.05,
+            41.82
           ],
           "dii": [
-            26.75,
             30.39,
             30.54,
             33.33,
@@ -6192,7 +6126,8 @@
             35.77,
             36.07,
             37,
-            40.14
+            40.14,
+            41.75
           ]
         },
         "5Y": {
@@ -6211,11 +6146,7 @@
             35.68,
             40.14
           ],
-          "promoter": [
-            0,
-            0,
-            0
-          ]
+          "promoter": null
         }
       },
       "RELIANCE": {
