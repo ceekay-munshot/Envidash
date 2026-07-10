@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "lastUpdated": "2026-07-09",
+    "lastUpdated": "2026-07-10",
     "status": "live",
     "note": "Seed data — awaiting refresh from Screener.in. Use GitHub Actions workflow for automated updates: .github/workflows/fetch-screener-data.yml",
     "sources": {
@@ -686,12 +686,12 @@
     },
     "TCS": {
       "revenue": [
-        267021,
+        275859,
         255324,
         240893
       ],
       "netProfit": [
-        49454,
+        50055,
         48797,
         46099
       ],
@@ -789,34 +789,34 @@
   },
   "summary": {
     "INFY": {
-      "marketCap": 425234,
-      "currentPrice": 1048,
+      "marketCap": 434120,
+      "currentPrice": 1070,
       "high52w": 1728,
       "low52w": 982,
-      "pe": 14.1,
+      "pe": 14.4,
       "bookValue": 229,
-      "dividendYield": 4.58,
+      "dividendYield": 4.51,
       "roce": 40,
       "roe": 31.9,
       "faceValue": 5,
       "source": "screener.in"
     },
     "TCS": {
-      "marketCap": 735557,
-      "currentPrice": 2033,
-      "high52w": 3400,
+      "marketCap": 749451,
+      "currentPrice": 2071,
+      "high52w": 3350,
       "low52w": 1976,
-      "pe": 14.1,
+      "pe": 14,
       "bookValue": 296,
-      "dividendYield": 3.17,
+      "dividendYield": 3.1,
       "roce": 63,
       "roe": 51.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "HDFCBANK": {
-      "marketCap": 1260676,
-      "currentPrice": 819,
+      "marketCap": 1270918,
+      "currentPrice": 825,
       "high52w": 1020,
       "low52w": 727,
       "pe": 16.6,
@@ -828,24 +828,24 @@
       "source": "screener.in"
     },
     "RELIANCE": {
-      "marketCap": 1744141,
-      "currentPrice": 1289,
+      "marketCap": 1761124,
+      "currentPrice": 1301,
       "high52w": 1612,
       "low52w": 1253,
-      "pe": 22.4,
+      "pe": 22.6,
       "bookValue": 668,
-      "dividendYield": 0.47,
+      "dividendYield": 0.46,
       "roce": 10.3,
       "roe": 8.91,
       "faceValue": 10,
       "source": "screener.in"
     },
     "ASIANPAINT": {
-      "marketCap": 259928,
-      "currentPrice": 2710,
+      "marketCap": 259290,
+      "currentPrice": 2703,
       "high52w": 2986,
       "low52w": 2115,
-      "pe": 58.5,
+      "pe": 58.4,
       "bookValue": 223,
       "dividendYield": 1.02,
       "roce": 26.3,
@@ -854,11 +854,11 @@
       "source": "screener.in"
     },
     "BAJFINANCE": {
-      "marketCap": 622315,
-      "currentPrice": 1000,
+      "marketCap": 628572,
+      "currentPrice": 1010,
       "high52w": 1102,
       "low52w": 788,
-      "pe": 32.4,
+      "pe": 32.8,
       "bookValue": 183,
       "dividendYield": 0.53,
       "roce": 10.8,
@@ -1052,7 +1052,8 @@
         "Mar 2023",
         "Mar 2024",
         "Mar 2025",
-        "Mar 2026"
+        "Mar 2026",
+        "TTM"
       ],
       "sales": [
         94648,
@@ -1066,7 +1067,8 @@
         225458,
         240893,
         255324,
-        267021
+        267021,
+        275859
       ],
       "expenses": [
         70167,
@@ -1080,7 +1082,8 @@
         166199,
         176597,
         187917,
-        194623
+        194623,
+        201780
       ],
       "opProfit": [
         24482,
@@ -1094,7 +1097,8 @@
         59259,
         64296,
         67407,
-        72398
+        72398,
+        74079
       ],
       "opmPct": [
         26,
@@ -1108,6 +1112,7 @@
         26,
         27,
         26,
+        27,
         27
       ],
       "otherIncome": [
@@ -1122,7 +1127,8 @@
         3449,
         3464,
         3962,
-        -124
+        -124,
+        -884
       ],
       "interest": [
         104,
@@ -1136,7 +1142,8 @@
         779,
         778,
         796,
-        1227
+        1227,
+        1305
       ],
       "depreciation": [
         1799,
@@ -1150,7 +1157,8 @@
         5022,
         4985,
         5242,
-        5560
+        5560,
+        5438
       ],
       "pbt": [
         26298,
@@ -1164,7 +1172,8 @@
         56907,
         61997,
         65331,
-        65487
+        65487,
+        66452
       ],
       "taxPct": [
         24,
@@ -1178,7 +1187,8 @@
         26,
         26,
         25,
-        24
+        24,
+        null
       ],
       "netProfit": [
         20060,
@@ -1192,7 +1202,8 @@
         42303,
         46099,
         48797,
-        49454
+        49454,
+        50055
       ],
       "eps": [
         50.68,
@@ -1206,7 +1217,8 @@
         115.19,
         126.88,
         134.2,
-        136.01
+        136.01,
+        137.64
       ],
       "source": "screener.in"
     },
@@ -2006,7 +2018,6 @@
     },
     "TCS": {
       "quarters": [
-        "Mar 2023",
         "Jun 2023",
         "Sep 2023",
         "Dec 2023",
@@ -2018,10 +2029,10 @@
         "Jun 2025",
         "Sep 2025",
         "Dec 2025",
-        "Mar 2026"
+        "Mar 2026",
+        "Jun 2026"
       ],
       "sales": [
-        59162,
         59381,
         59692,
         60583,
@@ -2033,10 +2044,10 @@
         63437,
         65799,
         67087,
-        70698
+        70698,
+        72275
       ],
       "expenses": [
-        43388,
         44383,
         43946,
         44195,
@@ -2048,10 +2059,10 @@
         46562,
         47821,
         48818,
-        51422
+        51422,
+        53719
       ],
       "opProfit": [
-        15774,
         14998,
         15746,
         16388,
@@ -2063,10 +2074,10 @@
         16875,
         17978,
         18269,
-        19276
+        19276,
+        18556
       ],
       "opmPct": [
-        27,
         25,
         26,
         27,
@@ -2078,10 +2089,10 @@
         27,
         27,
         27,
-        27
+        27,
+        26
       ],
       "netProfit": [
-        11436,
         11120,
         11380,
         11097,
@@ -2093,10 +2104,10 @@
         12819,
         12131,
         10720,
-        13784
+        13784,
+        13420
       ],
       "eps": [
-        31.13,
         30.26,
         31,
         30.56,
@@ -2108,7 +2119,8 @@
         35.27,
         33.37,
         29.45,
-        37.92
+        37.92,
+        36.9
       ],
       "source": "screener.in"
     },
