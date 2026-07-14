@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "lastUpdated": "2026-07-13",
+    "lastUpdated": "2026-07-14",
     "status": "live",
     "note": "Seed data — awaiting refresh from Screener.in. Use GitHub Actions workflow for automated updates: .github/workflows/fetch-screener-data.yml",
     "sources": {
@@ -789,46 +789,46 @@
   },
   "summary": {
     "INFY": {
-      "marketCap": 438462,
-      "currentPrice": 1081,
+      "marketCap": 444163,
+      "currentPrice": 1095,
       "high52w": 1728,
       "low52w": 982,
-      "pe": 14.6,
+      "pe": 14.8,
       "bookValue": 229,
-      "dividendYield": 4.45,
+      "dividendYield": 4.35,
       "roce": 40,
       "roe": 31.9,
       "faceValue": 5,
       "source": "screener.in"
     },
     "TCS": {
-      "marketCap": 774705,
-      "currentPrice": 2141,
+      "marketCap": 794062,
+      "currentPrice": 2195,
       "high52w": 3350,
       "low52w": 1976,
-      "pe": 14.4,
+      "pe": 14.8,
       "bookValue": 296,
-      "dividendYield": 3,
+      "dividendYield": 2.92,
       "roce": 63,
       "roe": 51.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "HDFCBANK": {
-      "marketCap": 1261446,
-      "currentPrice": 819,
+      "marketCap": 1258751,
+      "currentPrice": 817,
       "high52w": 1020,
       "low52w": 727,
       "pe": 16.6,
-      "bookValue": 378,
+      "bookValue": 381,
       "dividendYield": 1.6,
-      "roce": 7.04,
-      "roe": 13.8,
+      "roce": 7.02,
+      "roe": 13.6,
       "faceValue": 1,
       "source": "screener.in"
     },
     "RELIANCE": {
-      "marketCap": 1759230,
+      "marketCap": 1758891,
       "currentPrice": 1300,
       "high52w": 1612,
       "low52w": 1253,
@@ -841,26 +841,26 @@
       "source": "screener.in"
     },
     "ASIANPAINT": {
-      "marketCap": 253804,
-      "currentPrice": 2646,
+      "marketCap": 253602,
+      "currentPrice": 2644,
       "high52w": 2986,
       "low52w": 2115,
       "pe": 57.1,
       "bookValue": 223,
-      "dividendYield": 1.04,
+      "dividendYield": 1.05,
       "roce": 26.3,
       "roe": 21.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "BAJFINANCE": {
-      "marketCap": 633491,
-      "currentPrice": 1018,
+      "marketCap": 625024,
+      "currentPrice": 1004,
       "high52w": 1102,
       "low52w": 788,
-      "pe": 33,
+      "pe": 32.5,
       "bookValue": 183,
-      "dividendYield": 0.53,
+      "dividendYield": 0.54,
       "roce": 10.9,
       "roe": 18.2,
       "faceValue": 1,
@@ -1263,7 +1263,7 @@
         63042,
         174196,
         186974,
-        207830
+        203635
       ],
       "opProfit": [
         7214,
@@ -1277,7 +1277,7 @@
         29932,
         -44685,
         -34501,
-        -44706
+        -40511
       ],
       "opmPct": [
         14,
@@ -1291,7 +1291,7 @@
         18,
         -16,
         -10,
-        -13
+        -12
       ],
       "otherIncome": [
         9546,
@@ -1333,7 +1333,7 @@
         2345,
         3092,
         3805,
-        0
+        4195
       ],
       "pbt": [
         16079,
@@ -2745,7 +2745,7 @@
         -2992,
         16600,
         -3651,
-        6363
+        7477
       ],
       "cff": [
         18694,
@@ -2773,7 +2773,7 @@
         41762,
         31687,
         21113,
-        60864
+        61978
       ],
       "source": "screener.in"
     },
@@ -4614,7 +4614,7 @@
           "ebitda": [
             -16,
             -10,
-            -13
+            -12
           ],
           "pat": [
             23.07,
@@ -4635,7 +4635,7 @@
             18,
             -16,
             -10,
-            -13
+            -12
           ],
           "pat": [
             28.07,
@@ -4668,7 +4668,7 @@
             18,
             -16,
             -10,
-            -13
+            -12
           ],
           "pat": [
             20.9,
