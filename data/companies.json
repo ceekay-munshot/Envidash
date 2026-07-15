@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "lastUpdated": "2026-07-14",
+    "lastUpdated": "2026-07-15",
     "status": "live",
     "note": "Seed data — awaiting refresh from Screener.in. Use GitHub Actions workflow for automated updates: .github/workflows/fetch-screener-data.yml",
     "sources": {
@@ -789,33 +789,33 @@
   },
   "summary": {
     "INFY": {
-      "marketCap": 444163,
-      "currentPrice": 1095,
+      "marketCap": 439253,
+      "currentPrice": 1083,
       "high52w": 1728,
       "low52w": 982,
-      "pe": 14.8,
+      "pe": 14.6,
       "bookValue": 229,
-      "dividendYield": 4.35,
+      "dividendYield": 4.43,
       "roce": 40,
       "roe": 31.9,
       "faceValue": 5,
       "source": "screener.in"
     },
     "TCS": {
-      "marketCap": 794062,
-      "currentPrice": 2195,
+      "marketCap": 788399,
+      "currentPrice": 2179,
       "high52w": 3350,
       "low52w": 1976,
-      "pe": 14.8,
+      "pe": 14.7,
       "bookValue": 296,
-      "dividendYield": 2.92,
+      "dividendYield": 2.93,
       "roce": 63,
       "roe": 51.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "HDFCBANK": {
-      "marketCap": 1258751,
+      "marketCap": 1258288,
       "currentPrice": 817,
       "high52w": 1020,
       "low52w": 727,
@@ -828,8 +828,8 @@
       "source": "screener.in"
     },
     "RELIANCE": {
-      "marketCap": 1758891,
-      "currentPrice": 1300,
+      "marketCap": 1762748,
+      "currentPrice": 1303,
       "high52w": 1612,
       "low52w": 1253,
       "pe": 22.6,
@@ -841,26 +841,26 @@
       "source": "screener.in"
     },
     "ASIANPAINT": {
-      "marketCap": 253602,
-      "currentPrice": 2644,
+      "marketCap": 256384,
+      "currentPrice": 2673,
       "high52w": 2986,
       "low52w": 2115,
-      "pe": 57.1,
+      "pe": 57.7,
       "bookValue": 223,
-      "dividendYield": 1.05,
+      "dividendYield": 1.02,
       "roce": 26.3,
       "roe": 21.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "BAJFINANCE": {
-      "marketCap": 625024,
-      "currentPrice": 1004,
+      "marketCap": 639374,
+      "currentPrice": 1027,
       "high52w": 1102,
       "low52w": 788,
-      "pe": 32.5,
+      "pe": 33.2,
       "bookValue": 183,
-      "dividendYield": 0.54,
+      "dividendYield": 0.53,
       "roce": 10.9,
       "roe": 18.2,
       "faceValue": 1,
