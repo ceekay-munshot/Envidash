@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "lastUpdated": "2026-07-21",
+    "lastUpdated": "2026-07-22",
     "status": "live",
     "note": "Seed data — awaiting refresh from Screener.in. Use GitHub Actions workflow for automated updates: .github/workflows/fetch-screener-data.yml",
     "sources": {
@@ -759,8 +759,8 @@
     },
     "TCS": {
       "promoter": 71.77,
-      "fii": 9.66,
-      "dii": 13.34,
+      "fii": 9.07,
+      "dii": 13.41,
       "source": "screener.in"
     },
     "HDFCBANK": {
@@ -789,63 +789,63 @@
   },
   "summary": {
     "INFY": {
-      "marketCap": 435885,
-      "currentPrice": 1074,
+      "marketCap": 428886,
+      "currentPrice": 1057,
       "high52w": 1728,
       "low52w": 982,
-      "pe": 14.5,
+      "pe": 14.3,
       "bookValue": 229,
-      "dividendYield": 4.49,
+      "dividendYield": 4.52,
       "roce": 40,
       "roe": 31.9,
       "faceValue": 5,
       "source": "screener.in"
     },
     "TCS": {
-      "marketCap": 805748,
-      "currentPrice": 2227,
+      "marketCap": 796703,
+      "currentPrice": 2202,
       "high52w": 3350,
       "low52w": 1976,
-      "pe": 15.1,
+      "pe": 14.8,
       "bookValue": 296,
-      "dividendYield": 2.87,
+      "dividendYield": 2.9,
       "roce": 63,
       "roe": 51.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "HDFCBANK": {
-      "marketCap": 1181975,
-      "currentPrice": 767,
+      "marketCap": 1161876,
+      "currentPrice": 754,
       "high52w": 1020,
       "low52w": 727,
-      "pe": 15,
+      "pe": 14.8,
       "bookValue": 390,
-      "dividendYield": 1.7,
+      "dividendYield": 1.73,
       "roce": 7.02,
       "roe": 13.6,
       "faceValue": 1,
       "source": "screener.in"
     },
     "RELIANCE": {
-      "marketCap": 1778581,
-      "currentPrice": 1314,
+      "marketCap": 1745359,
+      "currentPrice": 1290,
       "high52w": 1612,
       "low52w": 1253,
-      "pe": 23.8,
+      "pe": 23.4,
       "bookValue": 668,
-      "dividendYield": 0.45,
+      "dividendYield": 0.46,
       "roce": 10.3,
       "roe": 8.91,
       "faceValue": 10,
       "source": "screener.in"
     },
     "ASIANPAINT": {
-      "marketCap": 259928,
-      "currentPrice": 2710,
+      "marketCap": 258072,
+      "currentPrice": 2690,
       "high52w": 2986,
       "low52w": 2115,
-      "pe": 58.5,
+      "pe": 58.1,
       "bookValue": 223,
       "dividendYield": 1.02,
       "roce": 26.3,
@@ -854,11 +854,11 @@
       "source": "screener.in"
     },
     "BAJFINANCE": {
-      "marketCap": 667049,
-      "currentPrice": 1071,
+      "marketCap": 661010,
+      "currentPrice": 1062,
       "high52w": 1102,
       "low52w": 788,
-      "pe": 34.7,
+      "pe": 34.4,
       "bookValue": 183,
       "dividendYield": 0.51,
       "roce": 10.9,
@@ -3563,7 +3563,6 @@
     },
     "TCS": {
       "quarters": [
-        "Jun 2023",
         "Sep 2023",
         "Dec 2023",
         "Mar 2024",
@@ -3574,12 +3573,13 @@
         "Jun 2025",
         "Sep 2025",
         "Dec 2025",
-        "Mar 2026"
+        "Mar 2026",
+        "Jun 2026"
       ],
       "promoter": [
         72.3,
-        72.3,
         72.41,
+        71.77,
         71.77,
         71.77,
         71.77,
@@ -3591,7 +3591,6 @@
         71.77
       ],
       "fii": [
-        12.46,
         12.47,
         12.46,
         12.7,
@@ -3602,10 +3601,10 @@
         11.48,
         10.33,
         10.37,
-        9.66
+        9.66,
+        9.07
       ],
       "dii": [
-        9.8,
         10.01,
         10.03,
         10.61,
@@ -3616,12 +3615,13 @@
         11.95,
         12.64,
         12.81,
-        13.34
+        13.34,
+        13.41
       ],
       "govt": [
         0.05,
         0.05,
-        0.05,
+        0.06,
         0.06,
         0.06,
         0.06,
@@ -3633,7 +3633,6 @@
         0.06
       ],
       "public": [
-        5.38,
         5.17,
         5.03,
         4.86,
@@ -3644,7 +3643,8 @@
         4.77,
         5.21,
         4.98,
-        5.16
+        5.16,
+        5.69
       ],
       "source": "screener.in"
     },
@@ -5715,7 +5715,6 @@
       "TCS": {
         "3Y": {
           "labels": [
-            "Q1FY24",
             "Q2FY24",
             "Q3FY24",
             "Q4FY24",
@@ -5726,12 +5725,13 @@
             "Q1FY26",
             "Q2FY26",
             "Q3FY26",
-            "Q4FY26"
+            "Q4FY26",
+            "Q1FY27"
           ],
           "data": [
             72.3,
-            72.3,
             72.41,
+            71.77,
             71.77,
             71.77,
             71.77,
@@ -6041,7 +6041,6 @@
       "TCS": {
         "3Y": {
           "labels": [
-            "Q1FY24",
             "Q2FY24",
             "Q3FY24",
             "Q4FY24",
@@ -6052,12 +6051,13 @@
             "Q1FY26",
             "Q2FY26",
             "Q3FY26",
-            "Q4FY26"
+            "Q4FY26",
+            "Q1FY27"
           ],
           "promoter": [
             72.3,
-            72.3,
             72.41,
+            71.77,
             71.77,
             71.77,
             71.77,
@@ -6069,7 +6069,6 @@
             71.77
           ],
           "fii": [
-            12.46,
             12.47,
             12.46,
             12.7,
@@ -6080,10 +6079,10 @@
             11.48,
             10.33,
             10.37,
-            9.66
+            9.66,
+            9.07
           ],
           "dii": [
-            9.8,
             10.01,
             10.03,
             10.61,
@@ -6094,7 +6093,8 @@
             11.95,
             12.64,
             12.81,
-            13.34
+            13.34,
+            13.41
           ]
         },
         "5Y": {
