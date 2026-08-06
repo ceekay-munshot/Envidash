@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "lastUpdated": "2026-08-05",
+    "lastUpdated": "2026-08-06",
     "status": "live",
     "note": "Seed data — awaiting refresh from Screener.in. Use GitHub Actions workflow for automated updates: .github/workflows/fetch-screener-data.yml",
     "sources": {
@@ -789,34 +789,34 @@
   },
   "summary": {
     "INFY": {
-      "marketCap": 473114,
-      "currentPrice": 1166,
+      "marketCap": 474838,
+      "currentPrice": 1170,
       "high52w": 1728,
       "low52w": 982,
-      "pe": 15.2,
+      "pe": 15.3,
       "bookValue": 225,
-      "dividendYield": 4.11,
+      "dividendYield": 4.09,
       "roce": 40,
       "roe": 31.9,
       "faceValue": 5,
       "source": "screener.in"
     },
     "TCS": {
-      "marketCap": 879810,
-      "currentPrice": 2432,
+      "marketCap": 867581,
+      "currentPrice": 2398,
       "high52w": 3350,
       "low52w": 1976,
-      "pe": 16.4,
+      "pe": 16.2,
       "bookValue": 296,
-      "dividendYield": 2.62,
+      "dividendYield": 2.66,
       "roce": 63,
       "roe": 51.8,
       "faceValue": 1,
       "source": "screener.in"
     },
     "HDFCBANK": {
-      "marketCap": 1138369,
-      "currentPrice": 739,
+      "marketCap": 1132282,
+      "currentPrice": 735,
       "high52w": 1020,
       "low52w": 727,
       "pe": 14.4,
@@ -828,24 +828,24 @@
       "source": "screener.in"
     },
     "RELIANCE": {
-      "marketCap": 1747592,
-      "currentPrice": 1291,
+      "marketCap": 1759094,
+      "currentPrice": 1300,
       "high52w": 1612,
       "low52w": 1250,
-      "pe": 23.4,
+      "pe": 23.6,
       "bookValue": 668,
-      "dividendYield": 0.46,
+      "dividendYield": 0.47,
       "roce": 10.3,
       "roe": 8.91,
       "faceValue": 10,
       "source": "screener.in"
     },
     "ASIANPAINT": {
-      "marketCap": 264177,
-      "currentPrice": 2754,
+      "marketCap": 264067,
+      "currentPrice": 2753,
       "high52w": 2986,
       "low52w": 2115,
-      "pe": 54.2,
+      "pe": 54.1,
       "bookValue": 223,
       "dividendYield": 0.99,
       "roce": 26.3,
@@ -854,7 +854,7 @@
       "source": "screener.in"
     },
     "BAJFINANCE": {
-      "marketCap": 721121,
+      "marketCap": 720716,
       "currentPrice": 1158,
       "high52w": 1178,
       "low52w": 788,
