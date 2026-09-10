@@ -1109,12 +1109,15 @@ function initToggleGroups() {
 }
 
 // ============================================================
-// COMPANY SEARCH (backed by Muns, via Worker proxy)
+// COMPANY SEARCH (Muns stock_search datasource)
 // ============================================================
-// POST /api/stock/search          (same-origin; handled by worker.js)
+// POST https://devde.muns.io/stock/search   (nestjs service, bearer_jwt auth)
 //   body:  { query }
-//   reply: { data: { results: { [ticker]: [country, name, industry] } } }
-// The worker injects the bearer token and user_index before calling Muns.
+//   reply: { results: { [ticker]: [country, name, industry, ...] } }
+// The bearer token comes from the Munshot host session (context.session.token)
+// — never from a server-side static token. See dashboard-skill/reference/
+// auth-standards.md §7 and datasource-registry.md (id: stock_search).
+const MUNS_NESTJS_BASE = 'https://devde.muns.io';
 
 // Indian companies come back with country="India"; the dashboard treats them
 // as NSE-listed (matches the "NSE: INFY" tag the rest of the UI expects).
@@ -1154,9 +1157,19 @@ function rankSearchResults(rows, query) {
 }
 
 async function searchStocks(query, signal) {
-  const res = await fetch('/api/stock/search', {
+  const { session } = MunshotDashboard.getHostContext();
+  if (!session.token) {
+    const err = new Error('Waiting for session…');
+    err.code = 'NO_SESSION';
+    throw err;
+  }
+
+  const res = await fetch(`${MUNS_NESTJS_BASE}/stock/search`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Authorization': `Bearer ${session.token}`,
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({ query }),
     signal,
   });
@@ -1166,7 +1179,7 @@ async function searchStocks(query, signal) {
     throw err;
   }
   const json = await res.json();
-  const results = json?.data?.results || {};
+  const results = json?.results || json?.data?.results || {};
   const rows = Object.entries(results).map(([t, e]) => mapSearchEntry(t, e));
   return rankSearchResults(rows, query);
 }
@@ -1230,6 +1243,17 @@ function initCompanySearch() {
   }
 
   async function runSearch(query) {
+    // token === null is transient on load — show an in-widget notice, never an
+    // error, and don't call the API (auth-standards.md §7).
+    if (!MunshotDashboard.getHostContext().session.token) {
+      if (inflight) inflight.abort();
+      lastRows = [];
+      setHeader('Waiting for session…');
+      results.innerHTML =
+        '<div class="search-hint"><span class="spinner"></span> Waiting for session… company search needs the Munshot host session.</div>';
+      return;
+    }
+
     if (inflight) inflight.abort();
     const controller = new AbortController();
     inflight = controller;
@@ -1292,27 +1316,53 @@ function initCompanySearch() {
   });
 
   function selectCompany({ ticker, name, exchange }) {
-    activeNameEl.textContent = name;
-    document.querySelector('.tag-exchange').textContent = `${exchange}: ${ticker}`;
-    heroNameEl.textContent = name;
-
-    activeCompanyKey = (ticker || '').toUpperCase() || activeCompanyKey;
-    reinitCompanyAwareCharts();
-    renderLiveDataPanel(activeCompanyKey);
-
-    animateScore(qualityScoreEl, parseInt(qualityScoreEl.textContent, 10), Math.floor(Math.random() * 20) + 70);
-
     dropdown.classList.remove('active');
     input.value = '';
+    applyCompanySelection({ ticker, name, exchange });
 
-    const hero = document.getElementById('companyHero');
+    // Fire-and-forget telemetry so the host knows what the user picked here.
+    MunshotDashboard.sdk.publish('portfolio.ticker.select', {
+      ticker: (ticker || '').toUpperCase(),
+      company: name,
+      exchange,
+      source: 'dashboard-search',
+    });
+  }
+}
+
+// Single entry point for switching the active company. Used by the in-dashboard
+// search dropdown and by host `context.market.selectedTicker` updates.
+function applyCompanySelection({ ticker, name, exchange, silent = false }) {
+  const key = (ticker || '').toUpperCase();
+  if (!key) return;
+
+  const activeNameEl = document.getElementById('activeCompanyName');
+  const heroNameEl = document.getElementById('heroCompanyName');
+  const qualityScoreEl = document.getElementById('qualityScore');
+  const exchangeEl = document.querySelector('.tag-exchange');
+  const label = name || key;
+
+  if (activeNameEl) activeNameEl.textContent = label;
+  if (heroNameEl) heroNameEl.textContent = label;
+  if (exchangeEl) exchangeEl.textContent = `${exchange || 'NSE'}: ${key}`;
+
+  activeCompanyKey = key;
+  reinitCompanyAwareCharts();
+  renderLiveDataPanel(activeCompanyKey);
+
+  if (qualityScoreEl) {
+    animateScore(qualityScoreEl, parseInt(qualityScoreEl.textContent, 10), Math.floor(Math.random() * 20) + 70);
+  }
+
+  const hero = document.getElementById('companyHero');
+  if (hero) {
     hero.style.animation = 'none';
     requestAnimationFrame(() => {
       hero.style.animation = 'heroFlash 0.5s ease';
     });
-
-    showToast(`Switched to ${name}`);
   }
+
+  if (!silent) showToast(`Switched to ${label}`);
 }
 
 function animateScore(el, from, to) {
@@ -1843,6 +1893,182 @@ async function loadCompanyData() {
 }
 
 // ============================================================
+// MUNSHOT HOST INTEGRATION
+// ============================================================
+// Session token + selected ticker come from the host over the Dashboard SDK.
+// Never call sdk.ready() and never set autoReady:false — the SDK sends
+// dashboard:ready itself from inside its host:init handler.
+// See dashboard-skill/reference/auth-standards.md.
+
+// Last host ticker applied to the UI, so repeated context updates that don't
+// change the ticker don't re-animate the hero.
+let lastHostTicker = null;
+
+function exchangeFromSymbol(symbol, country) {
+  // selectedSymbol is TradingView format, e.g. "NSE:INFY" / "NASDAQ:AAPL".
+  if (symbol && symbol.includes(':')) return symbol.split(':')[0].toUpperCase();
+  return exchangeForCountry(country) || 'NSE';
+}
+
+function updateHostStatus({ session, ticker, tickerCompany }) {
+  const el = document.getElementById('hostStatus');
+  const textEl = document.getElementById('hostStatusText');
+  if (!el || !textEl) return;
+
+  // No channel at all — the SDK script is absent or we're not in the host frame.
+  if (!MunshotDashboard.sdk.getChannelId() && !session.token) {
+    el.dataset.state = 'standalone';
+    textEl.textContent = 'Standalone preview';
+    el.title = 'Not embedded in the Munshot host — no session available.';
+    return;
+  }
+
+  if (!session.token) {
+    el.dataset.state = 'waiting';
+    textEl.textContent = 'Waiting for session…';
+    el.title = 'Waiting for the Munshot host to send a session token.';
+    return;
+  }
+
+  if (!ticker) {
+    el.dataset.state = 'no-ticker';
+    textEl.textContent = 'No stock selected';
+    el.title = 'Pick a stock in Munshot to sync this dashboard.';
+    return;
+  }
+
+  el.dataset.state = 'connected';
+  textEl.textContent = tickerCompany ? `${tickerCompany} · ${ticker}` : ticker;
+  el.title = session.userName ? `Session: ${session.userName}` : 'Connected to the Munshot host';
+}
+
+function applyHostTicker({ ticker, tickerCompany, tickerCountry, selectedSymbol }) {
+  if (!ticker || ticker === lastHostTicker) return;
+  lastHostTicker = ticker;
+  applyCompanySelection({
+    ticker,
+    name: tickerCompany || ticker,
+    exchange: exchangeFromSymbol(selectedSymbol, tickerCountry),
+    silent: true,
+  });
+}
+
+function initHostContext() {
+  MunshotDashboard.useHostContext((state) => {
+    updateHostStatus(state);
+    applyHostTicker(state);
+  });
+
+  // Optional: the host emits this once the handshake completes.
+  MunshotDashboard.sdk.onTopic('host.connected', (t) => {
+    console.info('[ForensIQ] host connected:', t.data);
+  });
+}
+
+// ---- Host request handlers ----------------------------------------------
+// Handlers must never throw and must return small, structured-cloneable data.
+
+const SNAPSHOT_MAX_BYTES = 256 * 1024; // well inside the SDK's 512 KB cap
+
+// JSON round-trip: guarantees the payload is structured-cloneable (drops
+// functions, DOM nodes, cycles fail loudly here rather than at postMessage).
+function cloneable(value, fallback = null) {
+  try {
+    return JSON.parse(JSON.stringify(value));
+  } catch {
+    return fallback;
+  }
+}
+
+function activeSectionId() {
+  return document.querySelector('.dash-section.active')?.id || null;
+}
+
+// Current dashboard state, read live at request time (no stale closures).
+function getDashboardSnapshot() {
+  const company = activeCompanyKey;
+  const host = MunshotDashboard.getHostContext();
+
+  const snapshot = {
+    context: {
+      ticker: company,
+      hostTicker: host.ticker,
+      company: document.getElementById('activeCompanyName')?.textContent || null,
+      section: activeSectionId(),
+      periods: cloneable(activePeriods, {}),
+      bizMixPeriod: activeBizMixPeriod,
+      geoMixPeriod: activeGeoMixPeriod,
+      dataStatus: cloneable(LIVE_JSON?._meta, null),
+      capturedAt: new Date().toISOString(),
+    },
+    selection: {
+      company: document.getElementById('heroCompanyName')?.textContent || null,
+      exchange: document.querySelector('.tag-exchange')?.textContent || null,
+      qualityScore: Number(document.getElementById('qualityScore')?.textContent) || null,
+      section: activeSectionId(),
+    },
+    data: {
+      summary: cloneable(LIVE_SUMMARY[company], null),
+      financialMetrics: cloneable(MOCK_DATA.financialMetrics?.[company], null),
+      ownership: cloneable(MOCK_DATA.ownership?.[company], null),
+      bizMix: cloneable(MOCK_DATA.bizMix?.[company], null),
+      geoMix: cloneable(MOCK_DATA.geoMix?.[company], null),
+    },
+  };
+
+  // Keep the payload bounded — drop the heaviest field rather than risk the
+  // host silently dropping an oversized response.
+  try {
+    if (JSON.stringify(snapshot).length > SNAPSHOT_MAX_BYTES) {
+      snapshot.data = { truncated: true };
+    }
+  } catch {
+    snapshot.data = { truncated: true };
+  }
+
+  return snapshot;
+}
+
+function initHostRequestHandlers() {
+  const sdk = MunshotDashboard.sdk;
+
+  // 1) Visual snapshot — return a PNG Blob of the dashboard content area.
+  sdk.onRequest('dashboard.capture.visual', async () => {
+    try {
+      const el =
+        document.querySelector('#dashboard-main') ||
+        document.querySelector("[data-dashboard-capture-root='true']") ||
+        document.querySelector('main');
+      if (!el) throw new Error('capture root not found');
+      if (!window.htmlToImage?.toBlob) throw new Error('html-to-image not loaded');
+      const blob = await window.htmlToImage.toBlob(el, { pixelRatio: 2 });
+      if (!blob) throw new Error('empty snapshot blob');
+      return { visualSnapshot: blob, capturedAt: new Date().toISOString() };
+    } catch (err) {
+      // Never throw out of the handler; return a structured, cloneable error.
+      return { ok: false, error: err?.message || String(err) };
+    }
+  });
+
+  // 2) State snapshot — return the current JSON state of the dashboard.
+  sdk.onRequest('dashboard.capture.snapshot', () => {
+    try {
+      return getDashboardSnapshot();
+    } catch (err) {
+      return { ok: false, error: err?.message || String(err) };
+    }
+  });
+
+  // DO NOT call sdk.ready() here. The SDK auto-sends dashboard:ready on
+  // host:init. Calling it manually races the handshake and breaks it.
+}
+
+// Registered at script load (before DOMContentLoaded) so a host request that
+// arrives right after the handshake is never missed. The handlers read the DOM
+// only when invoked.
+initHostRequestHandlers();
+
+// ============================================================
 // MAIN INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
@@ -1851,6 +2077,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Company-aware charts (bizMix, geoMix) wait for the JSON load
   loadCompanyData();
+
+  // Munshot host context — session token + selected ticker
+  initHostContext();
 
   // Init interaction handlers
   initSectionNav();

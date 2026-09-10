@@ -6,3 +6,8 @@ compatibility_date = "2024-09-23"
 directory = "./"
 binding = "ASSETS"
 not_found_handling = "single-page-application"
+# The Worker must see every request (including the HTML document) so the
+# embed-protection guard in functions/_middleware.js can run before assets are
+# served. Without this the asset router answers document requests directly and
+# the guard never executes.
+run_worker_first = true

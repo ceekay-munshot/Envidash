@@ -4,6 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ForensIQ — Investor Research Dashboard</title>
+
+<!-- REQUIRED: Munshot Dashboard SDK — classic script, in <head>, before the
+     app scripts. Defines window.MunshotDashboardSDK. Do NOT add type="module",
+     async, or defer — load order matters. -->
+<script src="https://munshot.s3.ap-south-1.amazonaws.com/SDK+script/munshot-dashboard-sdk.v1.0.0.min.js"></script>
+
+<!-- html-to-image, used by the dashboard.capture.visual handler. UMD build
+     (window.htmlToImage) because this site has no bundler. -->
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+
+<!-- SDK client singleton + host context store. Must run before dashboard.js so
+     the SDK's message listener is live before host:init arrives. -->
+<script src="js/lib/sdk.js"></script>
+<script src="js/lib/host-context.js"></script>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -40,6 +55,11 @@
   </div>
 
   <div class="header-right">
+    <!-- Munshot host connection state: session token + selected ticker -->
+    <div class="host-status" id="hostStatus" data-state="waiting" title="Munshot host status">
+      <span class="host-status-dot"></span>
+      <span class="host-status-text" id="hostStatusText">Waiting for session…</span>
+    </div>
     <div class="score-badge">
       <span class="score-label">Quality Score</span>
       <span class="score-value" id="qualityScore">82</span>
@@ -149,7 +169,9 @@
 </nav>
 
 <!-- MAIN DASHBOARD CONTENT -->
-<main class="dashboard-main">
+<!-- id + data attribute are the capture root the host's
+     dashboard.capture.visual request snapshots. -->
+<main class="dashboard-main" id="dashboard-main" data-dashboard-capture-root="true">
 
   <!-- ========== SECTION 1: Business, Market & Competitive Position ========== -->
   <section class="dash-section active" id="s1">

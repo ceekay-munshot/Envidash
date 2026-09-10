@@ -39,11 +39,37 @@ A complete, professional investor research dashboard with 6 forensic analysis se
 ```
 index.html                      — Main dashboard HTML (all 6 sections)
 css/style.css                   — Full dashboard stylesheet (1500+ lines)
-js/dashboard.js                 — Charts, interactivity, search, toggles
+js/lib/sdk.js                   — Munshot Dashboard SDK client singleton
+js/lib/host-context.js          — Host session/ticker store (useHostContext)
+js/dashboard.js                 — Charts, interactivity, search, toggles, host handlers
 data/companies.json             — Per-company bizMix + geoMix data (loaded at runtime)
 scripts/fetch-company-data.mjs  — Refresher: pulls real data into companies.json
+worker.js                       — Cloudflare Worker: embed guard + static assets
+functions/_middleware.js        — Embed protection (imported by worker.js)
+_headers                        — CSP frame-ancestors allow-list
 README.md                       — This file
 ```
+
+## Munshot host integration
+
+The dashboard runs as an iframe inside the Munshot host and talks to it through
+the Munshot Dashboard SDK (see `dashboard-skill/reference/auth-standards.md`).
+
+- `index.html` loads the SDK as a **classic** script in `<head>`, before the app
+  scripts. Do not add `type="module"`, `async`, or `defer`.
+- `js/lib/sdk.js` creates the one SDK client at load time. `autoReady` is left at
+  its default — **never** set it to `false` and **never** call `sdk.ready()`.
+- `js/lib/host-context.js` mirrors the reference `useHostContext` hook: it reads
+  `sdk.getContext()` and re-syncs on every `sdk.onMessage(...)`.
+- Session token: `context.session.token`, sent as `Authorization: Bearer <token>`
+  on every Munshot API call. There is no login screen and no server-side token.
+- Selected ticker: `context.market.selectedTicker` drives the active company.
+- Host requests handled: `dashboard.capture.visual` (PNG Blob of
+  `#dashboard-main`) and `dashboard.capture.snapshot` (bounded JSON state).
+
+Opened outside the host, the SDK falls back to a no-op client: the dashboard
+still renders from `data/companies.json`, the header shows "Standalone preview",
+and company search is disabled until a session token arrives.
 
 ## Data flow — Real Data from Screener.in
 
@@ -104,6 +130,11 @@ python3 -m http.server 8000
 # then open http://localhost:8000
 ```
 
+Note: on the deployed Cloudflare Worker, opening the URL directly in a tab
+redirects to the host app — that is the embed protection in
+`functions/_middleware.js` doing its job. Use the plain static server above for
+local UI work.
+
 ## Design Style
 - Professional, premium, desktop-first
 - Soft shadows, rounded cards, gradient accents
@@ -122,7 +153,6 @@ Infosys's publicly known financials and profile.
   market share trend, peers, valuation bands, etc.).
 
 ## Not Implemented (UI Only)
-- Backend / server
-- Authentication
+- Backend / server (auth comes from the Munshot host, not from this repo)
 - PDF export
 - Real-time price feeds

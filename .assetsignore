@@ -1,0 +1,8 @@
+# Files that live in the repo root (which is also the assets directory) but
+# must not be published as static assets.
+worker.js
+wrangler.toml
+functions/
+scripts/
+dashboard-skill/
+.github/

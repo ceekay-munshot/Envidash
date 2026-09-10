@@ -351,6 +351,39 @@ body {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ===== HOST STATUS PILL (Munshot session + selected ticker) ===== */
+.host-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.host-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-3);
+  flex-shrink: 0;
+}
+.host-status[data-state="waiting"] .host-status-dot {
+  background: var(--amber, #f59e0b);
+  animation: hostPulse 1.4s ease-in-out infinite;
+}
+.host-status[data-state="no-ticker"] .host-status-dot { background: var(--amber, #f59e0b); }
+.host-status[data-state="connected"] .host-status-dot { background: var(--green, #10b981); }
+.host-status[data-state="standalone"] { opacity: 0.65; }
+@keyframes hostPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
 /* ===== HEADER RIGHT ===== */
 .header-right {
   display: flex;
