@@ -113,10 +113,12 @@ per question:
 When the dashboard changes, update `dashboardContext.js` and `tools.js` only.
 Both are classic-script ports of the skill's ES modules (this repo has no
 bundler), matching how `js/lib/sdk.js` and `js/lib/host-context.js` were
-ported. Two substitutions were unavoidable: the React panel is built with DOM
-calls, and `react-markdown` + `remark-gfm` are replaced by `renderMarkdown()`
+ported. Three substitutions were unavoidable: the React panel is built with DOM
+calls; `react-markdown` + `remark-gfm` are replaced by `renderMarkdown()`
 inside `AskAiPanel.js`, which escapes the model's output before parsing — raw
-HTML is never rendered, and GFM tables are supported.
+HTML is never rendered, and GFM tables are supported; and the panel's z-index
+is raised (`Z` at the top of `AskAiPanel.js`) because this dashboard's own
+chrome sits at 900–2000, well above the reference panel's 50/60.
 
 ### Tools
 
