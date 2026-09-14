@@ -19,6 +19,17 @@
 <script src="js/lib/sdk.js"></script>
 <script src="js/lib/host-context.js"></script>
 
+<!-- Ask AI chat agent — see dashboard-skill/reference/chat-agent.md.
+     Order matters: the datasource client, then the per-dashboard context and
+     tool catalog, then the verbatim prompts/loop, then the panel. All classic
+     scripts; dashboard.js mounts the panel on DOMContentLoaded. -->
+<script src="js/lib/munshot-api.js"></script>
+<script src="js/agent/dashboardContext.js"></script>
+<script src="js/agent/tools.js"></script>
+<script src="js/agent/prompts.js"></script>
+<script src="js/agent/runAgent.js"></script>
+<script src="js/components/AskAiPanel.js"></script>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>

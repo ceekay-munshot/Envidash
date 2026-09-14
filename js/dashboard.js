@@ -1984,6 +1984,84 @@ function activeSectionId() {
   return document.querySelector('.dash-section.active')?.id || null;
 }
 
+// ---- Ask AI --------------------------------------------------------------
+// See dashboard-skill/reference/chat-agent.md. The agent files live in
+// js/agent/; this is the only place the dashboard wires into them.
+
+// Section ids -> the names used in js/agent/dashboardContext.js. Both lists
+// must stay in sync, since the router prompt routes questions by section name.
+const SECTION_NAMES = {
+  s1: 'Business & Market',
+  s2: 'Promoter & Mgmt',
+  s3: 'Financial Quality',
+  s4: 'Governance & Flags',
+  s5: 'Ground Checks',
+  s6: 'Ownership & Valuation',
+};
+
+// The trend charts each carry their own period toggle. Report one value when
+// they all agree, otherwise name the ones that differ.
+function describeChartPeriods() {
+  const entries = Object.entries(activePeriods);
+  const values = [...new Set(entries.map(([, period]) => period))];
+  if (values.length === 1) return values[0];
+  return entries.map(([kind, period]) => `${kind}=${period}`).join(', ');
+}
+
+/**
+ * Live dashboard state for the Ask AI agent's dashboardContext.getFilters().
+ * Read at request time — never a cached snapshot — so answers stay aligned
+ * with whatever the user is looking at.
+ */
+MunshotDashboard.getDashboardState = function getDashboardState() {
+  const host = MunshotDashboard.getHostContext();
+  return {
+    ticker: activeCompanyKey || host.ticker || '',
+    company:
+      document.getElementById('activeCompanyName')?.textContent?.trim() ||
+      host.tickerCompany ||
+      '',
+    country: host.tickerCountry || 'IN',
+    exchange: document.querySelector('.tag-exchange')?.textContent?.trim() || '',
+    section: SECTION_NAMES[activeSectionId()] || '',
+    chartPeriod: describeChartPeriods(),
+    mixPeriod: activeBizMixPeriod,
+  };
+};
+
+/**
+ * Mount the Ask AI panel once, with the host session token.
+ *
+ * There is no React here, so this try/catch is the ErrorBoundary equivalent
+ * from chat-agent.md: if the panel fails to mount or a context update throws,
+ * the failure is logged and reported to the host, and the dashboard carries on
+ * without the panel rather than breaking.
+ */
+function initAskAi() {
+  let panel = null;
+  try {
+    panel = MunshotDashboard.mountAskAiPanel({
+      // null until the host session arrives — the panel then shows
+      // "Waiting for session…" instead of silently ignoring Enter.
+      token: MunshotDashboard.getHostContext().session.token ?? '',
+    });
+  } catch (err) {
+    console.error('[ForensIQ] Ask AI panel failed to mount', err);
+    MunshotDashboard.sdk.sendError('Ask AI panel failed to mount', 'ASK_AI_MOUNT_FAILED', {
+      detail: err?.message || String(err),
+    });
+    return;
+  }
+
+  MunshotDashboard.useHostContext((state) => {
+    try {
+      panel.setToken(state.session.token ?? '');
+    } catch (err) {
+      console.error('[ForensIQ] Ask AI token update failed', err);
+    }
+  });
+}
+
 // Current dashboard state, read live at request time (no stale closures).
 function getDashboardSnapshot() {
   const company = activeCompanyKey;
@@ -2080,6 +2158,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Munshot host context — session token + selected ticker
   initHostContext();
+
+  // Ask AI chat panel (js/agent/*, js/components/AskAiPanel.js)
+  initAskAi();
 
   // Init interaction handlers
   initSectionNav();

@@ -1593,8 +1593,9 @@ body {
 /* ===== SCROLL TOP BUTTON ===== */
 .scroll-top {
   position: fixed;
-  bottom: 28px;
-  right: 28px;
+  /* Sits above the Ask AI launcher (fixed at right 20 / bottom 20). */
+  bottom: 76px;
+  right: 22px;
   width: 42px; height: 42px;
   border-radius: 50%;
   background: var(--brand);

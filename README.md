@@ -24,6 +24,11 @@ A complete, professional investor research dashboard with 6 forensic analysis se
 5. **Ground Checks / Operating Verification** — Headcount vs revenue trend, GST compliance grid, physical indicator table, facility status, debt restructuring
 6. **Ownership, Valuation, Catalysts & Risk** — FII/DII/MF/Promoter ownership trend, historical P/E valuation band, peer valuation table, catalyst timeline, risk register
 
+### ✅ Ask AI
+- "Ask AI" chat panel that answers questions about the dashboard from live data
+- Two-pass agent: routes the question to tools, fetches, then streams a markdown answer
+- Read-only tools only, with prompt-injection guards (see "Ask AI chat agent" below)
+
 ### ✅ Interactive Features
 - Chart.js charts with 3Y / 5Y / 10Y period toggles
 - Donut/pie charts for business and geography mix with FY toggle
@@ -41,6 +46,12 @@ index.html                      — Main dashboard HTML (all 6 sections)
 css/style.css                   — Full dashboard stylesheet (1500+ lines)
 js/lib/sdk.js                   — Munshot Dashboard SDK client singleton
 js/lib/host-context.js          — Host session/ticker store (useHostContext)
+js/lib/munshot-api.js           — Read-only Munshot datasource client
+js/agent/dashboardContext.js    — Ask AI: what this dashboard is + live filters
+js/agent/tools.js               — Ask AI: tool catalog (one per datasource)
+js/agent/prompts.js             — Ask AI: router + answer prompts (verbatim)
+js/agent/runAgent.js            — Ask AI: two-pass agent loop (verbatim)
+js/components/AskAiPanel.js     — Ask AI: chat panel (verbatim port)
 js/dashboard.js                 — Charts, interactivity, search, toggles, host handlers
 data/companies.json             — Per-company bizMix + geoMix data (loaded at runtime)
 scripts/fetch-company-data.mjs  — Refresher: pulls real data into companies.json
@@ -70,6 +81,73 @@ the Munshot Dashboard SDK (see `dashboard-skill/reference/auth-standards.md`).
 Opened outside the host, the SDK falls back to a no-op client: the dashboard
 still renders from `data/companies.json`, the header shows "Standalone preview",
 and company search is disabled until a session token arrives.
+
+## Ask AI chat agent
+
+Every Munshot dashboard ships an "Ask AI" panel (see
+`dashboard-skill/reference/chat-agent.md`). It is the launcher at the bottom
+right; the panel slides in from the right edge.
+
+The LLM endpoint takes one string and returns text — no tool calling, no
+message roles — so the agent loop runs here, in the dashboard, in two passes
+per question:
+
+1. **Route** — `POST /query-router` (`stream:false`, `temperature:0`) with the
+   dashboard description, the tool catalog, recent history and the question.
+   It replies with JSON naming which tools to call.
+2. **Run tools** — the dashboard calls its own fetch functions in parallel, at
+   most 3 per turn, each isolating its own failure.
+3. **Answer** — `POST /query-router` (`stream:true`) with the question and the
+   fetched data, streamed back as NDJSON and rendered as markdown.
+
+### Files
+
+| File | Source |
+|---|---|
+| `js/agent/dashboardContext.js` | written for this dashboard |
+| `js/agent/tools.js` | written for this dashboard |
+| `js/agent/prompts.js` | copied from the skill — do not edit |
+| `js/agent/runAgent.js` | copied from the skill — do not edit |
+| `js/components/AskAiPanel.js` | copied from the skill — do not edit |
+
+When the dashboard changes, update `dashboardContext.js` and `tools.js` only.
+Both are classic-script ports of the skill's ES modules (this repo has no
+bundler), matching how `js/lib/sdk.js` and `js/lib/host-context.js` were
+ported. Two substitutions were unavoidable: the React panel is built with DOM
+calls, and `react-markdown` + `remark-gfm` are replaced by `renderMarkdown()`
+inside `AskAiPanel.js`, which escapes the model's output before parsing — raw
+HTML is never rendered, and GFM tables are supported.
+
+### Tools
+
+| Tool | Section | Datasource |
+|---|---|---|
+| `get_dashboard_dataset` | Business & Market | `data/companies.json` (refetched) |
+| `get_company_financials` | Financial Quality | `combined_financials` |
+| `get_insider_trades` | Promoter & Mgmt | `insider_trades` |
+| `get_filings_and_announcements` | Governance & Flags | `combined_filings_announcements` |
+| `get_live_quote` | Ownership & Valuation | `stock_data` |
+| `get_company_news` | Ground Checks | `news_search` |
+
+Note that only `get_dashboard_dataset` returns what the charts currently
+render. The other five fetch **live** data for their section, while most of the
+dashboard's own charts are still mock (see "Real-data status" below), so a
+figure the agent quotes may not match the chart beside it until those panels
+are wired to the same datasources.
+
+**Every tool is read-only, and that is a security property, not a convenience.**
+Tool output (news text, filing descriptions, scraped pages) is untrusted and
+could contain injected instructions, so it is fenced inside `<data>` blocks,
+`</data>` sequences inside it are stripped, and the answer prompt states above
+and below the data that its content is never instructions. The structural guard
+is that the worst an injection can achieve is a wrong sentence on screen —
+nothing can be sent, written or deleted. Never add a write-capable datasource
+(`email_send`, `agent_run`, anything that sends or mutates) to
+`js/lib/munshot-api.js` or `js/agent/tools.js`.
+
+Failures never surface as raw technical errors: the panel shows a
+plain-language message, the detail goes to the console, and the host is told
+via `sdk.sendError`.
 
 ## Data flow — Real Data from Screener.in
 
